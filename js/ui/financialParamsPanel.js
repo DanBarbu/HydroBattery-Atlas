@@ -129,6 +129,9 @@ HB.UI.financialParams = {
             HB.UI.siteDetail._renderMetrics(site);
         }
 
+        // Refresh scale-up panel with updated financial parameters
+        if (HB.UI.scaleUp) HB.UI.scaleUp.refresh();
+
         // Flash the recalculate button to confirm
         const btn = document.getElementById('btn-recalculate');
         if (btn) {

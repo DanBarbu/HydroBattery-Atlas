@@ -93,6 +93,18 @@
     HB.UI.resultsPanel.init();
     HB.UI.siteDetail.init();
     if (HB.UI.financialParams) HB.UI.financialParams.init();
+    if (HB.UI.scaleUp) HB.UI.scaleUp.init();
+
+    // Wire scale-up panel collapse toggle
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'toggle-scaleup-body') {
+            const body = document.getElementById('scale-up-body');
+            if (!body) return;
+            const hidden = body.style.display === 'none';
+            body.style.display = hidden ? 'block' : 'none';
+            e.target.innerHTML = hidden ? '&#8722;' : '+';
+        }
+    });
 
     // Initialize draw tools
     HB.DrawTools.init();
