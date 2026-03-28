@@ -1,5 +1,17 @@
 /**
  * Database of Mine Void Sites Suitable for PHES Conversion
+ *
+ * Regions supported:
+ *   Australia  — Kidston, Mt Morgan, Collinsville, Hazelwood, Iron Knob, Pilbara
+ *   United States — Appalachian (WV)
+ *   Brazil     — Bento Rodrigues
+ *   South Africa — Witwatersrand
+ *   United Kingdom — Corby
+ *   Malaysia (Sabah) — Mamut Copper Mine [added: feature/malaysia-romania-regions]
+ *   Romania    — Rosia Montana [added: feature/malaysia-romania-regions]
+ *
+ * Cost engine region factors (costEngine.js):
+ *   Australia 1.0x  |  Malaysia 0.5x  |  Romania 0.7x  |  default 0.8x
  */
 HB.Data = HB.Data || {};
 
