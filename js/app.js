@@ -43,6 +43,47 @@
         console.log('Merged ' + bfCount + ' ANU Bluefield Malaysia sites');
     }
 
+    // Generic ANU site merger (used for greenfield, brownfield, ocean)
+    function _mergeAnuDataset(dataset, label) {
+        if (!dataset || !dataset.length) return;
+        dataset.forEach(function (s) {
+            HB.Data.knownSites.push({
+                id: s.id,
+                name: s.name,
+                country: s.country,
+                region: s.region,
+                lat: s.lat,
+                lng: s.lng,
+                status: s.status,
+                configuration: s.configuration || 'lake_pair',
+                capacity_mw: s.capacity_mw,
+                storage_mwh: s.storage_mwh,
+                upper_elevation_m: s.head_m ? Math.round(s.head_m * 0.7 + 200) : null,
+                lower_elevation_m: s.head_m ? 200 : null,
+                head_m: s.head_m,
+                tunnel_length_m: s.separation_km ? Math.round(s.separation_km * 1000) : null,
+                year_commissioned: null,
+                description: s.description,
+                source_url: s.source_url || 'https://re100.eng.anu.edu.au/global/',
+                anu_tier: s.tier,
+                anu_class: s.class,
+                anu_volume_gl: s.volume_gl,
+                anu_water_rock_ratio: s.water_rock_ratio,
+                anu_dam_volume_mm3: s.dam_volume_mm3,
+                anu_reservoir_area_ha: s.reservoir_area_ha,
+                anu_energy_cost_usd_mwh: s.energy_cost_usd_mwh,
+                anu_power_cost_usd_kw: s.power_cost_usd_kw
+            });
+        });
+        console.log('Merged ' + dataset.length + ' ' + label + ' sites');
+    }
+
+    _mergeAnuDataset(HB.Data.anuGreenfieldMalaysia, 'ANU Greenfield Malaysia');
+    _mergeAnuDataset(HB.Data.anuGreenfieldRomania,  'ANU Greenfield Romania');
+    _mergeAnuDataset(HB.Data.anuBrownfieldMalaysia, 'ANU Brownfield Malaysia');
+    _mergeAnuDataset(HB.Data.anuBrownfieldRomania,  'ANU Brownfield Romania');
+    _mergeAnuDataset(HB.Data.anuOceanMalaysia,      'ANU Ocean Malaysia');
+
     // Merge ANU Bluefield Romania data into knownSites
     if (HB.Data.anuBluefieldRomania && HB.Data.anuBluefieldRomania.length) {
         var bfRoCount = 0;

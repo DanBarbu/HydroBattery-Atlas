@@ -111,6 +111,10 @@ HB.Markers = {
             case 'under_construction': return '#f9ab00';
             case 'proposed': return '#4a90d9';
             case 'potential': return '#9aa0a6';
+            case 'anu_bluefield': return '#7b61ff';
+            case 'anu_greenfield': return '#1e8c3a';
+            case 'anu_brownfield': return '#b45309';
+            case 'anu_ocean': return '#0891b2';
             default: return '#9aa0a6';
         }
     },
