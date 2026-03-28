@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>HydroBattery Atlas - Pumped Hydro Energy Storage Site Finder</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/map.css" />
+    <link rel="stylesheet" href="css/panels.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header id="top-bar">
+        <div class="top-bar-left">
+            <button id="sidebar-toggle" class="icon-btn" title="Toggle sidebar">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <rect x="2" y="4" width="16" height="2" rx="1"/>
+                    <rect x="2" y="9" width="16" height="2" rx="1"/>
+                    <rect x="2" y="14" width="16" height="2" rx="1"/>
+                </svg>
+            </button>
+            <h1 class="app-title">
+                <span class="title-icon">&#9883;</span>
+                HydroBattery Atlas
+            </h1>
+        </div>
+        <div class="top-bar-center">
+            <div class="search-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                </svg>
+                <input type="text" id="location-search" placeholder="Search location (city, coordinates, or landmark)..." autocomplete="off" />
+                <div id="search-suggestions" class="search-suggestions hidden"></div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div class="unit-toggle">
+                <button id="btn-metric" class="unit-btn active" title="Metric units">Metric</button>
+                <button id="btn-imperial" class="unit-btn" title="Imperial units">Imperial</button>
+            </div>
+            <button id="btn-help" class="icon-btn" title="Help">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 16H9v-2h2v2zm1.07-7.75l-.9.92C10.45 9.9 10 10.5 10 12H8v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-4 0H5a4 4 0 0 1 8 0c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+            </button>
+            <button id="btn-settings" class="icon-btn" title="Settings">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M17.14 10.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L12.4.68A.48.48 0 0 0 11.93.2H8.07a.48.48 0 0 0-.47.38L7.24 3.29c-.59.24-1.13.56-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L.72 6.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94L.84 12.52a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.61c.04.22.24.38.47.38h3.86c.24 0 .44-.16.47-.38l.36-2.61c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM10 13.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content">
+        <!-- Left Panel - Search & Results -->
+        <aside id="left-panel" class="panel">
+            <div class="panel-tabs">
+                <button class="panel-tab active" data-tab="search">Search</button>
+                <button class="panel-tab" data-tab="browse">Browse Sites</button>
+                <button class="panel-tab" data-tab="manual">Manual</button>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="tab-search" class="tab-content active">
+                <div class="panel-section">
+                    <h3>Configuration Type</h3>
+                    <div class="config-grid">
+                        <button class="config-btn active" data-config="lake_pair" title="Two reservoirs at different elevations">
+                            <svg viewBox="0 0 40 40" width="40" height="40">
+                                <ellipse cx="20" cy="12" rx="14" ry="6" fill="#4a90d9" opacity="0.7"/>
+                                <ellipse cx="20" cy="30" rx="14" ry="6" fill="#4a90d9"/>
+                                <line x1="14" y1="16" x2="14" y2="26" stroke="#666" stroke-width="1.5" stroke-dasharray="3,2"/>
+                            </svg>
+                            <span>Lake Pair</span>
+                        </button>
+                        <button class="config-btn" data-config="lake_ocean" title="Upper lake with ocean as lower reservoir">
+                            <svg viewBox="0 0 40 40" width="40" height="40">
+                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
+                                <path d="M2 30 Q10 26 20 30 Q30 34 38 30" fill="none" stroke="#2196F3" stroke-width="2"/>
+                                <path d="M2 33 Q10 29 20 33 Q30 37 38 33" fill="none" stroke="#2196F3" stroke-width="1.5" opacity="0.5"/>
+                            </svg>
+                            <span>Lake-Ocean</span>
+                        </button>
+                        <button class="config-btn" data-config="lake_underground" title="Surface lake with underground reservoir">
+                            <svg viewBox="0 0 40 40" width="40" height="40">
+                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
+                                <rect x="8" y="28" width="24" height="8" rx="2" fill="#8B4513" opacity="0.6"/>
+                                <ellipse cx="20" cy="32" rx="8" ry="3" fill="#4a90d9" opacity="0.5"/>
+                            </svg>
+                            <span>Underground</span>
+                        </button>
+                        <button class="config-btn" data-config="mine_void" title="Repurposed mine voids (like Kidston)">
+                            <svg viewBox="0 0 40 40" width="40" height="40">
+                                <polygon points="8,14 20,6 32,14 32,24 8,24" fill="#8B4513" opacity="0.4" stroke="#666"/>
+                                <polygon points="10,26 18,20 26,26 26,36 10,36" fill="#8B4513" opacity="0.4" stroke="#666"/>
+                                <ellipse cx="20" cy="22" rx="6" ry="2" fill="#4a90d9" opacity="0.6"/>
+                                <ellipse cx="18" cy="33" rx="5" ry="2" fill="#4a90d9" opacity="0.6"/>
+                            </svg>
+                            <span>Mine Void</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Energy Storage Target</h3>
+                    <div class="slider-group">
+                        <input type="range" id="energy-slider" min="0" max="12" step="0.1" value="3" />
+                        <div class="slider-labels">
+                            <span>1 kWh</span>
+                            <span>1 MWh</span>
+                            <span>1 GWh</span>
+                            <span>1 TWh</span>
+                        </div>
+                        <div class="slider-value">
+                            <span id="energy-value">1.00</span>
+                            <select id="energy-unit">
+                                <option value="kWh">kWh</option>
+                                <option value="MWh" selected>MWh</option>
+                                <option value="GWh">GWh</option>
+                                <option value="TWh">TWh</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Power Capacity</h3>
+                    <div class="input-row">
+                        <label for="power-capacity">Rated Power</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="power-capacity" value="100" min="0.001" step="any" />
+                            <select id="power-unit">
+                                <option value="kW">kW</option>
+                                <option value="MW" selected>MW</option>
+                                <option value="GW">GW</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Search Parameters</h3>
+                    <div class="input-row">
+                        <label for="search-radius">Search Radius</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="search-radius" value="25" min="1" max="100" />
+                            <span class="unit-label">km</span>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="min-head">Min Head Height</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="min-head" value="100" min="10" max="2000" />
+                            <span class="unit-label">m</span>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="max-tunnel">Max Tunnel Length</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="max-tunnel" value="10" min="0.5" max="30" step="0.5" />
+                            <span class="unit-label">km</span>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="round-trip-eff">Round-trip Efficiency</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="round-trip-eff" value="80" min="60" max="90" />
+                            <span class="unit-label">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <button id="btn-find-sites" class="btn-primary btn-full">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                        </svg>
+                        Find HydroBattery Sites
+                    </button>
+                    <div id="search-progress" class="progress-container hidden">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <span id="progress-text">Scanning elevation data...</span>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="search-results" class="results-container hidden">
+                    <div class="results-header">
+                        <h3>Results <span id="results-count"></span></h3>
+                        <select id="sort-results">
+                            <option value="cost_per_kwh">Cost per kWh</option>
+                            <option value="total_cost">Total Cost</option>
+                            <option value="head_height">Head Height</option>
+                            <option value="distance">Distance</option>
+                        </select>
+                    </div>
+                    <div id="results-list"></div>
+                </div>
+            </div>
+
+            <!-- Browse Tab -->
+            <div id="tab-browse" class="tab-content">
+                <div class="panel-section">
+                    <h3>Jump to Region</h3>
+                    <div class="region-jump-grid">
+                        <button class="region-jump-btn" data-lat="-25" data-lng="134" data-zoom="4" title="Fly to Australia">
+                            🇦🇺 Australia
+                        </button>
+                        <button class="region-jump-btn" data-lat="4.5" data-lng="109" data-zoom="5" title="Fly to Malaysia / Borneo">
+                            🇲🇾 Malaysia
+                        </button>
+                        <button class="region-jump-btn" data-lat="6.0" data-lng="116.6" data-zoom="10" title="Fly to Mamut Mine, Sabah">
+                            ⛏ Mamut Mine
+                        </button>
+                        <button class="region-jump-btn" data-lat="45.9" data-lng="24.9" data-zoom="6" title="Fly to Romania">
+                            🇷🇴 Romania
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <h3>Filter Known Sites</h3>
+                    <div class="filter-group">
+                        <label>Country / Region</label>
+                        <select id="filter-country">
+                            <option value="all">All Countries</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Malaysia">Malaysia</option>
+                            <option value="Romania">Romania</option>
+                            <option value="United States">United States</option>
+                            <option value="Brazil">Brazil</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="operational" checked /> Operational</label>
+                            <label><input type="checkbox" value="under_construction" checked /> Under Construction</label>
+                            <label><input type="checkbox" value="proposed" checked /> Proposed</label>
+                            <label><input type="checkbox" value="potential" checked /> Potential</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Configuration</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="lake_pair" checked /> Lake Pair</label>
+                            <label><input type="checkbox" value="lake_ocean" checked /> Lake-Ocean</label>
+                            <label><input type="checkbox" value="mine_void" checked /> Mine Void</label>
+                            <label><input type="checkbox" value="lake_underground" checked /> Underground</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Min Capacity</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="filter-min-capacity" value="0" min="0" />
+                            <span class="unit-label">MW</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="known-sites-list" class="results-container"></div>
+            </div>
+
+            <!-- Manual Evaluation Tab -->
+            <div id="tab-manual" class="tab-content">
+                <div class="panel-section">
+                    <p class="help-text">Click on the map to place upper and lower reservoir markers, or enter coordinates manually.</p>
+                    <div class="manual-controls">
+                        <div class="marker-group">
+                            <h4>
+                                <span class="marker-dot upper"></span> Upper Reservoir
+                            </h4>
+                            <div class="input-row">
+                                <label>Lat</label>
+                                <input type="number" id="upper-lat" step="any" placeholder="-19.2855" />
+                            </div>
+                            <div class="input-row">
+                                <label>Lng</label>
+                                <input type="number" id="upper-lng" step="any" placeholder="144.1581" />
+                            </div>
+                            <div class="input-row">
+                                <label>Elevation</label>
+                                <span id="upper-elev" class="elev-display">--</span>
+                            </div>
+                            <button id="btn-place-upper" class="btn-secondary btn-full">Place on Map</button>
+                        </div>
+                        <div class="marker-group">
+                            <h4>
+                                <span class="marker-dot lower"></span> Lower Reservoir
+                            </h4>
+                            <div class="input-row">
+                                <label>Lat</label>
+                                <input type="number" id="lower-lat" step="any" placeholder="-19.2910" />
+                            </div>
+                            <div class="input-row">
+                                <label>Lng</label>
+                                <input type="number" id="lower-lng" step="any" placeholder="144.1620" />
+                            </div>
+                            <div class="input-row">
+                                <label>Elevation</label>
+                                <span id="lower-elev" class="elev-display">--</span>
+                            </div>
+                            <button id="btn-place-lower" class="btn-secondary btn-full">Place on Map</button>
+                        </div>
+                    </div>
+                    <button id="btn-evaluate-manual" class="btn-primary btn-full" style="margin-top:12px;">
+                        Evaluate Site
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <div id="map-container">
+            <div id="map"></div>
+            <div id="map-overlay-info" class="map-overlay">
+                <span id="cursor-coords"></span>
+                <span id="cursor-elevation"></span>
+            </div>
+        </div>
+
+        <!-- Right Panel - Site Details & Cost Breakdown -->
+        <aside id="right-panel" class="panel hidden">
+            <button id="close-right-panel" class="panel-close">&times;</button>
+            <div id="site-detail">
+                <h2 id="site-name">Site Details</h2>
+                <div id="site-status-badge" class="status-badge"></div>
+
+                <div class="detail-section">
+                    <h3>Site Parameters</h3>
+                    <table class="detail-table" id="site-params-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Cross-Section</h3>
+                    <canvas id="cross-section-canvas" width="380" height="200"></canvas>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Cost Breakdown</h3>
+                    <canvas id="cost-pie-chart" width="380" height="220"></canvas>
+                    <table class="cost-table" id="cost-breakdown-table">
+                        <thead>
+                            <tr><th>Component</th><th>Cost (USD)</th><th>%</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="cost-summary" id="cost-summary"></div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Key Metrics</h3>
+                    <div class="metrics-grid" id="key-metrics"></div>
+                </div>
+
+                <div class="detail-section">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <h3 style="margin-bottom:0;">Adjust Parameters</h3>
+                        <button id="toggle-fin-params" style="background:none;border:1px solid var(--border);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;color:var(--text-secondary);">+</button>
+                    </div>
+                    <div id="fin-params-body" class="hidden" style="margin-top:10px;">
+                        <div style="margin-bottom:8px;">
+                            <label style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;">Custom Capacity (GWh)</label>
+                            <input id="fp-custom-gwh" type="number" step="0.1" min="0.01" placeholder="e.g. 3.4"
+                                style="width:100%;height:30px;padding:0 8px;border:1px solid var(--border);border-radius:4px;font-size:13px;margin-top:4px;box-sizing:border-box;" />
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Leave empty to use site default</div>
+                        </div>
+
+                        <div class="fp-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div class="fp-field">
+                                <label>Cycles/yr</label>
+                                <input id="fp-cycles" type="number" step="10" min="1" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Energy $/MWh</label>
+                                <input id="fp-energy-price" type="number" step="1" min="0" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Equity return %</label>
+                                <input id="fp-equity-return" type="number" step="0.5" min="0" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Bank rate %</label>
+                                <input id="fp-bank-rate" type="number" step="0.5" min="0" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Equity frac %</label>
+                                <input id="fp-equity-frac" type="number" step="5" min="0" max="100" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Inflation %</label>
+                                <input id="fp-inflation" type="number" step="0.1" min="0" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Lifetime (yr)</label>
+                                <input id="fp-lifetime" type="number" step="5" min="10" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Dam $/m&sup3;</label>
+                                <input id="fp-dam-cost" type="number" step="10" min="0" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Pump eff %</label>
+                                <input id="fp-pump-eff" type="number" step="1" min="50" max="99" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Gen eff %</label>
+                                <input id="fp-gen-eff" type="number" step="1" min="50" max="99" />
+                            </div>
+                            <div class="fp-field" style="grid-column:span 2;">
+                                <label>Li-ion $/kWh benchmark</label>
+                                <input id="fp-lithium-cost" type="number" step="10" min="0" />
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <button id="btn-recalculate" class="btn-primary" style="flex:1;">Recalculate</button>
+                            <button id="btn-reset-params" class="btn-secondary" style="flex:0 0 auto;">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>HydroBattery Atlas - Help</h2>
+            <div class="help-sections">
+                <h3>What is Pumped Hydro Energy Storage?</h3>
+                <p>Pumped hydro stores energy by moving water between two reservoirs at different elevations. When electricity is abundant, water is pumped uphill. When electricity is needed, water flows downhill through turbines to generate power.</p>
+
+                <h3>Configuration Types</h3>
+                <ul>
+                    <li><strong>Lake Pair:</strong> Two natural or artificial lakes at different elevations connected by a tunnel/penstock.</li>
+                    <li><strong>Lake-Ocean:</strong> An upper reservoir on elevated terrain near the coast, using the ocean as the lower reservoir.</li>
+                    <li><strong>Underground:</strong> A surface reservoir paired with an underground cavern or aquifer.</li>
+                    <li><strong>Mine Void:</strong> Repurposed open-pit or underground mines (like Kidston in Queensland, Australia).</li>
+                </ul>
+
+                <h3>How to Use</h3>
+                <ol>
+                    <li><strong>Search:</strong> Navigate to an area of interest, set your energy target and parameters, and click "Find Sites".</li>
+                    <li><strong>Browse:</strong> Explore the database of known pumped hydro sites worldwide.</li>
+                    <li><strong>Manual:</strong> Place upper and lower reservoir markers on the map for custom evaluation.</li>
+                </ol>
+
+                <h3>Cost Estimates</h3>
+                <p>Cost estimates are preliminary (+/- 50%) and based on published engineering cost models from NREL, ORNL, and industry data. Actual costs depend on geology, environmental factors, labor markets, and regulatory requirements.</p>
+
+                <h3>Data Sources</h3>
+                <ul>
+                    <li>Elevation: Open-Meteo API (Copernicus GLO-90, 90m resolution)</li>
+                    <li>Geocoding: OpenStreetMap Nominatim</li>
+                    <li>Map tiles: OpenStreetMap / OpenTopoMap</li>
+                    <li>Cost models: NREL ATB 2024, ORNL Hydropower Baseline Cost</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>Settings</h2>
+            <div class="settings-sections">
+                <div class="setting-group">
+                    <label>Map Tile Layer</label>
+                    <select id="setting-map-tiles">
+                        <option value="osm">OpenStreetMap</option>
+                        <option value="topo" selected>OpenTopoMap</option>
+                        <option value="satellite">Esri Satellite</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Currency</label>
+                    <select id="setting-currency">
+                        <option value="USD" selected>USD ($)</option>
+                        <option value="EUR">EUR (&euro;)</option>
+                        <option value="AUD">AUD (A$)</option>
+                        <option value="GBP">GBP (&pound;)</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Cost Year Basis</label>
+                    <select id="setting-cost-year">
+                        <option value="2024" selected>2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Discount Rate (%)</label>
+                    <input type="number" id="setting-discount-rate" value="7" min="1" max="15" step="0.5" />
+                </div>
+                <div class="setting-group">
+                    <label>Construction Duration (years)</label>
+                    <input type="number" id="setting-construction-years" value="4" min="1" max="10" />
+                </div>
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="setting-show-elevation" checked />
+                        Show elevation on hover
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="loading-spinner"></div>
+        <p id="loading-text">Loading...</p>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- App Modules (v2 cache bust) -->
+    <script src="js/config.js?v=3"></script>
+    <script src="js/search/geoUtils.js?v=3"></script>
+    <script src="js/search/elevationService.js?v=3"></script>
+    <script src="js/cost/damCost.js?v=3"></script>
+    <script src="js/cost/tunnelCost.js?v=3"></script>
+    <script src="js/cost/powerhouseCost.js?v=3"></script>
+    <script src="js/cost/electricalCost.js?v=3"></script>
+    <script src="js/cost/civilCost.js?v=3"></script>
+    <script src="js/cost/environmentalCost.js?v=3"></script>
+    <script src="js/cost/costEngine.js?v=4"></script>
+    <script src="js/search/searchFilters.js?v=3"></script>
+    <script src="js/search/siteSearchEngine.js?v=3"></script>
+    <script src="js/data/knownSites.js?v=4"></script>
+    <script src="js/data/anuBluefieldMalaysia.js?v=1"></script>
+    <script src="js/data/anuBluefieldRomania.js?v=2"></script>
+    <script src="js/data/mineVoids.js?v=3"></script>
+    <script src="js/data/configurationTypes.js?v=3"></script>
+    <script src="js/map/mapManager.js?v=3"></script>
+    <script src="js/map/siteMarkers.js?v=3"></script>
+    <script src="js/map/drawTools.js?v=3"></script>
+    <script src="js/ui/searchPanel.js?v=3"></script>
+    <script src="js/ui/resultsPanel.js?v=3"></script>
+    <script src="js/ui/costBreakdownPanel.js?v=4"></script>
+    <script src="js/ui/siteDetailPanel.js?v=5"></script>
+    <script src="js/ui/financialParamsPanel.js?v=2"></script>
+    <script src="js/ui/chartRenderer.js?v=3"></script>
+    <script src="js/app.js?v=6"></script>
+</body>
+</html>

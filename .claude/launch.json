@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hydrobattery-atlas",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "11616"],
+      "port": 11616
+    }
+  ]
+}
