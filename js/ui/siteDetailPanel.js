@@ -48,6 +48,9 @@ HB.UI.siteDetail = {
 
         // Notify financial params panel
         if (HB.UI.financialParams) HB.UI.financialParams.onSiteShown(site);
+
+        // Show scale-up analysis panel
+        if (HB.UI.scaleUp) HB.UI.scaleUp.render(site);
     },
 
     showKnownSite(siteId) {
