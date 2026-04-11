@@ -762,7 +762,8 @@ HB.Data.knownSites = [
         gem_owner: 'Tenaga Nasional Berhad',
         gem_technology: 'conventional_storage',
         description: 'GEM/Wikipedia: Existing underground hydroelectric 250 MW (2x125 MW Puah). Commissioned Dec 2015 by TNB. Upstream of Tasik Kenyir (370 km², 13,600 GL). Both reservoirs already exist — PHES conversion requires only reversible pump-turbine equipment and penstock upgrades. No new dam construction.',
-        source_url: 'https://www.gem.wiki/Hulu_Terengganu_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Hulu_Terengganu_hydroelectric_plant',
+        gsa: { ghiYear: 1720, pvoutYear: 1380, dniYear: 1500, airTempC: 27.0, source: 'GSA-Solargis' }
     },
     {
         id: 'hulu_terengganu_50gwh',
@@ -1824,7 +1825,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Somesul Cald',
         description: 'GEM: Operating 45 MW conventional storage, commissioned 1974. Owned by Hidroelectrica. Lower reservoir = Tarnita Lake (Lacul Tarnita, 420m elev, ~2.69 km²). Key PHES candidate — ANU identifies multiple bluefield pairs using Tarnita Lake. The proposed Tarnita-Lapustesti 1,000 MW pumped storage was planned nearby with 600m head.',
-        source_url: 'https://www.gem.wiki/Tarnita_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Tarnita_hydroelectric_plant',
+        gsa: { ghiYear: 1250, pvoutYear: 1020, dniYear: 1150, airTempC: 8.5, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_vidraru',
@@ -1855,7 +1857,8 @@ HB.Data.knownSites = [
         gem_annual_gwh: 400,
         gem_catchment_km2: 286,
         description: 'GEM/Wikipedia: Operating 220 MW, 4x55 MW Francis turbines, commissioned 1966. Vidraru Dam 166m high (was 5th tallest in Europe), crest 305m, reservoir 10 km², 465 GL. Owned by Hidroelectrica. ANU identifies Arges-Vidraru as AAA-class PHES site with 1,020m head pairing with Capatanii highlands.',
-        source_url: 'https://www.gem.wiki/Vidraru_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Vidraru_hydroelectric_plant',
+        gsa: { ghiYear: 1280, pvoutYear: 1050, dniYear: 1200, airTempC: 7.0, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_iron_gate_i',
@@ -1878,7 +1881,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Danube',
         description: 'GEM: Joint Romania-Serbia hydropower on Danube. Romanian share 1,166 MW. Low head (34m) limits PHES potential but massive water volume available.',
-        source_url: 'https://www.gem.wiki/Iron_Gate_I_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Iron_Gate_I_hydroelectric_plant',
+        gsa: { ghiYear: 1350, pvoutYear: 1120, dniYear: 1280, airTempC: 11.5, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_iron_gate_ii',
@@ -1899,7 +1903,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Danube',
         description: 'GEM: Joint Romania-Serbia, 321 MW Romanian share. Very low head (17m) — limited PHES viability.',
-        source_url: 'https://www.gem.wiki/Iron_Gate_II_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Iron_Gate_II_hydroelectric_plant',
+        gsa: { ghiYear: 1340, pvoutYear: 1110, dniYear: 1270, airTempC: 11.8, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_lotru_ciunget',
@@ -1922,7 +1927,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Lotru',
         description: 'GEM: Romania\'s largest hydroelectric at 800 MW. Located in Fagaras/Lotru mountains with 840m head — exceptional PHES potential. Existing tunnels and reservoirs in high mountains. 18 km tunnel system already built.',
-        source_url: 'https://www.gem.wiki/Lotru-Ciunget_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Lotru-Ciunget_hydroelectric_plant',
+        gsa: { ghiYear: 1260, pvoutYear: 1030, dniYear: 1180, airTempC: 6.5, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_stejaru_bicaz',
@@ -1946,7 +1952,8 @@ HB.Data.knownSites = [
         gem_river: 'Bistrita',
         gem_turbines: '6 units',
         description: 'GEM: 210 MW (also known as Bicaz-Stejaru / Dimitrie Leonida), commissioned 1960. Izvorul Muntelui-Bicaz Dam (127m high, Lake Izvorul Muntelui 31 km²). 370m head. Strong PHES candidate with existing infrastructure.',
-        source_url: 'https://www.gem.wiki/Stejaru_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Stejaru_hydroelectric_plant',
+        gsa: { ghiYear: 1218, pvoutYear: 998, dniYear: 1127, airTempC: 8.1, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_ruieni',
@@ -1969,7 +1976,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Bistra',
         description: 'GEM: 153 MW in Banat mountains. 600m head — excellent PHES potential. Existing reservoir and tunnel infrastructure.',
-        source_url: 'https://www.gem.wiki/Ruieni_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Ruieni_hydroelectric_plant',
+        gsa: { ghiYear: 1310, pvoutYear: 1080, dniYear: 1240, airTempC: 9.2, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_mariselu',
@@ -1991,7 +1999,8 @@ HB.Data.knownSites = [
         gem_owner: 'Hidroelectrica',
         gem_technology: 'conventional_storage',
         description: 'GEM: 221 MW in eastern Carpathians. 520m head with existing reservoir. PHES conversion candidate with reversible pump-turbines.',
-        source_url: 'https://www.gem.wiki/Mariselu_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Mariselu_hydroelectric_plant',
+        gsa: { ghiYear: 1200, pvoutYear: 980, dniYear: 1100, airTempC: 7.0, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_raul_mare',
@@ -2014,7 +2023,8 @@ HB.Data.knownSites = [
         gem_technology: 'conventional_storage',
         gem_river: 'Raul Mare',
         description: 'GEM: 335 MW in Retezat Mountains. Exceptional 1,250m head — one of the highest in Europe. Multiple reservoirs at various elevations. Outstanding PHES potential.',
-        source_url: 'https://www.gem.wiki/Raul_Mare_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Raul_Mare_hydroelectric_plant',
+        gsa: { ghiYear: 1240, pvoutYear: 1010, dniYear: 1160, airTempC: 5.5, source: 'GSA-Solargis' }
     },
     {
         id: 'ro_tarnita_lapustesti',
@@ -2034,7 +2044,8 @@ HB.Data.knownSites = [
         year_commissioned: null,
         gem_owner: 'Hidroelectrica',
         description: 'GEM/ENTSO-E: Major proposed PHES in Apuseni Mountains. 1,000 MW / 6 GWh with 600m head. Upper reservoir at Lapustesti plateau, lower at Tarnita (existing 45 MW plant by Hidroelectrica). Planned since 2009, repeatedly delayed. Would be Romania\'s first dedicated pumped storage plant.',
-        source_url: 'https://www.gem.wiki/Tarnita_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Tarnita_hydroelectric_plant',
+        gsa: { ghiYear: 1230, pvoutYear: 1000, dniYear: 1130, airTempC: 7.8, source: 'GSA-Solargis' }
     },
 
     // ================================================================
@@ -2071,7 +2082,8 @@ HB.Data.knownSites = [
         gem_catchment_km2: 14750,
         gem_spillway_m3s: 15000,
         description: 'GEM/Wikipedia: 2,520 MW (8x315 MW Francis), Sarawak\'s largest. CFRD dam 205m high, crest 750m. Reservoir 695 km², 43,800 GL at 228m ASL. ANU identifies Bakun-Murum as AAA-class PHES pair with 338m head between the two reservoirs.',
-        source_url: 'https://www.gem.wiki/Bakun_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Bakun_hydroelectric_plant',
+        gsa: { ghiYear: 1680, pvoutYear: 1320, dniYear: 1450, airTempC: 27.5, source: 'GSA-Solargis' }
     },
     {
         id: 'my_murum',
@@ -2102,6 +2114,7 @@ HB.Data.knownSites = [
         gem_turbines: '4 x 236 MW Francis',
         gem_catchment_km2: 2750,
         description: 'GEM/Wikipedia: 944 MW (4x236 MW Francis), RCC gravity dam 141m high. Reservoir 245 km², 12,043 GL at 540m ASL. Paired with Bakun (338m head, 30km separation) for ANU AAA-class PHES potential.',
-        source_url: 'https://www.gem.wiki/Murum_hydroelectric_plant'
+        source_url: 'https://www.gem.wiki/Murum_hydroelectric_plant',
+        gsa: { ghiYear: 1650, pvoutYear: 1300, dniYear: 1420, airTempC: 26.0, source: 'GSA-Solargis' }
     }
 ];

@@ -51,8 +51,22 @@ HB.UI.fpvPanel = {
         _hide('fpv-results');
         _q('#fpv-gsa-status').textContent = '';
 
-        // Auto-fetch GSA data if coordinates are available
-        if (site.lat != null && site.lng != null) {
+        // Use embedded GSA data if available; otherwise try API fetch
+        if (site.gsa && site.gsa.pvoutYear) {
+            const g = site.gsa;
+            _set('fpv-pvout', g.pvoutYear);
+            _set('fpv-ghi',   g.ghiYear);
+            const peakH = (g.pvoutYear / 365).toFixed(1);
+            const gsaUrl = (site.lat != null && site.lng != null)
+                ? `https://globalsolaratlas.info/detail?c=${site.lat},${site.lng},11&m=site&s=${site.lat},${site.lng}&pv=hydro,180,10,1000`
+                : 'https://globalsolaratlas.info/';
+            const el = _q('#fpv-gsa-status');
+            el.innerHTML = `Solar data: <a href="${gsaUrl}" target="_blank" style="color:var(--accent)">Global Solar Atlas</a>`
+                + ` — GHI <strong>${g.ghiYear}</strong> kWh/m\u00B2/yr \u00B7 PVOUT <strong>${g.pvoutYear}</strong> kWh/kWp/yr`
+                + ` \u00B7 ${peakH} peak sun h/day`
+                + (g.airTempC != null ? ` \u00B7 ${g.airTempC}\u00B0C avg` : '');
+            el.style.color = '#27ae60';
+        } else if (site.lat != null && site.lng != null) {
             this._fetchGSA(site.lat, site.lng);
         }
     },

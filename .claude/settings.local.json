@@ -59,7 +59,11 @@
       "WebFetch(domain:www.gem.wiki)",
       "WebFetch(domain:globalenergymonitor.org)",
       "Bash(ls Downloads/*.csv Downloads/*.xlsx)",
-      "Bash(ls /c/Users/askwh/Downloads/*hydro* /c/Users/askwh/Downloads/*Hydro* /c/Users/askwh/Downloads/*GEM* /c/Users/askwh/Downloads/*gem* /c/Users/askwh/Downloads/*global*hydro* /c/Users/askwh/Downloads/*pump* /c/Users/askwh/Downloads/*PHES* /c/Users/askwh/Downloads/*TYNDP*)"
+      "Bash(ls /c/Users/askwh/Downloads/*hydro* /c/Users/askwh/Downloads/*Hydro* /c/Users/askwh/Downloads/*GEM* /c/Users/askwh/Downloads/*gem* /c/Users/askwh/Downloads/*global*hydro* /c/Users/askwh/Downloads/*pump* /c/Users/askwh/Downloads/*PHES* /c/Users/askwh/Downloads/*TYNDP*)",
+      "Bash(pip install:*)",
+      "Bash(python3 -c ':*)",
+      "Bash(python -c ':*)",
+      "Bash(ls \"/c/Users/askwh/Downloads/\"*GSA*)"
     ]
   }
 }

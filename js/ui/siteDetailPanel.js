@@ -139,7 +139,11 @@ HB.UI.siteDetail = {
             reservoir_area_ha: site.anu_reservoir_area_ha || site.reservoir_area_ha,
             separation_km: site.separation_km || site.anu_separation_km,
             capacity_mw: site.capacity_mw,
-            isdam: site.isdam
+            isdam: site.isdam,
+            gsa: site.gsa || null,
+            lat: site.lat,
+            lng: site.lng,
+            storage_mwh: site.storage_mwh
         };
 
         this.show(detailSite);
@@ -182,6 +186,20 @@ HB.UI.siteDetail = {
 
         if (site.year_commissioned) {
             params.push(['Year Commissioned', site.year_commissioned]);
+        }
+
+        // Solar resource (GSA data)
+        if (site.gsa) {
+            const g = site.gsa;
+            const peakH = (g.pvoutYear / 365).toFixed(1);
+            params.push(['FPV Solar Resource',
+                `GHI ${g.ghiYear} kWh/m\u00B2/yr \u00B7 PVOUT ${g.pvoutYear} kWh/kWp/yr \u00B7 ${peakH} peak h/day`]);
+        }
+
+        // GSA report link
+        if (site.lat != null && site.lng != null) {
+            const gsaUrl = `https://globalsolaratlas.info/detail?c=${site.lat},${site.lng},11&m=site&s=${site.lat},${site.lng}&pv=hydro,180,10,1000`;
+            params.push(['Global Solar Atlas', `<a href="${gsaUrl}" target="_blank" style="color:var(--accent);text-decoration:none;">View GSA Report \u2197</a>`]);
         }
 
         if (site.description) {
