@@ -51,6 +51,12 @@ HB.UI.siteDetail = {
 
         // Show scale-up analysis panel
         if (HB.UI.scaleUp) HB.UI.scaleUp.render(site);
+
+        // Show sensitivity analysis panel
+        if (HB.UI.SensitivityPanel) HB.UI.SensitivityPanel.onSiteShown(site);
+
+        // Show floating PV integration panel
+        if (HB.UI.fpvPanel) HB.UI.fpvPanel.onSiteShown(site);
     },
 
     showKnownSite(siteId) {
@@ -81,8 +87,11 @@ HB.UI.siteDetail = {
         const tunnelLength = site.tunnel_length_m || 2000;
 
         // Use ANU model for Bluefield sites (or any site with ANU data)
+        // Bluefield sites with existing reservoirs (isdam===false) get zero dam cost —
+        // only marginal intake/outlet structure costs apply.
         let anuResult = null;
         const hasAnuData = site.anu_class || site.status === 'anu_bluefield' || site.anu_energy_cost_usd_mwh;
+        const isBluefieldExisting = (site.isdam === false);
         if (hasAnuData && headHeight && site.storage_mwh) {
             anuResult = HB.Cost.engine.anuModel({
                 headM: headHeight,
@@ -93,7 +102,8 @@ HB.UI.siteDetail = {
                 volumeGL: site.anu_volume_gl || site.volume_gl,
                 damVolumeGL: site.anu_dam_volume_mm3 || site.dam_volume_mm3,
                 reservoirAreaHa: site.anu_reservoir_area_ha || site.reservoir_area_ha,
-                country: site.country || 'default'
+                country: site.country || 'default',
+                useExistingReservoirs: isBluefieldExisting
             });
         }
 
@@ -128,7 +138,8 @@ HB.UI.siteDetail = {
             dam_volume_mm3: site.anu_dam_volume_mm3 || site.dam_volume_mm3,
             reservoir_area_ha: site.anu_reservoir_area_ha || site.reservoir_area_ha,
             separation_km: site.separation_km || site.anu_separation_km,
-            capacity_mw: site.capacity_mw
+            capacity_mw: site.capacity_mw,
+            isdam: site.isdam
         };
 
         this.show(detailSite);

@@ -102,14 +102,16 @@ HB.Cost.scaleUp = {
             energyGWh:      energyGWh,
             powerMW:        powerMW,
             waterRockRatio: site.waterRockRatio || 10,
-            country:        site.country || 'default'
+            country:        site.country || 'default',
+            useExistingReservoirs: site.useExistingReservoirs || false
         });
 
         const baseCapexM = anu.summary.totalCapexM;  // Reservoirs + Tunnel + Powerhouse
 
         // ---- Additional capital cost components ----
         // Electrical infrastructure (transformers, switchgear, grid connection, SCADA)
-        const electricalM = anu.components.powerhouse_M * this.ELECTRICAL_FRACTION;
+        // Use overhead-adjusted powerhouse fraction (overheadIndex already in totalCapexM)
+        const electricalM = anu.components.powerhouse_M * (anu.components.overheadIndex || 1) * this.ELECTRICAL_FRACTION;
 
         // Civil works + access roads + environmental mitigation + permitting
         const civilEnvM = baseCapexM * this.CIVIL_ENV_FRACTION;

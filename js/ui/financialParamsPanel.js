@@ -102,6 +102,9 @@ HB.UI.financialParams = {
         const customGWh = this._getNum('fp-custom-gwh', null);
         const energyGWh = (customGWh && customGWh > 0) ? customGWh : baseGWh;
 
+        // Bluefield sites with existing reservoirs: no new dam cost
+        const isBluefieldExisting = (site.isdam === false);
+
         const params = {
             headM: headM,
             separationM: sepM,
@@ -111,7 +114,8 @@ HB.UI.financialParams = {
             volumeGL: (customGWh && customGWh > 0) ? undefined : (site.volume_gl || site.anu_volume_gl || undefined),
             damVolumeGL: (customGWh && customGWh > 0) ? undefined : (site.dam_volume_mm3 || site.anu_dam_volume_mm3 || undefined),
             reservoirAreaHa: (customGWh && customGWh > 0) ? undefined : (site.reservoir_area_ha || site.anu_reservoir_area_ha || undefined),
-            country: site.country || 'default'
+            country: site.country || 'default',
+            useExistingReservoirs: isBluefieldExisting
         };
 
         // If custom GWh, recalculate power proportionally

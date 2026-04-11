@@ -135,6 +135,8 @@
     HB.UI.siteDetail.init();
     if (HB.UI.financialParams) HB.UI.financialParams.init();
     if (HB.UI.scaleUp) HB.UI.scaleUp.init();
+    if (HB.UI.SensitivityPanel) HB.UI.SensitivityPanel.init();
+    if (HB.UI.fpvPanel) HB.UI.fpvPanel.init();
 
     // Wire scale-up panel collapse toggle
     document.addEventListener('click', function(e) {
@@ -179,6 +181,12 @@
 
     console.log('HydroBattery Atlas initialized');
     console.log(`Loaded ${HB.Data.knownSites.length} known sites and ${HB.Data.mineVoids.length} mine void sites`);
+
+    // Update footer site count
+    const siteCountEl = document.getElementById('site-count');
+    if (siteCountEl) {
+        siteCountEl.textContent = HB.Data.knownSites.length + HB.Data.mineVoids.length;
+    }
 
     /**
      * Setup browse tab filter controls

@@ -146,13 +146,17 @@ HB.UI.scaleUp = {
 
         const activeTiersArr = [...this._activeTiers].sort((a, b) => a - b);
 
+        // Bluefield sites with existing reservoirs: no new dam cost
+        const useExistingReservoirs = (site.isdam === false);
+
         // Run scale-up engine
         this._results = HB.Cost.scaleUp.calculate({
             headM,
             separationM,
             waterRockRatio,
             country,
-            storageHours: this._storageHours
+            storageHours: this._storageHours,
+            useExistingReservoirs
         }, activeTiersArr);
 
         if (btn) { btn.textContent = 'Regenerate Analysis'; btn.disabled = false; }

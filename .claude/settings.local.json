@@ -48,7 +48,18 @@
       "Bash(taskkill //F //PID 26352)",
       "Bash(python -c \"import socket; s=socket.socket\\(\\); s.bind\\(\\('''',0\\)\\); print\\(s.getsockname\\(\\)[1]\\); s.close\\(\\)\")",
       "Bash(wc -l \"/c/Users/askwh/HydroBattery Atlas\"/js/**/*.js)",
-      "Bash(wc -l \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/cost/*.js \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/ui/*.js \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/data/*.js)"
+      "Bash(wc -l \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/cost/*.js \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/ui/*.js \"C:\\\\Users\\\\askwh\\\\HydroBattery Atlas\"/js/data/*.js)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/GitHub CLI\")",
+      "Bash(gh --version)",
+      "Bash(gh auth:*)",
+      "Bash(gh pr:*)",
+      "Bash(wc -l \"C:/Users/askwh/HydroBattery Atlas\"/js/*.js \"C:/Users/askwh/HydroBattery Atlas\"/js/*/*.js)",
+      "WebFetch(domain:algorithmintelligence.github.io)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:www.gem.wiki)",
+      "WebFetch(domain:globalenergymonitor.org)",
+      "Bash(ls Downloads/*.csv Downloads/*.xlsx)",
+      "Bash(ls /c/Users/askwh/Downloads/*hydro* /c/Users/askwh/Downloads/*Hydro* /c/Users/askwh/Downloads/*GEM* /c/Users/askwh/Downloads/*gem* /c/Users/askwh/Downloads/*global*hydro* /c/Users/askwh/Downloads/*pump* /c/Users/askwh/Downloads/*PHES* /c/Users/askwh/Downloads/*TYNDP*)"
     ]
   }
 }
