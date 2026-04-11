@@ -26,13 +26,12 @@ HB.UI.searchPanel = {
     },
 
     _setupConfigButtons() {
-        document.querySelectorAll('.config-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.config-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                HB.State.selectedConfig = btn.dataset.config;
+        const select = document.getElementById('config-select');
+        if (select) {
+            select.addEventListener('change', () => {
+                HB.State.selectedConfig = select.value;
             });
-        });
+        }
     },
 
     _setupEnergySlider() {
@@ -262,9 +261,27 @@ HB.UI.searchPanel = {
             HB.State.showElevation = e.target.checked;
         });
 
-        // Sidebar toggle
+        // Sidebar toggle (hamburger menu in top bar)
         document.getElementById('sidebar-toggle').addEventListener('click', () => {
-            document.getElementById('left-panel').classList.toggle('collapsed');
+            _toggleLeftPanel();
         });
+
+        // Panel edge collapse/expand button
+        document.getElementById('panel-collapse-btn').addEventListener('click', () => {
+            _toggleLeftPanel();
+        });
+
+        function _toggleLeftPanel() {
+            const panel = document.getElementById('left-panel');
+            panel.classList.toggle('collapsed');
+            const btn = document.getElementById('panel-collapse-btn');
+            const isCollapsed = panel.classList.contains('collapsed');
+            btn.title = isCollapsed ? 'Show panel' : 'Hide panel';
+            btn.classList.toggle('flipped', isCollapsed);
+            // Invalidate map size after transition
+            setTimeout(() => {
+                if (HB.Map && HB.Map.map) HB.Map.map.invalidateSize();
+            }, 350);
+        }
     }
 };

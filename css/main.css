@@ -279,7 +279,8 @@ html, body {
     flex-shrink: 0;
     border-right: 1px solid var(--border);
     z-index: 500;
-    transition: transform var(--transition), width var(--transition);
+    transition: width var(--transition);
+    position: relative;
 }
 
 #right-panel {
@@ -460,6 +461,10 @@ html, body {
     }
 
     .app-subtitle {
+        display: none;
+    }
+
+    .panel-collapse-btn {
         display: none;
     }
 }

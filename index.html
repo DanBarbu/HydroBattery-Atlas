@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
     <!-- App CSS -->
-    <link rel="stylesheet" href="css/main.css?v=2" />
+    <link rel="stylesheet" href="css/main.css?v=3" />
     <link rel="stylesheet" href="css/map.css?v=2" />
-    <link rel="stylesheet" href="css/panels.css?v=2" />
-    <link rel="stylesheet" href="css/components.css?v=2" />
+    <link rel="stylesheet" href="css/panels.css?v=3" />
+    <link rel="stylesheet" href="css/components.css?v=3" />
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
@@ -78,41 +78,12 @@
             <div id="tab-search" class="tab-content active">
                 <div class="panel-section">
                     <h3>Configuration Type</h3>
-                    <div class="config-grid">
-                        <button class="config-btn active" data-config="lake_pair" title="Two reservoirs at different elevations">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="12" rx="14" ry="6" fill="#4a90d9" opacity="0.7"/>
-                                <ellipse cx="20" cy="30" rx="14" ry="6" fill="#4a90d9"/>
-                                <line x1="14" y1="16" x2="14" y2="26" stroke="#666" stroke-width="1.5" stroke-dasharray="3,2"/>
-                            </svg>
-                            <span>Lake Pair</span>
-                        </button>
-                        <button class="config-btn" data-config="lake_ocean" title="Upper lake with ocean as lower reservoir">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
-                                <path d="M2 30 Q10 26 20 30 Q30 34 38 30" fill="none" stroke="#2196F3" stroke-width="2"/>
-                                <path d="M2 33 Q10 29 20 33 Q30 37 38 33" fill="none" stroke="#2196F3" stroke-width="1.5" opacity="0.5"/>
-                            </svg>
-                            <span>Lake-Ocean</span>
-                        </button>
-                        <button class="config-btn" data-config="lake_underground" title="Surface lake with underground reservoir">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
-                                <rect x="8" y="28" width="24" height="8" rx="2" fill="#8B4513" opacity="0.6"/>
-                                <ellipse cx="20" cy="32" rx="8" ry="3" fill="#4a90d9" opacity="0.5"/>
-                            </svg>
-                            <span>Underground</span>
-                        </button>
-                        <button class="config-btn" data-config="mine_void" title="Repurposed mine voids (like Kidston)">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <polygon points="8,14 20,6 32,14 32,24 8,24" fill="#8B4513" opacity="0.4" stroke="#666"/>
-                                <polygon points="10,26 18,20 26,26 26,36 10,36" fill="#8B4513" opacity="0.4" stroke="#666"/>
-                                <ellipse cx="20" cy="22" rx="6" ry="2" fill="#4a90d9" opacity="0.6"/>
-                                <ellipse cx="18" cy="33" rx="5" ry="2" fill="#4a90d9" opacity="0.6"/>
-                            </svg>
-                            <span>Mine Void</span>
-                        </button>
-                    </div>
+                    <select id="config-select" class="config-select">
+                        <option value="lake_pair" selected>Lake Pair &mdash; two reservoirs at different elevations</option>
+                        <option value="lake_ocean">Lake-Ocean &mdash; upper lake with ocean as lower reservoir</option>
+                        <option value="lake_underground">Underground &mdash; surface lake with underground cavern</option>
+                        <option value="mine_void">Mine Void &mdash; repurposed mine voids</option>
+                    </select>
                 </div>
 
                 <div class="panel-section">
@@ -329,6 +300,13 @@
                 </div>
             </div>
         </aside>
+
+        <!-- Panel collapse/expand toggle (positioned on panel edge) -->
+        <button id="panel-collapse-btn" class="panel-collapse-btn" title="Hide panel">
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                <path d="M8 1 L2 8 L8 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
 
         <!-- Map Container -->
         <div id="map-container">
@@ -621,7 +599,7 @@
     <script src="js/map/mapManager.js?v=3"></script>
     <script src="js/map/siteMarkers.js?v=3"></script>
     <script src="js/map/drawTools.js?v=3"></script>
-    <script src="js/ui/searchPanel.js?v=3"></script>
+    <script src="js/ui/searchPanel.js?v=4"></script>
     <script src="js/ui/resultsPanel.js?v=3"></script>
     <script src="js/ui/costBreakdownPanel.js?v=4"></script>
     <script src="js/ui/siteDetailPanel.js?v=6"></script>
