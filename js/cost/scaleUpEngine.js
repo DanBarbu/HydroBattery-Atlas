@@ -65,6 +65,18 @@ HB.Cost.scaleUp = {
      */
     CIVIL_ENV_FRACTION: 0.12,
 
+    /** FPV solar CAPEX ($M per MW installed). Utility-scale floating PV. */
+    SOLAR_CAPEX_PER_MW: 1.10,
+
+    /** Turbine pump-back retrofit cost ($M per MW). Kenyir feasibility ~$1.2–1.3M/MW. */
+    RETROFIT_PER_MW: 1.25,
+
+    /** Default solar capacity factor for FPV (region-agnostic). */
+    SOLAR_CF: 0.20,
+
+    /** Phase 1 default storage capacity (GWh). Initial integration tier. */
+    PHASE1_STORAGE_GWH: 6,
+
     // -----------------------------------------------------------------------
     // PUBLIC API
     // -----------------------------------------------------------------------
@@ -83,11 +95,226 @@ HB.Cost.scaleUp = {
      */
     calculate(siteParams, tiers) {
         const activeTiers = (tiers && tiers.length) ? tiers : this.TIERS;
-        return activeTiers.map(gwh => this._calcTier(gwh, siteParams));
+        const results = [];
+        activeTiers.forEach(t => {
+            if (t === 'p0')      results.push(this._calcPhase0(siteParams));
+            else if (t === 'p1') results.push(this._calcPhase1(siteParams));
+            else                 results.push(this._calcTier(t, siteParams));
+        });
+        return results;
     },
 
     // -----------------------------------------------------------------------
-    // PRIVATE — PER-TIER CALCULATION
+    // PHASE 0 — FPV + EXISTING HYDRO, NO STORAGE
+    // Non-integrated solar addition. Revenue from direct solar sales only.
+    // CAPEX = solar installation; existing hydro is sunk cost.
+    // -----------------------------------------------------------------------
+
+    _calcPhase0(site) {
+        const fin   = HB.Cost.financials;
+        const hours = site.storageHours || this.DEFAULT_STORAGE_HOURS;
+
+        // Size solar relative to 2 GWh tier power rating (~2.5×)
+        const refPowerMW = 2000 / hours;
+        const solarMW    = Math.round(refPowerMW * 2.5);
+        const cf         = this.SOLAR_CF;
+
+        // Firm 24/7 output: solar average × ~0.44 (no storage to shift peaks)
+        const firmMW = Math.round(solarMW * cf * 0.44);
+
+        // CAPEX: solar + grid connection + EPC contingency
+        const solarCapexM = solarMW * this.SOLAR_CAPEX_PER_MW;
+        const electricalM = solarCapexM * 0.08;
+        const subTotalM   = solarCapexM + electricalM;
+        const epcM        = subTotalM * this.EPC_CONTINGENCY;
+        const totalCapexM = subTotalM + epcM;
+
+        // Revenue: sell solar at market, ~70 % utilisation (curtailment w/o storage)
+        const annualGenMWh = solarMW * cf * 8760 * 0.70;
+        const sellPrice    = fin.energyPurchasePrice;
+        const grossRevM    = (annualGenMWh * sellPrice) / 1e6;
+        const annualOpexM  = _r2(totalCapexM * 0.01);        // 1 % solar O&M
+        const netRevM      = grossRevM - annualOpexM;
+
+        // LCOE (25-yr amortisation + O&M)
+        const lcoe = annualGenMWh > 0
+            ? (totalCapexM * 1e6) / (annualGenMWh * 25)
+              + (annualOpexM * 1e6) / annualGenMWh
+            : 0;
+
+        const lifetimes = {};
+        [30, 40, 50].forEach(yr => {
+            lifetimes[`yr${yr}`] = this._extendedFinancials(
+                totalCapexM, netRevM, annualOpexM, grossRevM, yr);
+        });
+
+        return {
+            isPhase: true, phase: 0,
+            label: 'Phase 0',
+            sublabel: 'FPV + Hydro (No Storage)',
+            energyGWh:    0,
+            powerMW:      firmMW,
+            solarMW:      solarMW,
+            firmMW:       firmMW,
+            storageHours: 0,
+
+            anu: {
+                engineering: {
+                    headM: site.headM, separationM: site.separationM,
+                    totalWaterGL: 0, upperAreaHa: 0, waterRockRatio: 0
+                },
+                summary: { costClass: '\u2014' }
+            },
+
+            capex: {
+                dam_M: 0, tunnel_M: 0, powerhouse_M: 0,
+                solar_M:           _r2(solarCapexM),
+                turbineRetrofit_M: 0,
+                electrical_M:      _r2(electricalM),
+                civil_env_M:       0,
+                epc_M:             _r2(epcM),
+                total_M:           _r2(totalCapexM),
+                per_kW:  firmMW > 0 ? Math.round(totalCapexM * 1e6 / (firmMW * 1000)) : 0,
+                per_kWh: null
+            },
+
+            opex: { annual_M: annualOpexM, pct_capex: 1.0 },
+
+            lcos: {
+                lostEnergy: 0, capital: 0, om: 0,
+                total: _r1(lcoe), isLCOE: true
+            },
+
+            revenue: {
+                gross_M:      _r2(grossRevM),
+                energyCost_M: 0,
+                net_M:        _r2(netRevM)
+            },
+
+            lifetimes
+        };
+    },
+
+    // -----------------------------------------------------------------------
+    // PHASE 1 — TURBINE RETROFIT + FPV, INITIAL STORAGE (6 GWh)
+    // Retrofit existing turbines for pump-back mode, add FPV solar,
+    // create first integrated PHES capacity using existing reservoirs.
+    // -----------------------------------------------------------------------
+
+    _calcPhase1(site) {
+        const fin        = HB.Cost.financials;
+        const hours      = site.storageHours || this.DEFAULT_STORAGE_HOURS;
+        const storageGWh = this.PHASE1_STORAGE_GWH;
+        const powerMW    = storageGWh * 1000 / hours;
+
+        // ANU model for tunnel sizing & energy flows (existing reservoirs)
+        const anu = HB.Cost.engine.anuModel({
+            headM:                 site.headM,
+            separationM:           site.separationM,
+            energyGWh:             storageGWh,
+            powerMW:               powerMW,
+            waterRockRatio:        site.waterRockRatio || 10,
+            country:               site.country || 'default',
+            useExistingReservoirs: true
+        });
+
+        // Solar FPV: ~2.8× rated power
+        const solarMW = Math.round(powerMW * 2.8);
+        const cf      = this.SOLAR_CF;
+
+        // Firm 24/7 output with storage shifting (~30 % of rated)
+        const firmMW = Math.round(powerMW * 0.30);
+
+        // ---- CAPEX ----
+        const turbineRetrofitM = _r2(powerMW * this.RETROFIT_PER_MW);
+        const solarCapexM      = _r2(solarMW * this.SOLAR_CAPEX_PER_MW);
+        const tunnelM          = anu.components.tunnel_M;
+        const electricalM      = _r2((turbineRetrofitM + solarCapexM) * this.ELECTRICAL_FRACTION);
+        const civilEnvM        = _r2((turbineRetrofitM + tunnelM) * this.CIVIL_ENV_FRACTION);
+        const subTotalM        = turbineRetrofitM + solarCapexM + tunnelM + electricalM + civilEnvM;
+        const epcM             = _r2(subTotalM * this.EPC_CONTINGENCY);
+        const totalCapexM      = _r2(subTotalM + epcM);
+
+        // ---- Revenue: storage arbitrage + excess solar ----
+        const annualSoldMWh      = anu.financials.annualSoldTWh * 1e6;
+        const annualPurchasedMWh = anu.financials.annualPurchasedTWh * 1e6;
+        const sellPrice          = fin.energyPurchasePrice;
+        const buyPrice           = sellPrice * this.BUY_PRICE_FRACTION;
+
+        // Excess solar not consumed by pumping → sold at 70 % utilisation
+        const solarAnnualMWh = solarMW * cf * 8760;
+        const excessSolarMWh = Math.max(0, solarAnnualMWh * 0.90 - annualPurchasedMWh);
+        const solarRevM      = (excessSolarMWh * sellPrice * 0.70) / 1e6;
+
+        const grossRevM   = (annualSoldMWh * sellPrice) / 1e6 + solarRevM;
+        const energyCostM = (annualPurchasedMWh * buyPrice) / 1e6;
+        const annualOpexM = _r2(totalCapexM * this.OPEX_FRACTION);
+        const netRevM     = grossRevM - energyCostM - annualOpexM;
+
+        // Blended LCOE
+        const totalAnnualMWh = annualSoldMWh + excessSolarMWh * 0.70;
+        const lcoe = totalAnnualMWh > 0
+            ? (totalCapexM * 1e6) / (totalAnnualMWh * 25)
+              + ((annualOpexM + energyCostM) * 1e6) / totalAnnualMWh
+            : 0;
+
+        const lifetimes = {};
+        [30, 40, 50].forEach(yr => {
+            lifetimes[`yr${yr}`] = this._extendedFinancials(
+                totalCapexM, netRevM, annualOpexM, grossRevM, yr);
+        });
+
+        return {
+            isPhase: true, phase: 1,
+            label: 'Phase 1',
+            sublabel: 'Retrofit + FPV (6 GWh)',
+            energyGWh:    storageGWh,
+            powerMW:      Math.round(powerMW * 10) / 10,
+            solarMW:      solarMW,
+            firmMW:       firmMW,
+            storageHours: hours,
+
+            anu: anu,
+
+            capex: {
+                dam_M:             0,
+                tunnel_M:          _r2(tunnelM),
+                powerhouse_M:      0,
+                solar_M:           solarCapexM,
+                turbineRetrofit_M: turbineRetrofitM,
+                electrical_M:      electricalM,
+                civil_env_M:       civilEnvM,
+                epc_M:             epcM,
+                total_M:           totalCapexM,
+                per_kW:  Math.round(totalCapexM * 1e6 / (powerMW * 1000)),
+                per_kWh: Math.round(totalCapexM * 1e6 / (storageGWh * 1e6) * 10) / 10
+            },
+
+            opex: {
+                annual_M:  annualOpexM,
+                pct_capex: Math.round(this.OPEX_FRACTION * 1000) / 10
+            },
+
+            lcos: {
+                lostEnergy: anu.lcosBreakdown ? anu.lcosBreakdown.lostEnergy : 0,
+                capital:    anu.lcosBreakdown ? anu.lcosBreakdown.capital    : 0,
+                om:         anu.lcosBreakdown ? anu.lcosBreakdown.om         : 0,
+                total:      _r1(lcoe),
+                isBlended:  true
+            },
+
+            revenue: {
+                gross_M:      _r2(grossRevM),
+                energyCost_M: _r2(energyCostM),
+                net_M:        _r2(netRevM)
+            },
+
+            lifetimes
+        };
+    },
+
+    // -----------------------------------------------------------------------
+    // PRIVATE — PER-TIER CALCULATION (PHASE 2+)
     // -----------------------------------------------------------------------
 
     _calcTier(energyGWh, site) {
@@ -161,15 +388,17 @@ HB.Cost.scaleUp = {
 
             // CAPEX component breakdown
             capex: {
-                dam_M:           _r2(anu.components.reservoirs_M),
-                tunnel_M:        _r2(anu.components.tunnel_M),
-                powerhouse_M:    _r2(anu.components.powerhouse_M),
-                electrical_M:    _r2(electricalM),
-                civil_env_M:     _r2(civilEnvM),
-                epc_M:           _r2(epcM),
-                total_M:         _r2(totalCapexM),
-                per_kW:          capexPerKW,
-                per_kWh:         capexPerKWh
+                dam_M:             _r2(anu.components.reservoirs_M),
+                tunnel_M:          _r2(anu.components.tunnel_M),
+                powerhouse_M:      _r2(anu.components.powerhouse_M),
+                solar_M:           0,
+                turbineRetrofit_M: 0,
+                electrical_M:      _r2(electricalM),
+                civil_env_M:       _r2(civilEnvM),
+                epc_M:             _r2(epcM),
+                total_M:           _r2(totalCapexM),
+                per_kW:            capexPerKW,
+                per_kWh:           capexPerKWh
             },
 
             // Annual OPEX

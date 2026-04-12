@@ -202,6 +202,49 @@ HB.UI.siteDetail = {
             params.push(['Global Solar Atlas', `<a href="${gsaUrl}" target="_blank" style="color:var(--accent);text-decoration:none;">View GSA Report \u2197</a>`]);
         }
 
+        // HydroATLAS enrichment data (water resource)
+        const hydroData = HB.Data.hydroAtlas && HB.Data.hydroAtlas[site.id];
+        if (hydroData) {
+            if (hydroData.lake) {
+                const lk = hydroData.lake;
+                const typeLabel = lk.lake_type === 2 ? 'Reservoir' : lk.lake_type === 3 ? 'Controlled Lake' : 'Natural Lake';
+                const namePart = lk.lake_name ? `${lk.lake_name} ` : '';
+                params.push(['\u{1F4A7} Nearest Water Body',
+                    `${namePart}${typeLabel} (${lk.lake_dist_km} km away)`]);
+                if (lk.lake_area_km2)
+                    params.push(['Lake Area', `${lk.lake_area_km2} km\u00B2`]);
+                if (lk.lake_vol_mcm)
+                    params.push(['Lake Volume', `${lk.lake_vol_mcm.toLocaleString()} Mm\u00B3`]);
+                if (lk.lake_depth_avg_m)
+                    params.push(['Avg Depth', `${lk.lake_depth_avg_m} m`]);
+                if (lk.lake_discharge_m3s)
+                    params.push(['Lake Discharge', `${lk.lake_discharge_m3s} m\u00B3/s`]);
+                if (lk.lake_res_time_days)
+                    params.push(['Residence Time', `${Math.round(lk.lake_res_time_days)} days (${(lk.lake_res_time_days / 365).toFixed(1)} yr)`]);
+                if (lk.lake_elevation_m != null)
+                    params.push(['Lake Elevation', `${lk.lake_elevation_m} m`]);
+            }
+            if (hydroData.basin) {
+                const b = hydroData.basin;
+                if (b.discharge_m3s)
+                    params.push(['Basin Discharge', `${b.discharge_m3s} m\u00B3/s`]);
+                if (b.precip_mm_yr)
+                    params.push(['Precipitation', `${b.precip_mm_yr} mm/yr`]);
+                if (b.pet_mm_yr)
+                    params.push(['Evapotranspiration', `${b.pet_mm_yr} mm/yr (PET)`]);
+                if (b.aridity_index != null)
+                    params.push(['Aridity Index', b.aridity_index]);
+                if (b.protected_area_pct)
+                    params.push(['\u26A0 Protected Area', `${b.protected_area_pct}% of catchment`]);
+                if (b.forest_pct)
+                    params.push(['Forest Cover', `${b.forest_pct}%`]);
+                if (b.temp_c_avg != null)
+                    params.push(['Mean Temp', `${b.temp_c_avg}\u00B0C`]);
+            }
+            params.push(['Data Source',
+                '<a href="https://www.hydrosheds.org" target="_blank" style="color:var(--accent);text-decoration:none;">HydroSHEDS / HydroATLAS (CC-BY 4.0) \u2197</a>']);
+        }
+
         if (site.description) {
             params.push(['Description', site.description]);
         }
