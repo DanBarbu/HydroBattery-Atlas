@@ -206,8 +206,9 @@ HB.Cost.scaleUp = {
         const hours      = site.storageHours || this.DEFAULT_STORAGE_HOURS;
         const storageGWh = this.PHASE1_STORAGE_GWH;
         const powerMW    = storageGWh * 1000 / hours;
+        const existing   = site.useExistingReservoirs;  // bluefield / operational
 
-        // ANU model for tunnel sizing & energy flows (existing reservoirs)
+        // ANU model for energy flows & reference costs (existing reservoirs)
         const anu = HB.Cost.engine.anuModel({
             headM:                 site.headM,
             separationM:           site.separationM,
@@ -228,7 +229,8 @@ HB.Cost.scaleUp = {
         // ---- CAPEX ----
         const turbineRetrofitM = _r2(powerMW * this.RETROFIT_PER_MW);
         const solarCapexM      = _r2(solarMW * this.SOLAR_CAPEX_PER_MW);
-        const tunnelM          = anu.components.tunnel_M;
+        // Existing lake pairs already have tunnels/penstocks → no tunnel cost
+        const tunnelM          = existing ? 0 : anu.components.tunnel_M;
         const electricalM      = _r2((turbineRetrofitM + solarCapexM) * this.ELECTRICAL_FRACTION);
         const civilEnvM        = _r2((turbineRetrofitM + tunnelM) * this.CIVIL_ENV_FRACTION);
         const subTotalM        = turbineRetrofitM + solarCapexM + tunnelM + electricalM + civilEnvM;
@@ -267,7 +269,7 @@ HB.Cost.scaleUp = {
         return {
             isPhase: true, phase: 1,
             label: 'Phase 1',
-            sublabel: 'Retrofit + FPV (6 GWh)',
+            sublabel: existing ? 'Retrofit Existing + FPV' : 'Retrofit + FPV (6 GWh)',
             energyGWh:    storageGWh,
             powerMW:      Math.round(powerMW * 10) / 10,
             solarMW:      solarMW,

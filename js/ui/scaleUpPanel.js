@@ -174,8 +174,12 @@ HB.UI.scaleUp = {
         numeric.sort((a, b) => a - b);
         const activeTiersArr = [...phases, ...numeric];
 
-        // Bluefield sites with existing reservoirs: no new dam cost
-        const useExistingReservoirs = (site.isdam === false);
+        // Bluefield / operational sites use existing reservoirs: no new dam cost
+        const useExistingReservoirs = (site.isdam === false)
+            || (site.status && site.status.indexOf('bluefield') !== -1)
+            || site.status === 'operational'
+            || site.status === 'under_construction'
+            || site.configuration === 'lake_pair';
 
         // Run scale-up engine (handles 'p0','p1' + numeric tiers)
         this._results = HB.Cost.scaleUp.calculate({
