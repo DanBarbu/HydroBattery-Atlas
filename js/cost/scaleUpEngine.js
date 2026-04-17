@@ -137,6 +137,13 @@ HB.Cost.scaleUp = {
     /** Default solar capacity factor for FPV (region-agnostic). */
     SOLAR_CF: 0.20,
 
+    /**
+     * Average peak sun hours per day used to compute Phase 1 water volume.
+     * Phase 1 water volume = volume pumped uphill by FPV over one average solar day.
+     * 5 h/day is the global average for utility-scale FPV sites.
+     */
+    SOLAR_PEAK_HOURS: 5,
+
     /** Phase 1 default storage capacity (GWh). Initial integration tier. */
     PHASE1_STORAGE_GWH: 6,
 
@@ -372,14 +379,18 @@ HB.Cost.scaleUp = {
             storageHours: hours,
 
             anu: (() => {
-                // Phase 1 retrofits the EXISTING reservoir — no new water volume is
-                // constructed. Zero these out so the table renders '—' (like Phase 0),
-                // preventing a misleading drop from Phase 1 (6 GWh equivalent) to the
-                // 2 GWh greenfield tier.
-                if (existing) {
-                    anu.engineering.totalWaterGL = 0;
-                    anu.engineering.upperAreaHa  = 0;
-                }
+                // Phase 1 water volume = water pumped uphill by the full FPV array
+                // over one average solar day (SOLAR_PEAK_HOURS peak sun hours).
+                //
+                // V [GL] = solarMW × peakSunH [MWh] × pumpEff × 3600 [s/h] × 1e6 [W/MW]
+                //          ─────────────────────────────────────────────────────────────
+                //          ρ [kg/m³=1000] × g [9.81 m/s²] × H [m] × 1e6 [m³→GL]
+                //        = solarMW × peakSunH × pumpEff × 3600 / (9810 × H)
+                const peakSunH   = this.SOLAR_PEAK_HOURS;
+                const avgDepthM  = HB.Cost.financials.avgReservoirDepth || 15;
+                const waterGL    = solarMW * peakSunH * pumpEff * 3600 / (9810 * site.headM);
+                anu.engineering.totalWaterGL = Math.round(waterGL * 10) / 10;
+                anu.engineering.upperAreaHa  = Math.round(100 * waterGL / avgDepthM * 10) / 10;
                 return anu;
             })(),
 
