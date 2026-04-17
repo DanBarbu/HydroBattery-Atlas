@@ -59,7 +59,7 @@
 
     /* Layout */
     --panel-width: 360px;
-    --right-panel-width: 420px;
+    --right-panel-width: 560px;
     --topbar-height: 58px;
     --footer-height: 28px;
 
@@ -312,17 +312,39 @@ html, body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 5px;
+    width: 12px;
     height: 100%;
     cursor: col-resize;
     z-index: 510;
     background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+/* Grip dots shown in the middle of the handle */
+.right-panel-resize-handle::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 40px;
+    border-left: 1.5px dotted var(--border);
+    border-right: 1.5px dotted var(--border);
+    opacity: 0.5;
+    transition: opacity 0.15s;
+    pointer-events: none;
 }
 
 .right-panel-resize-handle:hover,
 .right-panel-resize-handle.dragging {
-    background: var(--primary);
-    opacity: 0.4;
+    background: rgba(26, 115, 232, 0.08);
+}
+
+.right-panel-resize-handle:hover::after,
+.right-panel-resize-handle.dragging::after {
+    border-color: var(--primary);
+    opacity: 1;
 }
 
 /* Right panel collapse/expand toggle button */

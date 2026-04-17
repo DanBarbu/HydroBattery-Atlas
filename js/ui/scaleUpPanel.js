@@ -181,6 +181,24 @@ HB.UI.scaleUp = {
             || site.status === 'under_construction'
             || site.configuration === 'lake_pair';
 
+        // Existing site capacity — used to zero-out costs for infrastructure
+        // that already exists (reservoirs, tunnels, powerhouse) when the scale-up
+        // tier fits within the existing built capacity.
+        //
+        // IMPORTANT: For ANU-modeled sites (bluefield/greenfield), capacity_mw is
+        // the THEORETICAL PSH design capacity (e.g. 833 MW for Tarnita-Belis),
+        // NOT the existing built infrastructure. Only the reservoirs/lakes exist;
+        // tunnels and powerhouse have NOT been built yet.
+        // Only operational/under-construction plants have actual built tunnels and
+        // powerhouse that can be counted as sunk cost.
+        const existingStorageMWh = site.storage_mwh || site.energyKWh / 1000 || 0;
+        // Detect ANU-modeled sites: siteDetailPanel may not copy anu_class/anu_tier,
+        // so also check status (anu_bluefield, anu_greenfield, etc.) and anuResult.
+        const isAnuDesign = !!(site.anu_class || site.anu_tier || site.anuResult
+            || (site.status && site.status.indexOf('anu_') === 0));
+        const existingPowerMW    = isAnuDesign ? 0
+            : (site.capacity_mw || site.powerKW / 1000 || 0);
+
         // Run scale-up engine (handles 'p0','p1' + numeric tiers)
         this._results = HB.Cost.scaleUp.calculate({
             headM,
@@ -188,7 +206,9 @@ HB.UI.scaleUp = {
             waterRockRatio,
             country,
             storageHours: this._storageHours,
-            useExistingReservoirs
+            useExistingReservoirs,
+            existingStorageGWh: existingStorageMWh / 1000,
+            existingPowerMW:    existingPowerMW
         }, activeTiersArr);
 
         if (btn) { btn.textContent = 'Regenerate Analysis'; btn.disabled = false; }
@@ -294,9 +314,17 @@ HB.UI.scaleUp = {
             _row('FPV solar capacity', results.map(r =>
                 _td(r.solarMW ? `${_num(r.solarMW, 0)} MW` : '\u2014')
             ).join(''), 'floating PV'),
-            _row('Turbine retrofit', results.map(r =>
-                _td(r.capex.turbineRetrofit_M ? `${_num(r.capex.turbineRetrofit_M, 0)} MW @ $${HB.Cost.scaleUp.RETROFIT_PER_MW}M/MW` : '\u2014')
-            ).join(''), 'pump-back conversion'),
+            _row('Turbine-as-pump retrofit', results.map(r => {
+                if (!r.capex.turbineRetrofit_M) return _td('\u2014');
+                return _td(`$${_num(r.capex.turbineRetrofit_M, 1)}M`
+                    + `<div style="font-size:9px;color:#888;">$${HB.Cost.scaleUp.RETROFIT_PER_KW}/kW</div>`);
+            }).join(''), 'siphon-based, no runner replacement'),
+            _row('Round-trip efficiency', results.map(r => {
+                if (!r.efficiency) return _td('\u2014');
+                const col = r.efficiency.roundTrip >= 65 ? '#2e7d32' : '#e65100';
+                return _td(`<strong style="color:${col};">${r.efficiency.roundTrip}%</strong>`
+                    + `<div style="font-size:9px;color:#888;">pump ${r.efficiency.pumpMode}% × gen ${r.efficiency.genMode}%</div>`);
+            }).join(''), 'turbine-as-pump mode'),
             _row('Firm 24/7 output', results.map(r =>
                 _td(r.firmMW != null ? `<strong>${_num(r.firmMW, 0)} MW</strong>` : '\u2014')
             ).join(''), 'guaranteed dispatchable')
@@ -330,19 +358,47 @@ HB.UI.scaleUp = {
         ].join('');
 
         // ---- CAPITAL COSTS ----
+        const hasMarginal = results.some(r => r.capex.isMarginal);
+        const capexLabel = hasMarginal
+            ? 'Capital Costs (CAPEX) — Marginal Expansion Only'
+            : 'Capital Costs (CAPEX)';
         const capexRows = [
-            _section('Capital Costs (CAPEX)'),
-            _row('Dam / reservoirs', results.map(r => _td(r.capex.dam_M ? _$M(r.capex.dam_M) : '\u2014')).join('')),
-            _row('Tunnel / penstock', results.map(r => _td(r.capex.tunnel_M ? _$M(r.capex.tunnel_M) : '\u2014')).join('')),
-            _row('Powerhouse + turbines', results.map(r => _td(r.capex.powerhouse_M ? _$M(r.capex.powerhouse_M) : '\u2014')).join('')),
-            _row('Turbine retrofit', results.map(r => _td(r.capex.turbineRetrofit_M ? _$M(r.capex.turbineRetrofit_M) : '\u2014')).join(''), 'pump-back conversion'),
+            _section(capexLabel),
+            _row('Dam / reservoirs', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.dam_M ? _$M(r.capex.dam_M) : '\u2014');
+            }).join('')),
+            _row('Tunnel / penstock', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.tunnel_M ? _$M(r.capex.tunnel_M) : '\u2014');
+            }).join('')),
+            _row('Powerhouse + turbines', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.powerhouse_M ? _$M(r.capex.powerhouse_M) : '\u2014');
+            }).join('')),
+            _row('Turbine-as-pump retrofit', results.map(r => {
+                if (!r.capex.turbineRetrofit_M) return _td('\u2014');
+                const rb = r.retrofitBreakdown;
+                if (!rb) return _td(_$M(r.capex.turbineRetrofit_M));
+                // Show component breakdown as tooltip-style detail
+                const detail = [
+                    rb.vfd_M        ? `VFD $${rb.vfd_M.toFixed(1)}M` : '',
+                    rb.siphon_M     ? `Siphon $${rb.siphon_M.toFixed(1)}M` : '',
+                    rb.guideVane_M  ? `Guide vane $${rb.guideVane_M.toFixed(1)}M` : '',
+                    rb.motorDrive_M ? `Motor $${rb.motorDrive_M.toFixed(1)}M` : '',
+                    rb.booster_M    ? `Booster $${rb.booster_M.toFixed(1)}M` : ''
+                ].filter(Boolean).join(', ');
+                return _td(_$M(r.capex.turbineRetrofit_M)
+                    + `<div style="font-size:9px;color:#888;max-width:120px;white-space:normal;line-height:1.3;">${detail}</div>`);
+            }).join(''), 'siphon-based minimal modification'),
             _row('FPV solar', results.map(r => _td(r.capex.solar_M ? _$M(r.capex.solar_M) : '\u2014')).join(''), 'utility-scale floating PV'),
             _row('Electrical infra', results.map(r => _td(_$M(r.capex.electrical_M))).join(''), 'transformers, grid, SCADA'),
             _row('Civil + environmental', results.map(r => _td(r.capex.civil_env_M ? _$M(r.capex.civil_env_M) : '\u2014')).join(''), 'roads, EIA, permitting'),
             _row('EPC contingency (10%)', results.map(r => _td(_$M(r.capex.epc_M))).join('')),
-            _row('Total CAPEX', results.map(r => _td(
-                `<strong>${_$B(r.capex.total_M)}</strong>`
-            )).join('')),
+            _row('Total CAPEX', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<strong style="color:#2e7d32;">$0 (Existing)</strong>');
+                return _td(`<strong>${_$B(r.capex.total_M)}</strong>`);
+            }).join('')),
             _row('$/kW', results.map(r => _td(
                 `<span style="${_cellBg(r.capex.per_kW, minCapexKW, maxCapexKW, true)}padding:2px 4px;border-radius:3px;">$${_num(r.capex.per_kW)}</span>`
             )).join('')),
@@ -480,6 +536,8 @@ HB.UI.scaleUp = {
                 OPEX: ${HB.Cost.scaleUp.OPEX_FRACTION * 100}% CAPEX/yr &nbsp;|&nbsp;
                 EPC contingency: ${HB.Cost.scaleUp.EPC_CONTINGENCY * 100}% &nbsp;|&nbsp;
                 Gen. efficiency: ${Math.round(fin.genEfficiency * 100)}% &nbsp;|&nbsp;
+                Phase 1 RTE: ${Math.round(HB.Cost.scaleUp.RETROFIT_RTE * 100)}% (pump ${Math.round(HB.Cost.scaleUp.PUMP_MODE_EFFICIENCY * 100)}% × gen ${Math.round(HB.Cost.scaleUp.GEN_MODE_EFFICIENCY * 100)}%) &nbsp;|&nbsp;
+                Retrofit: $${HB.Cost.scaleUp.RETROFIT_PER_KW}/kW &nbsp;|&nbsp;
                 Region factor: ${fin.regionFactors[this._currentSite?.country] || fin.regionFactors['default']}×.
                 <br>Cost colours: <span style="background:rgba(75,195,120,0.25);padding:0 4px;border-radius:2px;">green = best</span>
                 &nbsp;<span style="background:rgba(220,80,80,0.18);padding:0 4px;border-radius:2px;">red = worst</span>.
