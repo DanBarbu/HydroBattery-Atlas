@@ -644,6 +644,31 @@ HB.UI.siteDetail = {
                     }
                 });
 
+                // ── Shared helpers ─────────────────────────────────────────────
+                const classColor = cl =>
+                    cl === 'A' ? '#2e7d32' : cl === 'B' ? '#1565c0' :
+                    cl === 'C' ? '#e65100' : '#c62828';
+
+                // Build an HTML table from an array of [label, value] pairs.
+                // Alternating rows get a light-blue background (ANU Atlas style).
+                const buildTable = rows => rows.map(([k, v], i) =>
+                    `<tr${i % 2 ? ' style="background:#EEF4FB;"' : ''}>
+                        <td style="color:#555;padding:3px 12px 3px 0;white-space:nowrap;font-weight:600;">${k}</td>
+                        <td style="padding:3px 0;">${v}</td>
+                    </tr>`
+                ).join('');
+
+                const popup = (bgColor, title, tableHtml) => `
+                    <div style="font-family:system-ui,sans-serif;min-width:230px;">
+                        <div style="background:${bgColor};color:#fff;
+                            padding:7px 14px;margin:-12px -16px 10px;
+                            border-radius:4px 4px 0 0;font-size:13px;font-weight:700;
+                            letter-spacing:.3px;">${title}</div>
+                        <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.5;">
+                            ${tableHtml}
+                        </table>
+                    </div>`;
+
                 // ── Reservoir polygons ─────────────────────────────────────────
                 if (reservoirFeats.length) {
                     const polyLayer = L.geoJSON(
@@ -663,56 +688,61 @@ HB.UI.siteDetail = {
                                 const p   = feature.properties;
                                 const up  = isUp(p.isupper);
                                 const rid = (p.identifier || p.name || '').replace(/ Dam$/, '');
-                                // description HTML → parsed table
-                                const d   = this._parseANUDescription(p.description);
+
+                                // description HTML keys carry units, e.g. "Elevation (m)",
+                                // "Area (ha)", "Volume (GL)".  Parse them all and look up
+                                // by both the keyed name and stripped variants.
+                                const d = this._parseANUDescription(p.description);
+
+                                // Helper: find value by any of the candidate key names
+                                const dget = (...keys) => {
+                                    for (const k of keys) {
+                                        if (d[k] != null && d[k] !== '') return d[k];
+                                    }
+                                    return null;
+                                };
+
+                                const elev    = dget('Elevation (m)', 'Elevation');
+                                const area    = dget('Area (ha)', 'Area');
+                                const vol     = dget('Volume (GL)', 'Volume');
+                                const dwh     = dget('Dam Wall Height (m)', 'Dam Wall Height');
+                                const dlen    = dget('Dam Length (m)', 'Dam Length');
+                                const dvol    = dget('Dam Volume (GL)', 'Dam Volume');
+                                const wrock   = dget('Water/Rock Ratio', 'Water Rock Ratio');
+                                const country = dget('Country');
+                                const cls     = dget('Class');
+                                const qlat    = dget('Latitude');
+                                const qlng    = dget('Longitude');
 
                                 layer.bindTooltip(
                                     `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
                                     { sticky: true, className: 'anu-tip' }
                                 );
 
-                                // Colour the cost-class badge
-                                const classColor = cl =>
-                                    cl === 'A' ? '#2e7d32' : cl === 'B' ? '#1565c0' :
-                                    cl === 'C' ? '#e65100' : '#c62828';
-
                                 const rows = [
-                                    rid  && ['Reservoir ID',    rid],
-                                    ['Type',                    up ? 'Upper reservoir' : 'Lower reservoir'],
-                                    d['Country']       && ['Country',         d['Country']],
-                                    d['Elevation']     && ['Elevation',       d['Elevation']],
-                                    d['Latitude']      && ['Latitude',        d['Latitude']],
-                                    d['Longitude']     && ['Longitude',       d['Longitude']],
-                                    d['Area']          && ['Area',            d['Area']],
-                                    d['Volume']        && ['Volume',          d['Volume']],
-                                    d['Dam Wall Height']&&['Dam wall height', d['Dam Wall Height']],
-                                    d['Dam Length']    && ['Dam length',      d['Dam Length']],
-                                    d['Dam Volume']    && ['Dam volume',      d['Dam Volume']],
-                                    d['Water/Rock Ratio']&&['Water:Rock',     d['Water/Rock Ratio']],
-                                    d['Class'] && ['Cost class',
-                                        `<strong style="color:${classColor(d['Class'])};">${d['Class']}</strong>`
-                                    ],
+                                    rid     && ['Reservoir ID',    rid],
+                                    ['Role',                       up ? '⬆ Upper reservoir' : '⬇ Lower reservoir'],
+                                    country && ['Country',         country],
+                                    elev    && ['Elevation',       `${elev} m`],
+                                    qlat    && ['Latitude',        qlat],
+                                    qlng    && ['Longitude',       qlng],
+                                    area    && ['Reservoir area',  `${Number(area).toLocaleString()} ha`],
+                                    vol     && ['Volume',          `${vol} GL`],
+                                    dwh     && ['Dam wall height', `${dwh} m`],
+                                    dlen    && ['Dam length',      `${Number(dlen).toLocaleString()} m`],
+                                    dvol    && ['Dam volume',      `${dvol} GL`],
+                                    wrock   && ['Water:Rock ratio',wrock],
+                                    cls     && ['Cost class',
+                                        `<strong style="color:${classColor(cls)};">${cls}</strong>`],
                                 ].filter(Boolean);
 
-                                const tRows = rows.map(([k, v]) =>
-                                    `<tr>
-                                        <td style="color:#888;padding:2px 10px 2px 0;white-space:nowrap;">${k}</td>
-                                        <td style="padding:2px 0;">${v}</td>
-                                    </tr>`
-                                ).join('');
-
-                                layer.bindPopup(`
-                                    <div style="font-family:system-ui,sans-serif;min-width:220px;">
-                                        <div style="background:${up ? '#1565C0' : '#42A5F5'};color:#fff;
-                                            padding:6px 12px;margin:-12px -16px 10px;
-                                            border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
-                                            ${up ? '⬆ Upper' : '⬇ Lower'} Reservoir
-                                        </div>
-                                        <table style="font-size:11px;border-collapse:collapse;width:100%;">
-                                            ${tRows}
-                                        </table>
-                                    </div>`,
-                                    { maxWidth: 280, className: 'anu-popup' }
+                                layer.bindPopup(
+                                    popup(
+                                        up ? '#1565C0' : '#1976D2',
+                                        `${up ? '⬆ Upper' : '⬇ Lower'} Reservoir`,
+                                        buildTable(rows)
+                                    ),
+                                    { maxWidth: 300, className: 'anu-popup' }
                                 );
                             }
                         }
@@ -721,9 +751,10 @@ HB.UI.siteDetail = {
                 }
 
                 // ── Pipeline LineStrings (actual ANU tunnel geometry) ──────────
-                // The WFS returns ispipe=true LineString features with 2 endpoints
-                // — the exact same geometry the ANU Atlas draws.  All pair-level
-                // data (head, energy, class, LCOS…) lives on these features.
+                // ispipe=true features carry ALL pair-level data in WFS properties:
+                // head, separation, average_slope, head_distance_ratio, energy,
+                // volume, water_rock_ratio, dam_volume, reservoir_area, class,
+                // energy_cost, power_cost, country.
                 if (pipeFeats.length) {
                     const pipeLayer = L.geoJSON(
                         { type: 'FeatureCollection', features: pipeFeats },
@@ -736,9 +767,16 @@ HB.UI.siteDetail = {
                             onEachFeature: (feature, layer) => {
                                 const p  = feature.properties;
                                 const cl = p.class;
-                                const classColor = cl =>
-                                    cl === 'A' ? '#2e7d32' : cl === 'B' ? '#1565c0' :
-                                    cl === 'C' ? '#e65100' : '#c62828';
+
+                                // Derive storage hours from the WFS layer name suffix
+                                // (15gwh_18h → 18h, 5gwh_18h → 18h, 2gwh_6h → 6h)
+                                const hoursMatch = (this._anuWfsLayer(site).layer || '').match(/_(\d+)h$/);
+                                const storageH   = hoursMatch ? hoursMatch[1] + ' h' : null;
+
+                                // Power = Energy / hours
+                                const powerMW = (p.energy && hoursMatch)
+                                    ? Math.round(p.energy * 1000 / Number(hoursMatch[1]))
+                                    : null;
 
                                 layer.bindTooltip(
                                     'Tunnel / Penstock — click for details',
@@ -746,42 +784,28 @@ HB.UI.siteDetail = {
                                 );
 
                                 const rows = [
-                                    p.name        && ['Pair',         p.name],
-                                    p.head        && ['Head',         `${p.head} m`],
-                                    p.separation  && ['Length',       `${p.separation} km`],
-                                    p.average_slope&&['Avg slope',    `${p.average_slope}%`],
-                                    p.head_distance_ratio && ['Head/dist',  p.head_distance_ratio],
-                                    p.energy      && ['Energy',       `${p.energy} GWh`],
-                                    p.volume      && ['Volume',       `${p.volume} GL`],
-                                    p.water_rock_ratio && ['Water:Rock', p.water_rock_ratio],
-                                    p.dam_volume  && ['Dam volume',   `${p.dam_volume} Mm³`],
-                                    cl && ['Cost class',
-                                        `<strong style="color:${classColor(cl)};">${cl}</strong>`
-                                    ],
-                                    p.energy_cost && ['LCOS',         `$${p.energy_cost}/MWh`],
-                                    p.power_cost  && ['Cost/kW',      `$${p.power_cost}/kW`],
-                                    p.country     && ['Country',      p.country],
+                                    p.name             && ['Pair',              p.name],
+                                    p.country          && ['Country',           p.country],
+                                    cl                 && ['Cost class',
+                                        `<strong style="color:${classColor(cl)};">${cl}</strong>`],
+                                    p.head             && ['Head',              `${p.head} m`],
+                                    p.separation       && ['Separation',        `${p.separation} km`],
+                                    p.average_slope    && ['Average slope',     `${p.average_slope}%`],
+                                    p.head_distance_ratio && ['Head/dist ratio',p.head_distance_ratio],
+                                    p.energy           && ['Energy capacity',   `${p.energy} GWh`],
+                                    storageH           && ['Storage duration',  storageH],
+                                    powerMW            && ['Power',             `${powerMW} MW`],
+                                    p.volume           && ['Volume',            `${p.volume} GL`],
+                                    p.reservoir_area   && ['Reservoir area',    `${Number(p.reservoir_area).toLocaleString()} ha`],
+                                    p.water_rock_ratio && ['Water:Rock ratio',  p.water_rock_ratio],
+                                    p.dam_volume       && ['Dam volume',        `${p.dam_volume} Mm³`],
+                                    p.energy_cost      && ['LCOS',              `$${p.energy_cost}/MWh`],
+                                    p.power_cost       && ['Cost per kW',       `$${p.power_cost}/kW`],
                                 ].filter(Boolean);
 
-                                const tRows = rows.map(([k, v]) =>
-                                    `<tr>
-                                        <td style="color:#888;padding:2px 10px 2px 0;white-space:nowrap;">${k}</td>
-                                        <td style="padding:2px 0;">${v}</td>
-                                    </tr>`
-                                ).join('');
-
-                                layer.bindPopup(`
-                                    <div style="font-family:system-ui,sans-serif;min-width:220px;">
-                                        <div style="background:#e67e22;color:#fff;
-                                            padding:6px 12px;margin:-12px -16px 10px;
-                                            border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
-                                            Tunnel / Penstock
-                                        </div>
-                                        <table style="font-size:11px;border-collapse:collapse;width:100%;">
-                                            ${tRows}
-                                        </table>
-                                    </div>`,
-                                    { maxWidth: 280, className: 'anu-popup' }
+                                layer.bindPopup(
+                                    popup('#e67e22', 'Tunnel / Penstock', buildTable(rows)),
+                                    { maxWidth: 300, className: 'anu-popup' }
                                 );
                             }
                         }
