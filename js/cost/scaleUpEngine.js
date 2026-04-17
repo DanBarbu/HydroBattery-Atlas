@@ -371,7 +371,17 @@ HB.Cost.scaleUp = {
             firmMW:       firmMW,
             storageHours: hours,
 
-            anu: anu,
+            anu: (() => {
+                // Phase 1 retrofits the EXISTING reservoir — no new water volume is
+                // constructed. Zero these out so the table renders '—' (like Phase 0),
+                // preventing a misleading drop from Phase 1 (6 GWh equivalent) to the
+                // 2 GWh greenfield tier.
+                if (existing) {
+                    anu.engineering.totalWaterGL = 0;
+                    anu.engineering.upperAreaHa  = 0;
+                }
+                return anu;
+            })(),
 
             // Retrofit-specific efficiency parameters
             efficiency: {
