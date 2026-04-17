@@ -568,19 +568,39 @@ HB.UI.siteDetail = {
     },
 
     /**
-     * Fetch reservoir-perimeter polygons from ANU GeoServer WFS and add them
-     * to the mini-map as styled GeoJSON.
+     * Parse the ANU WFS `description` HTML table into a plain key→value object.
+     * The description field looks like:
+     *   <table>…<tr><td>Class</td><td>B</td></tr>…</table>
+     */
+    _parseANUDescription(html) {
+        if (!html) return {};
+        try {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const data = {};
+            doc.querySelectorAll('tr').forEach(tr => {
+                const cells = [...tr.querySelectorAll('td, th')];
+                if (cells.length >= 2) {
+                    const key = cells[0].textContent.trim().replace(/:$/, '');
+                    data[key] = cells[1].textContent.trim();
+                }
+            });
+            return data;
+        } catch (e) { return {}; }
+    },
+
+    /**
+     * Fetch ANU GeoServer WFS features for this site's bounding box and render:
+     *   • Reservoir polygons  (isdam=false, isupper='0'|'1') — blue lake outlines
+     *   • Pipeline LineString (ispipe=true)                  — actual tunnel geometry
      *
-     * Features have an `isupper` property ("1" = upper reservoir, "0" = lower).
-     * Dam-wall overlay polygons have isupper = null and are excluded.
-     *
-     * Falls back silently — placeholder markers (if any) remain visible.
+     * All popup data comes from the `description` HTML field (reservoir features)
+     * or from the WFS properties directly (pipeline features), matching the ANU Atlas.
      */
     _loadANUPolygons(site, lat, lng, sepKm) {
         const { ws, layer } = this._anuWfsLayer(site);
 
-        // Bounding box: 1.6× separation radius so both reservoirs fit, min ±0.06°
-        const margin = Math.max(0.06, (sepKm * 1.6) / 111);
+        // Bounding box: 1.6× separation so both reservoirs fit; min ±0.08°
+        const margin = Math.max(0.08, (sepKm * 1.6) / 111);
         const bbox = `${(lng - margin).toFixed(5)},${(lat - margin).toFixed(5)},`
                    + `${(lng + margin).toFixed(5)},${(lat + margin).toFixed(5)},EPSG:4326`;
 
@@ -588,37 +608,35 @@ HB.UI.siteDetail = {
                   + `?service=WFS&version=2.0.0&request=GetFeature`
                   + `&typeNames=${encodeURIComponent(layer)}`
                   + `&outputFormat=application%2Fjson`
-                  + `&count=60`
+                  + `&count=120`
                   + `&bbox=${bbox}`;
 
-        // Track which fetch belongs to the current site so stale responses are discarded
         const fetchId = `${lat},${lng}`;
         this._pendingFetch = fetchId;
 
-        // Estimated fallback centroids (placeholder N/S split) — used when a
-        // reservoir polygon isn't found for one side of the pair.
-        const deltaLat    = (sepKm / 2) / 111;
-        const fallbackUp  = L.latLng(lat + deltaLat, lng);
-        const fallbackLow = L.latLng(lat - deltaLat, lng);
-
         fetch(url)
-            .then(r => {
-                if (!r.ok) throw new Error(`WFS ${r.status}`);
-                return r.json();
-            })
+            .then(r => { if (!r.ok) throw new Error(`WFS ${r.status}`); return r.json(); })
             .then(geojson => {
-                // Discard if user switched to a different site while loading
                 if (this._pendingFetch !== fetchId || !this._miniMap) return;
 
-                // Keep only true reservoir polygons (isupper = "0" or "1")
-                const features = (geojson.features || []).filter(f => {
-                    const v = f.properties.isupper;
-                    return v === '1' || v === '0' || v === 1 || v === 0;
-                });
+                const all = geojson.features || [];
 
-                if (!features.length) return;  // nothing — placeholder markers stay
+                // ── Split by feature type ──────────────────────────────────────
+                // isdam=true  → dam-wall overlay polygon     → skip
+                // isupper 0/1 → reservoir lake polygon       → blue fill
+                // ispipe=true → LineString tunnel geometry   → orange line
+                const isUp  = v => v === '1' || v === 1;
+                const isLow = v => v === '0' || v === 0;
 
-                // Remove placeholder markers/line (real polygons + pipeline replace them)
+                const reservoirFeats = all.filter(f =>
+                    !f.properties.isdam &&
+                    (isUp(f.properties.isupper) || isLow(f.properties.isupper))
+                );
+                const pipeFeats = all.filter(f => f.properties.ispipe);
+
+                if (!reservoirFeats.length && !pipeFeats.length) return;
+
+                // Remove placeholder markers/line
                 ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
                     if (this._miniMapLayers[k]) {
                         this._miniMap.removeLayer(this._miniMapLayers[k]);
@@ -626,127 +644,156 @@ HB.UI.siteDetail = {
                     }
                 });
 
-                // ── Reservoir polygons ──────────────────────────────────────────
-                const polyLayer = L.geoJSON({ ...geojson, features }, {
-                    style: feature => {
-                        const up = feature.properties.isupper === '1'
-                                || feature.properties.isupper === 1;
-                        return {
-                            fillColor:   up ? '#1565C0' : '#42A5F5',
-                            fillOpacity: 0.40,
-                            color:       up ? '#0D47A1' : '#1976D2',
-                            weight:      2.5,
-                            opacity:     0.95
-                        };
-                    },
-                    onEachFeature: (feature, layer) => {
-                        const p   = feature.properties;
-                        const up  = p.isupper === '1' || p.isupper === 1;
-                        const lbl = (p.name || p.identifier || '').replace(/ Dam$/, '');
+                // ── Reservoir polygons ─────────────────────────────────────────
+                if (reservoirFeats.length) {
+                    const polyLayer = L.geoJSON(
+                        { type: 'FeatureCollection', features: reservoirFeats },
+                        {
+                            style: f => {
+                                const up = isUp(f.properties.isupper);
+                                return {
+                                    fillColor:   up ? '#1565C0' : '#42A5F5',
+                                    fillOpacity: 0.40,
+                                    color:       up ? '#0D47A1' : '#1976D2',
+                                    weight:      2.5,
+                                    opacity:     0.95
+                                };
+                            },
+                            onEachFeature: (feature, layer) => {
+                                const p   = feature.properties;
+                                const up  = isUp(p.isupper);
+                                const rid = (p.identifier || p.name || '').replace(/ Dam$/, '');
+                                // description HTML → parsed table
+                                const d   = this._parseANUDescription(p.description);
 
-                        // ── Hover tooltip ──
-                        layer.bindTooltip(
-                            `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
-                            { sticky: true, className: 'anu-tip' }
-                        );
+                                layer.bindTooltip(
+                                    `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
+                                    { sticky: true, className: 'anu-tip' }
+                                );
 
-                        // ── Click popup (ANU Atlas style) ──
-                        const rows = [
-                            ['Reservoir', lbl || '—'],
-                            ['Type',      up ? 'Upper reservoir' : 'Lower reservoir'],
-                            p.head            && ['Head',         `${p.head} m`],
-                            p.separation      && ['Separation',   `${p.separation} km`],
-                            p.energy          && ['Energy',       `${p.energy} GWh`],
-                            p.volume          && ['Volume',       `${p.volume} GL`],
-                            p.reservoir_area  && ['Res. area',    `${Number(p.reservoir_area).toLocaleString()} ha`],
-                            p.water_rock_ratio&& ['Water:Rock',   p.water_rock_ratio],
-                            p.class           && ['Cost class',   `<strong style="color:${
-                                p.class==='A'?'#2e7d32':p.class==='B'?'#1565c0':p.class==='C'?'#e65100':'#c62828'
-                            };">${p.class}</strong>`],
-                            p.energy_cost     && ['LCOS',         `$${p.energy_cost}/MWh`],
-                            p.power_cost      && ['Cost/kW',      `$${p.power_cost}/kW`],
-                        ].filter(Boolean);
+                                // Colour the cost-class badge
+                                const classColor = cl =>
+                                    cl === 'A' ? '#2e7d32' : cl === 'B' ? '#1565c0' :
+                                    cl === 'C' ? '#e65100' : '#c62828';
 
-                        const tableRows = rows.map(([k, v]) =>
-                            `<tr>
-                                <td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap;">${k}</td>
-                                <td style="padding:2px 0;">${v}</td>
-                            </tr>`
-                        ).join('');
+                                const rows = [
+                                    rid  && ['Reservoir ID',    rid],
+                                    ['Type',                    up ? 'Upper reservoir' : 'Lower reservoir'],
+                                    d['Country']       && ['Country',         d['Country']],
+                                    d['Elevation']     && ['Elevation',       d['Elevation']],
+                                    d['Latitude']      && ['Latitude',        d['Latitude']],
+                                    d['Longitude']     && ['Longitude',       d['Longitude']],
+                                    d['Area']          && ['Area',            d['Area']],
+                                    d['Volume']        && ['Volume',          d['Volume']],
+                                    d['Dam Wall Height']&&['Dam wall height', d['Dam Wall Height']],
+                                    d['Dam Length']    && ['Dam length',      d['Dam Length']],
+                                    d['Dam Volume']    && ['Dam volume',      d['Dam Volume']],
+                                    d['Water/Rock Ratio']&&['Water:Rock',     d['Water/Rock Ratio']],
+                                    d['Class'] && ['Cost class',
+                                        `<strong style="color:${classColor(d['Class'])};">${d['Class']}</strong>`
+                                    ],
+                                ].filter(Boolean);
 
-                        layer.bindPopup(`
-                            <div style="font-family:system-ui,sans-serif;min-width:200px;">
-                                <div style="background:${up?'#1565C0':'#42A5F5'};color:#fff;
-                                    padding:6px 10px;margin:-12px -16px 8px;border-radius:4px 4px 0 0;
-                                    font-size:13px;font-weight:700;">
-                                    ${up ? '⬆ Upper' : '⬇ Lower'} Reservoir
-                                </div>
-                                <table style="font-size:11px;border-collapse:collapse;width:100%;">
-                                    ${tableRows}
-                                </table>
-                            </div>`, { maxWidth: 260, className: 'anu-popup' }
-                        );
-                    }
-                }).addTo(this._miniMap);
+                                const tRows = rows.map(([k, v]) =>
+                                    `<tr>
+                                        <td style="color:#888;padding:2px 10px 2px 0;white-space:nowrap;">${k}</td>
+                                        <td style="padding:2px 0;">${v}</td>
+                                    </tr>`
+                                ).join('');
 
-                this._miniMapLayers.polygons = polyLayer;
+                                layer.bindPopup(`
+                                    <div style="font-family:system-ui,sans-serif;min-width:220px;">
+                                        <div style="background:${up ? '#1565C0' : '#42A5F5'};color:#fff;
+                                            padding:6px 12px;margin:-12px -16px 10px;
+                                            border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                                            ${up ? '⬆ Upper' : '⬇ Lower'} Reservoir
+                                        </div>
+                                        <table style="font-size:11px;border-collapse:collapse;width:100%;">
+                                            ${tRows}
+                                        </table>
+                                    </div>`,
+                                    { maxWidth: 280, className: 'anu-popup' }
+                                );
+                            }
+                        }
+                    ).addTo(this._miniMap);
+                    this._miniMapLayers.polygons = polyLayer;
+                }
 
-                // ── Extract centroids via eachLayer (synchronous, no event race) ──
-                let upperCentre = null;
-                let lowerCentre = null;
-                polyLayer.eachLayer(lyr => {
-                    const up = lyr.feature.properties.isupper === '1'
-                            || lyr.feature.properties.isupper === 1;
-                    const c  = lyr.getBounds().getCenter();
-                    if (up  && !upperCentre) upperCentre = c;
-                    if (!up && !lowerCentre) lowerCentre = c;
-                });
+                // ── Pipeline LineStrings (actual ANU tunnel geometry) ──────────
+                // The WFS returns ispipe=true LineString features with 2 endpoints
+                // — the exact same geometry the ANU Atlas draws.  All pair-level
+                // data (head, energy, class, LCOS…) lives on these features.
+                if (pipeFeats.length) {
+                    const pipeLayer = L.geoJSON(
+                        { type: 'FeatureCollection', features: pipeFeats },
+                        {
+                            style: () => ({
+                                color:   '#e67e22',   // ANU Atlas penstock orange
+                                weight:  4,
+                                opacity: 0.95
+                            }),
+                            onEachFeature: (feature, layer) => {
+                                const p  = feature.properties;
+                                const cl = p.class;
+                                const classColor = cl =>
+                                    cl === 'A' ? '#2e7d32' : cl === 'B' ? '#1565c0' :
+                                    cl === 'C' ? '#e65100' : '#c62828';
 
-                // Fall back to estimated position for whichever side has no polygon
-                if (!upperCentre) upperCentre = fallbackUp;
-                if (!lowerCentre) lowerCentre = fallbackLow;
+                                layer.bindTooltip(
+                                    'Tunnel / Penstock — click for details',
+                                    { sticky: true, className: 'anu-tip' }
+                                );
 
-                // ── Pipeline / Penstock line ────────────────────────────────────
-                const sepLabel = site.separation_km != null
-                    ? `${site.separation_km.toFixed(1)} km` : '';
-                const headLabel = (site.head_m ?? site.headHeight ?? site.headM);
+                                const rows = [
+                                    p.name        && ['Pair',         p.name],
+                                    p.head        && ['Head',         `${p.head} m`],
+                                    p.separation  && ['Length',       `${p.separation} km`],
+                                    p.average_slope&&['Avg slope',    `${p.average_slope}%`],
+                                    p.head_distance_ratio && ['Head/dist',  p.head_distance_ratio],
+                                    p.energy      && ['Energy',       `${p.energy} GWh`],
+                                    p.volume      && ['Volume',       `${p.volume} GL`],
+                                    p.water_rock_ratio && ['Water:Rock', p.water_rock_ratio],
+                                    p.dam_volume  && ['Dam volume',   `${p.dam_volume} Mm³`],
+                                    cl && ['Cost class',
+                                        `<strong style="color:${classColor(cl)};">${cl}</strong>`
+                                    ],
+                                    p.energy_cost && ['LCOS',         `$${p.energy_cost}/MWh`],
+                                    p.power_cost  && ['Cost/kW',      `$${p.power_cost}/kW`],
+                                    p.country     && ['Country',      p.country],
+                                ].filter(Boolean);
 
-                const pipeline = L.polyline([upperCentre, lowerCentre], {
-                    color:     '#e74c3c',
-                    weight:    3,
-                    dashArray: '10 6',
-                    opacity:   0.95
-                });
+                                const tRows = rows.map(([k, v]) =>
+                                    `<tr>
+                                        <td style="color:#888;padding:2px 10px 2px 0;white-space:nowrap;">${k}</td>
+                                        <td style="padding:2px 0;">${v}</td>
+                                    </tr>`
+                                ).join('');
 
-                pipeline.bindTooltip(
-                    `🔴 Tunnel / Penstock — click for details`,
-                    { sticky: true }
-                );
+                                layer.bindPopup(`
+                                    <div style="font-family:system-ui,sans-serif;min-width:220px;">
+                                        <div style="background:#e67e22;color:#fff;
+                                            padding:6px 12px;margin:-12px -16px 10px;
+                                            border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                                            Tunnel / Penstock
+                                        </div>
+                                        <table style="font-size:11px;border-collapse:collapse;width:100%;">
+                                            ${tRows}
+                                        </table>
+                                    </div>`,
+                                    { maxWidth: 280, className: 'anu-popup' }
+                                );
+                            }
+                        }
+                    ).addTo(this._miniMap);
+                    this._miniMapLayers.pipeline = pipeLayer;
+                }
 
-                pipeline.bindPopup(`
-                    <div style="font-family:system-ui,sans-serif;min-width:190px;">
-                        <div style="background:#c0392b;color:#fff;
-                            padding:6px 10px;margin:-12px -16px 8px;border-radius:4px 4px 0 0;
-                            font-size:13px;font-weight:700;">
-                            🔴 Tunnel / Penstock
-                        </div>
-                        <table style="font-size:11px;border-collapse:collapse;width:100%;">
-                            ${sepLabel   ? `<tr><td style="color:#888;padding:2px 8px 2px 0;">Length</td><td>${sepLabel}</td></tr>` : ''}
-                            ${headLabel  ? `<tr><td style="color:#888;padding:2px 8px 2px 0;">Head</td><td>${Math.round(headLabel)} m</td></tr>` : ''}
-                            <tr><td style="color:#888;padding:2px 8px 2px 0;">Type</td><td>Underground tunnel</td></tr>
-                        </table>
-                    </div>`, { maxWidth: 220, className: 'anu-popup' }
-                );
-
-                pipeline.addTo(this._miniMap);
-                this._miniMapLayers.pipeline = pipeline;
-
-                // Update attribution
                 const attrEl = document.getElementById('site-view-attribution');
-                if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Polygons © ANU RE100';
+                if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Data © ANU RE100';
             })
             .catch(() => {
-                // WFS unavailable or CORS blocked — placeholder markers/line remain
+                // WFS unavailable or CORS — placeholder markers/line remain visible
             });
     },
 
