@@ -764,36 +764,20 @@ HB.UI.siteDetail = {
                             onEachFeature: (feature, layer) => {
                                 const p = feature.properties;
 
-                                // Parse description HTML (same pattern as reservoir features)
+                                // Parse description HTML (exact ANU Atlas key names confirmed from live WFS)
                                 const d = this._parseANUDescription(p.description);
-                                const dget = (...keys) => {
-                                    for (const k of keys) {
-                                        if (d[k] != null && d[k] !== '') return d[k];
-                                    }
-                                    // Fallback: try direct property
-                                    for (const k of keys) {
-                                        if (p[k] != null && p[k] !== '') return p[k];
-                                    }
-                                    return null;
-                                };
+                                const dget = k => (d[k] != null && d[k] !== '') ? d[k] : null;
 
-                                const head    = dget('Head (m)', 'Head');
-                                const sep     = dget('Separation (km)', 'Separation');
-                                const slope   = dget('Average Slope (%)', 'Average slope (%)', 'Average Slope', 'average_slope');
-                                const hdr     = dget('Head/Distance Ratio', 'Head/distance ratio', 'head_distance_ratio');
-                                const energy  = dget('Energy (GWh)', 'Energy');
-                                const vol     = dget('Volume (GL)', 'Volume');
-                                const area    = dget('Reservoir Area (ha)', 'Reservoir area (ha)', 'Reservoir Area', 'reservoir_area');
-                                const wrock   = dget('Water/Rock Ratio', 'Water:Rock ratio', 'water_rock_ratio');
-                                const dvol    = dget('Dam Volume (Mm³)', 'Dam Volume (Mm3)', 'Dam Volume (GL)', 'Dam Volume', 'dam_volume');
-                                const cls     = dget('Class', 'class');
-                                const lcos    = dget('LCOS ($/MWh)', 'Energy Cost', 'energy_cost');
-                                const cpkw    = dget('Cost/kW ($/kW)', 'Power Cost', 'power_cost');
+                                const cls     = dget('Class');
+                                const head    = dget('Head (m)');
+                                const sep     = dget('Separation (km)');
+                                const slope   = dget('Average Slope (%)');
+                                const vol     = dget('Volume (GL)');
+                                const wrock   = dget('Water to Rock (Pair)');
+                                const energy  = dget('Energy (GWh)');
+                                const storH   = dget('Storage time (h)');
+                                const depth   = dget('Upper Lake Depth Fluctuation (m)');
                                 const country = dget('Country');
-
-                                // DEBUG — remove after confirming keys
-                                console.log('[ANU pipe] raw props:', p);
-                                console.log('[ANU pipe] parsed description:', d);
 
                                 layer.bindTooltip(
                                     'Tunnel / Penstock — click for details',
@@ -801,19 +785,16 @@ HB.UI.siteDetail = {
                                 );
 
                                 const rows = [
-                                    cls     && ['Cost class',          `<strong style="color:${classColor(cls)};">${cls}</strong>`],
-                                    head    && ['Head',                `${head} m`],
-                                    sep     && ['Separation',          `${sep} km`],
-                                    slope   && ['Average slope',       `${slope}%`],
-                                    hdr     && ['Head/distance ratio', hdr],
-                                    energy  && ['Energy',              `${energy} GWh`],
-                                    vol     && ['Volume',              `${vol} GL`],
-                                    area    && ['Reservoir area',      `${Number(area).toLocaleString()} ha`],
-                                    wrock   && ['Water:Rock ratio',    wrock],
-                                    dvol    && ['Dam volume',          dvol],
-                                    lcos    && ['LCOS',                `$${lcos}/MWh`],
-                                    cpkw    && ['Cost per kW',         `$${cpkw}/kW`],
-                                    country && ['Country',             country],
+                                    cls     && ['Class',                      `<strong style="color:${classColor(cls)};">${cls}</strong>`],
+                                    head    && ['Head (m)',                   head],
+                                    sep     && ['Separation (km)',            sep],
+                                    slope   && ['Average Slope (%)',          slope],
+                                    vol     && ['Volume (GL)',                vol],
+                                    wrock   && ['Water to Rock (Pair)',       wrock],
+                                    energy  && ['Energy (GWh)',               energy],
+                                    storH   && ['Storage time (h)',           storH],
+                                    depth   && ['Upper Lake Depth Fluct. (m)', depth],
+                                    country && ['Country',                    country],
                                 ].filter(Boolean);
 
                                 layer.bindPopup(
