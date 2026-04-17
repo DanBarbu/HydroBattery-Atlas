@@ -121,7 +121,7 @@ HB.Cost.scaleUp = {
      * With guide vane optimisation: +3–7 pp (essay §6.2).
      * With variable-speed (VFD): +2–4 pp.
      */
-    PUMP_MODE_EFFICIENCY: 0.75,
+    PUMP_MODE_EFFICIENCY: 0.60,   // existing turbine reversed into pump mode
 
     /**
      * Generation-mode efficiency (standard turbine operation, unchanged).
@@ -129,7 +129,7 @@ HB.Cost.scaleUp = {
      */
     GEN_MODE_EFFICIENCY: 0.90,
 
-    /** Round-trip efficiency = pump η × gen η (e.g. 0.75 × 0.90 = 0.675). */
+    /** Round-trip efficiency = pump η × gen η (e.g. 0.60 × 0.90 = 0.54). */
     get RETROFIT_RTE() {
         return this.PUMP_MODE_EFFICIENCY * this.GEN_MODE_EFFICIENCY;
     },
@@ -379,16 +379,35 @@ HB.Cost.scaleUp = {
             storageHours: hours,
 
             anu: (() => {
-                // Phase 1 water volume = water pumped uphill by the full FPV array
-                // over one average solar day (SOLAR_PEAK_HOURS peak sun hours).
+                // Phase 1 daily pumped water volume — bounded by three physical limits:
                 //
-                // V [GL] = solarMW × peakSunH [MWh] × pumpEff × 3600 [s/h] × 1e6 [W/MW]
-                //          ─────────────────────────────────────────────────────────────
-                //          ρ [kg/m³=1000] × g [9.81 m/s²] × H [m] × 1e6 [m³→GL]
-                //        = solarMW × peakSunH × pumpEff × 3600 / (9810 × H)
-                const peakSunH   = this.SOLAR_PEAK_HOURS;
-                const avgDepthM  = HB.Cost.financials.avgReservoirDepth || 15;
-                const waterGL    = solarMW * peakSunH * pumpEff * 3600 / (9810 * site.headM);
+                //  V [GL] = P_pump [MW] × peakSunH [h] × pumpEff × 3600 / (9810 × H [m])
+                //
+                //  Constraint 1 — Solar energy (FPV):
+                //    V_solar = solarMW × peakSunH × pumpEff × 3600 / (9810 × H)
+                //
+                //  Constraint 2 — Turbine pump capacity (existing turbines reversed):
+                //    Turbines rated at powerMW; in pump mode they can absorb up to
+                //    powerMW MW of electrical input from FPV (usually << solarMW).
+                //    V_turbine = powerMW × peakSunH × pumpEff × 3600 / (9810 × H)
+                //
+                //  Constraint 3 — Pipe / penstock flow capacity:
+                //    Pipe is sized for generation flow at genEff (90%), which is larger
+                //    than pump flow at pumpEff (60%), so pipe is rarely the binding
+                //    constraint but provides a hard physical ceiling.
+                //    V_pipe = powerMW × peakSunH × 3600 / (9810 × genEff × H)
+                //
+                //  Effective volume = min(V_solar, V_turbine, V_pipe)
+                //  Since solarMW >> powerMW, V_turbine is almost always the binding limit.
+                const peakSunH  = this.SOLAR_PEAK_HOURS;
+                const avgDepthM = HB.Cost.financials.avgReservoirDepth || 15;
+                const k         = peakSunH * 3600 / (9810 * site.headM); // common factor
+
+                const V_solar   = solarMW  * pumpEff * k;
+                const V_turbine = powerMW  * pumpEff * k;          // turbine absorbs FPV up to its rated MW
+                const V_pipe    = powerMW  * k / genEff;            // pipe ceiling (gen-side sizing)
+
+                const waterGL   = Math.min(V_solar, V_turbine, V_pipe);
                 anu.engineering.totalWaterGL = Math.round(waterGL * 10) / 10;
                 anu.engineering.upperAreaHa  = Math.round(100 * waterGL / avgDepthM * 10) / 10;
                 return anu;
