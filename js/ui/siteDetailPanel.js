@@ -615,13 +615,19 @@ HB.UI.siteDetail = {
 
                 if (!reservoirs.features.length) return;  // nothing to draw
 
-                // Remove placeholder line/markers now that we have real polygons
+                // Remove placeholder markers/line — will be replaced with real polygons + pipeline
                 ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
                     if (this._miniMapLayers[k]) {
                         this._miniMap.removeLayer(this._miniMapLayers[k]);
                         delete this._miniMapLayers[k];
                     }
                 });
+
+                // --- Collect centroids for upper and lower to draw pipeline ---
+                // getBounds().getCenter() gives the bounding-box centre of each polygon,
+                // which is accurate enough for the tunnel/pipeline line.
+                let upperCentre = null;
+                let lowerCentre = null;
 
                 const polyLayer = L.geoJSON(reservoirs, {
                     style: (feature) => {
@@ -636,18 +642,46 @@ HB.UI.siteDetail = {
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        const p   = feature.properties;
-                        const up  = p.isupper === '1' || p.isupper === 1;
+                        const p  = feature.properties;
+                        const up = p.isupper === '1' || p.isupper === 1;
                         const lbl = (p.name || p.identifier || '').replace(/ Dam$/, '');
                         layer.bindTooltip(
                             `<strong>${up ? '⬆ Upper' : '⬇ Lower'} reservoir</strong>`
                             + (lbl ? `<br><span style="font-size:10px;color:#555;">${lbl}</span>` : ''),
                             { sticky: true }
                         );
+                        // Capture centroid after the layer is ready
+                        layer.on('add', () => {
+                            const c = layer.getBounds().getCenter();
+                            if (up) upperCentre = c;
+                            else    lowerCentre = c;
+                        });
                     }
                 }).addTo(this._miniMap);
 
                 this._miniMapLayers.polygons = polyLayer;
+
+                // Draw pipeline between the two reservoir centroids.
+                // Both 'add' events fire synchronously during addTo(), so centres
+                // are available immediately after addTo() returns.
+                if (upperCentre && lowerCentre) {
+                    const pipeline = L.polyline(
+                        [upperCentre, lowerCentre],
+                        {
+                            color:     '#e74c3c',
+                            weight:    3,
+                            dashArray: '8 5',
+                            opacity:   0.90
+                        }
+                    ).bindTooltip(
+                        `<strong>🔴 Tunnel / Penstock</strong><br>`
+                        + `<span style="font-size:10px;color:#555;">${site.separation_km != null
+                            ? site.separation_km.toFixed(1) + ' km' : ''}</span>`,
+                        { sticky: true }
+                    ).addTo(this._miniMap);
+
+                    this._miniMapLayers.pipeline = pipeline;
+                }
 
                 // Update attribution
                 const attrEl = document.getElementById('site-view-attribution');
