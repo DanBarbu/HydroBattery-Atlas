@@ -465,12 +465,10 @@ HB.UI.siteDetail = {
 
     /**
      * Create or update the Leaflet satellite mini-map centred on the lake pair.
-     * Uses ESRI World Imagery tiles (free, no key).
-     * Draws: upper/lower reservoir markers + connecting polyline.
+     * Uses ESRI World Imagery tiles (free, no key) + ANU GeoServer WFS polygons.
      */
     _showSatelliteMap(site, lat, lng, container) {
-        const sepKm  = site.separation_km ?? (site.tunnelLength ? site.tunnelLength / 1000 : 5);
-        const headM  = site.head_m ?? site.headHeight ?? site.headM ?? 200;
+        const sepKm = site.separation_km ?? (site.tunnelLength ? site.tunnelLength / 1000 : 5);
 
         // Zoom level inversely proportional to separation
         const zoom = sepKm < 1   ? 14
@@ -479,71 +477,185 @@ HB.UI.siteDetail = {
                    : sepKm < 20  ? 11
                    : sepKm < 50  ? 10 : 9;
 
-        // Estimate upper/lower reservoir positions by splitting along north–south
-        // (rough — real bearing unknown; offset is small vs actual scale).
-        // 1 degree lat ≈ 111 km, so delta = (sepKm/2)/111 degrees.
-        const deltaLat = (sepKm / 2) / 111;
-        const upperLatLng = [lat + deltaLat, lng];
-        const lowerLatLng = [lat - deltaLat, lng];
-
         if (!this._miniMap) {
-            // First-time init
+            // First-time initialisation
             this._miniMap = L.map(container, {
                 center: [lat, lng],
                 zoom,
-                zoomControl:       true,
+                zoomControl:        true,
                 attributionControl: false,
-                scrollWheelZoom:   false,
-                dragging:          true,
-                doubleClickZoom:   true
+                scrollWheelZoom:    false,
+                dragging:           true,
+                doubleClickZoom:    true
             });
 
+            // Base: ESRI satellite imagery (free, no key required)
             L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                { maxZoom: 18, attribution: 'Imagery © Esri' }
+                { maxZoom: 18 }
             ).addTo(this._miniMap);
 
-            // Tiny label overlay (country labels, roads)
+            // Overlay: place names / country labels
             L.tileLayer(
                 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-                { maxZoom: 18, opacity: 0.5 }
+                { maxZoom: 18, opacity: 0.55 }
             ).addTo(this._miniMap);
 
             this._miniMapLayers = {};
         } else {
-            // Pan/zoom to new site
+            // Pan/zoom to new site; clear previous site's layers
             this._miniMap.setView([lat, lng], zoom);
-            // Clear old markers/lines
-            Object.values(this._miniMapLayers).forEach(l => this._miniMap.removeLayer(l));
+            Object.values(this._miniMapLayers).forEach(l => {
+                if (l) this._miniMap.removeLayer(l);
+            });
             this._miniMapLayers = {};
         }
 
-        // Blue circle markers for upper and lower reservoir
-        const circleOpts = (color, title) => ({
+        // --- Placeholder markers (shown while WFS polygons load) ---
+        const headM    = site.head_m ?? site.headHeight ?? site.headM ?? 200;
+        const deltaLat = (sepKm / 2) / 111;
+        const circleOpts = (color, ttl) => ({
             radius: 7, color, weight: 2,
-            fillColor: color, fillOpacity: 0.75,
-            title
+            fillColor: color, fillOpacity: 0.70, title: ttl
         });
-
-        const upperMarker = L.circleMarker(upperLatLng,
-            circleOpts('#1565C0', `Upper reservoir — ${Math.round(headM)}m above lower`))
-            .bindTooltip(`⬆ Upper reservoir<br>${Math.round(headM)}m head`, { permanent: false })
+        const upperPH = L.circleMarker([lat + deltaLat, lng],
+            circleOpts('#1565C0', `Upper reservoir — ${Math.round(headM)}m head`))
+            .bindTooltip(`⬆ Upper reservoir<br>${Math.round(headM)}m head`)
             .addTo(this._miniMap);
-
-        const lowerMarker = L.circleMarker(lowerLatLng,
+        const lowerPH = L.circleMarker([lat - deltaLat, lng],
             circleOpts('#42A5F5', 'Lower reservoir'))
-            .bindTooltip('⬇ Lower reservoir', { permanent: false })
+            .bindTooltip('⬇ Lower reservoir')
             .addTo(this._miniMap);
-
-        // Dashed polyline connecting the pair
-        const pairLine = L.polyline([upperLatLng, lowerLatLng], {
-            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85
+        const pairLine = L.polyline([[lat + deltaLat, lng], [lat - deltaLat, lng]], {
+            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.80
         }).addTo(this._miniMap);
+        this._miniMapLayers = { upperMarker: upperPH, lowerMarker: lowerPH, pairLine };
 
-        this._miniMapLayers = { upperMarker, lowerMarker, pairLine };
-
-        // Ensure Leaflet knows the container size (panel may have just appeared)
+        // Ensure Leaflet reflows after panel visibility change
         setTimeout(() => { if (this._miniMap) this._miniMap.invalidateSize(); }, 120);
+
+        // Fetch real lake-perimeter polygons from ANU GeoServer (replaces placeholders)
+        this._loadANUPolygons(site, lat, lng, sepKm);
+    },
+
+    /**
+     * Resolve the ANU GeoServer WFS layer name from the site's tier/type.
+     *
+     * ANU WFS layers (all MultiPolygon, one feature per reservoir):
+     *   global_bluefield:2gwh_6h   global_greenfield:2gwh_6h
+     *   global_bluefield:5gwh_18h  global_greenfield:5gwh_18h
+     *   global_bluefield:15gwh_18h global_greenfield:15gwh_18h
+     *   global_brownfield:2gwh_6h  …
+     */
+    _anuWfsLayer(site) {
+        const id     = site.id || '';
+        const tier   = (site.anu_tier || site.tier || '').toLowerCase();
+        const status = (site.status || '').toLowerCase();
+
+        // Workspace
+        const ws = id.startsWith('anu_gf') || status.includes('greenfield')
+                 ? 'global_greenfield'
+                 : id.startsWith('anu_br') || status.includes('brownfield')
+                 ? 'global_brownfield'
+                 : 'global_bluefield';
+
+        // Energy tier → layer suffix
+        const suffix = tier.includes('5gwh') || tier === '5gwh_18h' ? '5gwh_18h'
+                     : tier.includes('2gwh') || tier === '2gwh_6h'  ? '2gwh_6h'
+                     : '15gwh_18h';   // default (15 GWh has widest coverage)
+
+        return { ws, layer: `${ws}:${suffix}` };
+    },
+
+    /**
+     * Fetch reservoir-perimeter polygons from ANU GeoServer WFS and add them
+     * to the mini-map as styled GeoJSON.
+     *
+     * Features have an `isupper` property ("1" = upper reservoir, "0" = lower).
+     * Dam-wall overlay polygons have isupper = null and are excluded.
+     *
+     * Falls back silently — placeholder markers (if any) remain visible.
+     */
+    _loadANUPolygons(site, lat, lng, sepKm) {
+        const { ws, layer } = this._anuWfsLayer(site);
+
+        // Bounding box: 1.6× separation radius so both reservoirs fit, min ±0.06°
+        const margin = Math.max(0.06, (sepKm * 1.6) / 111);
+        const bbox = `${(lng - margin).toFixed(5)},${(lat - margin).toFixed(5)},`
+                   + `${(lng + margin).toFixed(5)},${(lat + margin).toFixed(5)},EPSG:4326`;
+
+        const url = `https://re100.anu.edu.au/geoserver/${ws}/wfs`
+                  + `?service=WFS&version=2.0.0&request=GetFeature`
+                  + `&typeNames=${encodeURIComponent(layer)}`
+                  + `&outputFormat=application%2Fjson`
+                  + `&count=60`
+                  + `&bbox=${bbox}`;
+
+        // Track which fetch belongs to the current site so stale responses are discarded
+        const fetchId = `${lat},${lng}`;
+        this._pendingFetch = fetchId;
+
+        fetch(url)
+            .then(r => {
+                if (!r.ok) throw new Error(`WFS ${r.status}`);
+                return r.json();
+            })
+            .then(geojson => {
+                // Discard if user switched to a different site while loading
+                if (this._pendingFetch !== fetchId || !this._miniMap) return;
+
+                // Keep only true reservoir polygons (isupper = "0" or "1")
+                const reservoirs = {
+                    ...geojson,
+                    features: (geojson.features || []).filter(
+                        f => f.properties.isupper === '1' || f.properties.isupper === '0'
+                           || f.properties.isupper === 1  || f.properties.isupper === 0
+                    )
+                };
+
+                if (!reservoirs.features.length) return;  // nothing to draw
+
+                // Remove placeholder line/markers now that we have real polygons
+                ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
+                    if (this._miniMapLayers[k]) {
+                        this._miniMap.removeLayer(this._miniMapLayers[k]);
+                        delete this._miniMapLayers[k];
+                    }
+                });
+
+                const polyLayer = L.geoJSON(reservoirs, {
+                    style: (feature) => {
+                        const up = feature.properties.isupper === '1'
+                                || feature.properties.isupper === 1;
+                        return {
+                            fillColor:   up ? '#1565C0' : '#42A5F5',
+                            fillOpacity: 0.38,
+                            color:       up ? '#0D47A1' : '#1976D2',
+                            weight:      2,
+                            opacity:     0.9
+                        };
+                    },
+                    onEachFeature: (feature, layer) => {
+                        const p   = feature.properties;
+                        const up  = p.isupper === '1' || p.isupper === 1;
+                        const lbl = (p.name || p.identifier || '').replace(/ Dam$/, '');
+                        layer.bindTooltip(
+                            `<strong>${up ? '⬆ Upper' : '⬇ Lower'} reservoir</strong>`
+                            + (lbl ? `<br><span style="font-size:10px;color:#555;">${lbl}</span>` : ''),
+                            { sticky: true }
+                        );
+                    }
+                }).addTo(this._miniMap);
+
+                this._miniMapLayers.polygons = polyLayer;
+
+                // Update attribution
+                const attrEl = document.getElementById('site-view-attribution');
+                if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Polygons © ANU RE100';
+            })
+            .catch(() => {
+                // WFS unavailable or CORS blocked — satellite + placeholder markers still visible
+            });
     },
 
     _drawCrossSection(site) {
