@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
     <!-- App CSS -->
-    <link rel="stylesheet" href="css/main.css?v=3" />
+    <link rel="stylesheet" href="css/main.css?v=4" />
     <link rel="stylesheet" href="css/map.css?v=2" />
     <link rel="stylesheet" href="css/panels.css?v=3" />
     <link rel="stylesheet" href="css/components.css?v=3" />
@@ -317,8 +317,16 @@
             </div>
         </div>
 
+        <!-- Right panel collapse/expand toggle (positioned on right panel edge) -->
+        <button id="right-panel-collapse-btn" class="right-panel-collapse-btn" style="display:none" title="Hide panel">
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                <path d="M2 1 L8 8 L2 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
         <!-- Right Panel - Site Details & Cost Breakdown -->
         <aside id="right-panel" class="panel hidden">
+            <div id="right-panel-resize-handle" class="right-panel-resize-handle"></div>
             <button id="close-right-panel" class="panel-close">&times;</button>
             <div id="site-detail">
                 <h2 id="site-name">Site Details</h2>
@@ -603,7 +611,7 @@
     <script src="js/ui/searchPanel.js?v=4"></script>
     <script src="js/ui/resultsPanel.js?v=3"></script>
     <script src="js/ui/costBreakdownPanel.js?v=4"></script>
-    <script src="js/ui/siteDetailPanel.js?v=8"></script>
+    <script src="js/ui/siteDetailPanel.js?v=9"></script>
     <script src="js/ui/financialParamsPanel.js?v=3"></script>
     <script src="js/ui/scaleUpPanel.js?v=4"></script>
     <script src="js/ui/sensitivityPanel.js?v=2"></script>

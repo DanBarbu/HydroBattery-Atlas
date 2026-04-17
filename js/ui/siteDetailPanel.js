@@ -5,10 +5,22 @@ HB.UI = HB.UI || {};
 
 HB.UI.siteDetail = {
     init() {
-        // Close button
+        const panel = document.getElementById('right-panel');
+        const collapseBtn = document.getElementById('right-panel-collapse-btn');
+
+        // Close button — fully hides panel
         document.getElementById('close-right-panel').addEventListener('click', () => {
-            document.getElementById('right-panel').classList.add('hidden');
+            panel.classList.add('hidden');
+            collapseBtn.style.display = 'none';
         });
+
+        // Collapse/expand toggle
+        collapseBtn.addEventListener('click', () => {
+            this._toggleRightPanel();
+        });
+
+        // Resize handle — drag to widen/narrow
+        this._initResizeHandle();
 
         // Listen for site detail events
         HB.Events.on('showSiteDetail', (site) => this.show(site));
@@ -17,9 +29,82 @@ HB.UI.siteDetail = {
         HB.Events.on('viewSiteDetail', (siteId) => this.showKnownSite(siteId));
     },
 
+    _toggleRightPanel() {
+        const panel = document.getElementById('right-panel');
+        const btn = document.getElementById('right-panel-collapse-btn');
+        panel.classList.toggle('collapsed');
+        const isCollapsed = panel.classList.contains('collapsed');
+        btn.title = isCollapsed ? 'Show panel' : 'Hide panel';
+        btn.classList.toggle('flipped', isCollapsed);
+        // Sync button position immediately for collapse, after transition for expand
+        if (isCollapsed) {
+            btn.style.right = '0';
+        } else {
+            setTimeout(() => this._syncCollapseBtn(), 250);
+        }
+        setTimeout(() => {
+            if (HB.Map && HB.Map.map) HB.Map.map.invalidateSize();
+        }, 350);
+    },
+
+    _initResizeHandle() {
+        const handle = document.getElementById('right-panel-resize-handle');
+        const panel = document.getElementById('right-panel');
+        const collapseBtn = document.getElementById('right-panel-collapse-btn');
+        let startX, startWidth;
+
+        handle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            startX = e.clientX;
+            startWidth = panel.offsetWidth;
+            handle.classList.add('dragging');
+            panel.style.transition = 'none';
+            collapseBtn.style.transition = 'none';
+
+            const onMouseMove = (e) => {
+                const delta = startX - e.clientX; // moving left = wider
+                const newWidth = Math.max(320, Math.min(window.innerWidth * 0.8, startWidth + delta));
+                panel.style.width = newWidth + 'px';
+                collapseBtn.style.right = newWidth + 'px';
+            };
+
+            const onMouseUp = () => {
+                handle.classList.remove('dragging');
+                panel.style.transition = '';
+                collapseBtn.style.transition = '';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                setTimeout(() => {
+                    if (HB.Map && HB.Map.map) HB.Map.map.invalidateSize();
+                }, 50);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    },
+
+    _syncCollapseBtn() {
+        const panel = document.getElementById('right-panel');
+        const btn = document.getElementById('right-panel-collapse-btn');
+        if (!btn || panel.classList.contains('hidden')) return;
+        if (panel.classList.contains('collapsed')) {
+            btn.style.right = '0';
+        } else {
+            btn.style.right = panel.offsetWidth + 'px';
+        }
+    },
+
     show(site) {
         const panel = document.getElementById('right-panel');
+        const collapseBtn = document.getElementById('right-panel-collapse-btn');
         panel.classList.remove('hidden');
+        panel.classList.remove('collapsed');
+        collapseBtn.style.display = 'flex';
+        collapseBtn.classList.remove('flipped');
+        collapseBtn.title = 'Hide panel';
+        // Sync button position after layout
+        requestAnimationFrame(() => this._syncCollapseBtn());
 
         // Site name
         document.getElementById('site-name').textContent = site.name || 'Site Evaluation';
@@ -86,12 +171,18 @@ HB.UI.siteDetail = {
         const headHeight = site.head_m || 200;
         const tunnelLength = site.tunnel_length_m || 2000;
 
-        // Use ANU model for Bluefield sites (or any site with ANU data)
-        // Bluefield sites with existing reservoirs (isdam===false) get zero dam cost —
-        // only marginal intake/outlet structure costs apply.
+        // Use ANU model for Bluefield sites (or any site with ANU data).
+        // Existing lake pairs (bluefield, operational, lake_pair with isdam===false)
+        // have ALL civil infrastructure already built — reservoirs, tunnels, and
+        // powerhouse are sunk costs. The cost breakdown shows $0 for these.
         let anuResult = null;
         const hasAnuData = site.anu_class || site.status === 'anu_bluefield' || site.anu_energy_cost_usd_mwh;
-        const isBluefieldExisting = (site.isdam === false);
+        const isBluefieldExisting = (site.isdam === false)
+            || site.status === 'anu_bluefield'
+            || site.status === 'operational'
+            || site.status === 'under_construction'
+            || (site.configuration === 'lake_pair'
+                && (site.status || '').indexOf('bluefield') !== -1);
         if (hasAnuData && headHeight && site.storage_mwh) {
             anuResult = HB.Cost.engine.anuModel({
                 headM: headHeight,
@@ -105,6 +196,22 @@ HB.UI.siteDetail = {
                 country: site.country || 'default',
                 useExistingReservoirs: isBluefieldExisting
             });
+
+            // For existing lake pairs, ALL civil infrastructure is sunk cost ($0).
+            // Override ANU component costs to reflect actual investment needed.
+            if (isBluefieldExisting && anuResult) {
+                anuResult.components.reservoirs_M = 0;
+                anuResult.components.tunnel_M     = 0;
+                anuResult.components.powerhouse_M = 0;
+                anuResult.components.overhead_M   = 0;
+                anuResult.summary.totalCapexM     = 0;
+                anuResult.summary.totalCAPEX      = 0;
+                anuResult.summary.costPerKW       = 0;
+                anuResult.summary.costPerKWh      = 0;
+                anuResult.summary.breakdown.forEach(b => { b.value = 0; });
+                anuResult.summary.useExistingReservoirs = true;
+                anuResult.summary.isExistingInfrastructure = true;
+            }
         }
 
         const costResult = HB.Cost.engine.calculate({
