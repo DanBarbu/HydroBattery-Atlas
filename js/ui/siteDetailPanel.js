@@ -766,7 +766,12 @@ HB.UI.siteDetail = {
 
                                 // Parse description HTML (exact ANU Atlas key names confirmed from live WFS)
                                 const d = this._parseANUDescription(p.description);
-                                const dget = k => (d[k] != null && d[k] !== '') ? d[k] : null;
+                                // Check description HTML first, then direct WFS property as fallback
+                                const dget = k => {
+                                    if (d[k] != null && d[k] !== '') return d[k];
+                                    if (p[k] != null && p[k] !== '') return String(p[k]);
+                                    return null;
+                                };
 
                                 const cls     = dget('Class');
                                 const head    = dget('Head (m)');
@@ -776,7 +781,13 @@ HB.UI.siteDetail = {
                                 const wrock   = dget('Water to Rock (Pair)');
                                 const energy  = dget('Energy (GWh)');
                                 const storH   = dget('Storage time (h)');
-                                const depth   = dget('Upper Lake Depth Fluctuation (m)');
+                                // Key varies: Upper or Lower lake depending on site
+                                const depthUp  = dget('Upper Lake Depth Fluctuation (m)');
+                                const depthLow = dget('Lower Lake Depth Fluctuation (m)');
+                                const depth    = depthUp || depthLow;
+                                const depthLabel = depthUp
+                                    ? 'Upper Lake Depth Fluct. (m)'
+                                    : 'Lower Lake Depth Fluct. (m)';
                                 const country = dget('Country');
 
                                 layer.bindTooltip(
@@ -793,7 +804,7 @@ HB.UI.siteDetail = {
                                     wrock   && ['Water to Rock (Pair)',       wrock],
                                     energy  && ['Energy (GWh)',               energy],
                                     storH   && ['Storage time (h)',           storH],
-                                    depth   && ['Upper Lake Depth Fluct. (m)', depth],
+                                    depth   && [depthLabel,                    depth],
                                     country && ['Country',                    country],
                                 ].filter(Boolean);
 
