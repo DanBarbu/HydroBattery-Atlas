@@ -784,16 +784,14 @@ HB.UI.siteDetail = {
                                 );
 
                                 const rows = [
-                                    p.name             && ['Pair',              p.name],
-                                    p.country          && ['Country',           p.country],
                                     cl                 && ['Cost class',
                                         `<strong style="color:${classColor(cl)};">${cl}</strong>`],
                                     p.head             && ['Head',              `${p.head} m`],
                                     p.separation       && ['Separation',        `${p.separation} km`],
                                     p.average_slope    && ['Average slope',     `${p.average_slope}%`],
-                                    p.head_distance_ratio && ['Head/dist ratio',p.head_distance_ratio],
-                                    p.energy           && ['Energy capacity',   `${p.energy} GWh`],
-                                    storageH           && ['Storage duration',  storageH],
+                                    p.head_distance_ratio && ['Head/distance ratio', p.head_distance_ratio],
+                                    p.energy           && ['Energy',            `${p.energy} GWh`],
+                                    storageH           && ['Storage time',      storageH],
                                     powerMW            && ['Power',             `${powerMW} MW`],
                                     p.volume           && ['Volume',            `${p.volume} GL`],
                                     p.reservoir_area   && ['Reservoir area',    `${Number(p.reservoir_area).toLocaleString()} ha`],
@@ -801,6 +799,7 @@ HB.UI.siteDetail = {
                                     p.dam_volume       && ['Dam volume',        `${p.dam_volume} Mm³`],
                                     p.energy_cost      && ['LCOS',              `$${p.energy_cost}/MWh`],
                                     p.power_cost       && ['Cost per kW',       `$${p.power_cost}/kW`],
+                                    p.country          && ['Country',           p.country],
                                 ].filter(Boolean);
 
                                 layer.bindPopup(
