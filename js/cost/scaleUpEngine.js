@@ -273,7 +273,8 @@ HB.Cost.scaleUp = {
 
     _calcPhase1(site) {
         const fin        = HB.Cost.financials;
-        const hours      = site.storageHours || this.DEFAULT_STORAGE_HOURS;
+        const headM      = site.headM > 0 ? site.headM : 200;   // guard: never divide by 0
+        const hours      = site.storageHours > 0 ? site.storageHours : this.DEFAULT_STORAGE_HOURS;
         const storageGWh = this.PHASE1_STORAGE_GWH;
         const powerMW    = storageGWh * 1000 / hours;
         const existing   = site.useExistingReservoirs;  // bluefield / operational
@@ -287,7 +288,7 @@ HB.Cost.scaleUp = {
         // ANU model for reference costs (existing reservoirs).
         // Override pump/gen efficiencies for accurate energy flow modelling.
         const anu = HB.Cost.engine.anuModel({
-            headM:                 site.headM,
+            headM:                 headM,
             separationM:           site.separationM,
             energyGWh:             storageGWh,
             powerMW:               powerMW,
@@ -401,7 +402,7 @@ HB.Cost.scaleUp = {
                 //  Since solarMW >> powerMW, V_turbine is almost always the binding limit.
                 const peakSunH  = this.SOLAR_PEAK_HOURS;
                 const avgDepthM = HB.Cost.financials.avgReservoirDepth || 15;
-                const k         = peakSunH * 3600 / (9810 * site.headM); // common factor
+                const k         = peakSunH * 3600 / (9810 * headM); // common factor (headM guarded above)
 
                 const V_solar   = solarMW  * pumpEff * k;
                 const V_turbine = powerMW  * pumpEff * k;          // turbine absorbs FPV up to its rated MW
