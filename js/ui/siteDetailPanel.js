@@ -768,38 +768,27 @@ HB.UI.siteDetail = {
                                 const p  = feature.properties;
                                 const cl = p.class;
 
-                                // Derive storage hours from the WFS layer name suffix
-                                // (15gwh_18h → 18h, 5gwh_18h → 18h, 2gwh_6h → 6h)
-                                const hoursMatch = (this._anuWfsLayer(site).layer || '').match(/_(\d+)h$/);
-                                const storageH   = hoursMatch ? hoursMatch[1] + ' h' : null;
-
-                                // Power = Energy / hours
-                                const powerMW = (p.energy && hoursMatch)
-                                    ? Math.round(p.energy * 1000 / Number(hoursMatch[1]))
-                                    : null;
-
                                 layer.bindTooltip(
                                     'Tunnel / Penstock — click for details',
                                     { sticky: true, className: 'anu-tip' }
                                 );
 
+                                // All values sourced directly from ANU WFS properties
                                 const rows = [
-                                    cl                 && ['Cost class',
+                                    cl                    && ['Cost class',
                                         `<strong style="color:${classColor(cl)};">${cl}</strong>`],
-                                    p.head             && ['Head',              `${p.head} m`],
-                                    p.separation       && ['Separation',        `${p.separation} km`],
-                                    p.average_slope    && ['Average slope',     `${p.average_slope}%`],
-                                    p.head_distance_ratio && ['Head/distance ratio', p.head_distance_ratio],
-                                    p.energy           && ['Energy',            `${p.energy} GWh`],
-                                    storageH           && ['Storage time',      storageH],
-                                    powerMW            && ['Power',             `${powerMW} MW`],
-                                    p.volume           && ['Volume',            `${p.volume} GL`],
-                                    p.reservoir_area   && ['Reservoir area',    `${Number(p.reservoir_area).toLocaleString()} ha`],
-                                    p.water_rock_ratio && ['Water:Rock ratio',  p.water_rock_ratio],
-                                    p.dam_volume       && ['Dam volume',        `${p.dam_volume} Mm³`],
-                                    p.energy_cost      && ['LCOS',              `$${p.energy_cost}/MWh`],
-                                    p.power_cost       && ['Cost per kW',       `$${p.power_cost}/kW`],
-                                    p.country          && ['Country',           p.country],
+                                    p.head                && ['Head',                 `${p.head} m`],
+                                    p.separation          && ['Separation',           `${p.separation} km`],
+                                    p.average_slope       && ['Average slope',        `${p.average_slope}%`],
+                                    p.head_distance_ratio && ['Head/distance ratio',  p.head_distance_ratio],
+                                    p.energy              && ['Energy',               `${p.energy} GWh`],
+                                    p.volume              && ['Volume',               `${p.volume} GL`],
+                                    p.reservoir_area      && ['Reservoir area',       `${Number(p.reservoir_area).toLocaleString()} ha`],
+                                    p.water_rock_ratio    && ['Water:Rock ratio',     p.water_rock_ratio],
+                                    p.dam_volume          && ['Dam volume',           `${p.dam_volume} Mm³`],
+                                    p.energy_cost         && ['LCOS',                 `$${p.energy_cost}/MWh`],
+                                    p.power_cost          && ['Cost per kW',          `$${p.power_cost}/kW`],
+                                    p.country             && ['Country',              p.country],
                                 ].filter(Boolean);
 
                                 layer.bindPopup(
