@@ -82,11 +82,20 @@
         console.log('Merged ' + dataset.length + ' ' + label + ' sites');
     }
 
-    _mergeAnuDataset(HB.Data.anuGreenfieldMalaysia, 'ANU Greenfield Malaysia');
-    _mergeAnuDataset(HB.Data.anuGreenfieldRomania,  'ANU Greenfield Romania');
-    _mergeAnuDataset(HB.Data.anuBrownfieldMalaysia, 'ANU Brownfield Malaysia');
-    _mergeAnuDataset(HB.Data.anuBrownfieldRomania,  'ANU Brownfield Romania');
-    _mergeAnuDataset(HB.Data.anuOceanMalaysia,      'ANU Ocean Malaysia');
+    _mergeAnuDataset(HB.Data.anuGreenfieldMalaysia,    'ANU Greenfield Malaysia');
+    _mergeAnuDataset(HB.Data.anuGreenfieldRomania,     'ANU Greenfield Romania');
+    _mergeAnuDataset(HB.Data.anuBrownfieldMalaysia,    'ANU Brownfield Malaysia');
+    _mergeAnuDataset(HB.Data.anuBrownfieldRomania,     'ANU Brownfield Romania');
+    _mergeAnuDataset(HB.Data.anuOceanMalaysia,         'ANU Ocean Malaysia');
+    _mergeAnuDataset(HB.Data.anuBluefieldSouthKorea,   'ANU Bluefield South Korea');
+    _mergeAnuDataset(HB.Data.anuGreenfieldSouthKorea,  'ANU Greenfield South Korea');
+    _mergeAnuDataset(HB.Data.anuBrownfieldSouthKorea,  'ANU Brownfield South Korea');
+    _mergeAnuDataset(HB.Data.anuBluefieldPhilippines,  'ANU Bluefield Philippines');
+    _mergeAnuDataset(HB.Data.anuGreenfieldPhilippines, 'ANU Greenfield Philippines');
+    _mergeAnuDataset(HB.Data.anuBrownfieldPhilippines, 'ANU Brownfield Philippines');
+    _mergeAnuDataset(HB.Data.anuBluefieldIndonesia,    'ANU Bluefield Indonesia');
+    _mergeAnuDataset(HB.Data.anuGreenfieldIndonesia,   'ANU Greenfield Indonesia');
+    _mergeAnuDataset(HB.Data.anuBrownfieldIndonesia,   'ANU Brownfield Indonesia');
 
     // Merge ANU Bluefield Romania data into knownSites
     if (HB.Data.anuBluefieldRomania && HB.Data.anuBluefieldRomania.length) {
@@ -242,9 +251,12 @@
                 const countrySelect = document.getElementById('filter-country');
                 if (countrySelect) {
                     const label = btn.textContent.trim();
-                    if (label.includes('Australia')) countrySelect.value = 'Australia';
+                    if (label.includes('Australia'))       countrySelect.value = 'Australia';
                     else if (label.includes('Malaysia') || label.includes('Mamut')) countrySelect.value = 'Malaysia';
-                    else if (label.includes('Romania')) countrySelect.value = 'Romania';
+                    else if (label.includes('Romania'))    countrySelect.value = 'Romania';
+                    else if (label.includes('South Korea') || label.includes('🇰🇷')) countrySelect.value = 'South Korea';
+                    else if (label.includes('Philippines') || label.includes('🇵🇭')) countrySelect.value = 'Philippines';
+                    else if (label.includes('Indonesia')  || label.includes('🇮🇩')) countrySelect.value = 'Indonesia';
                     countrySelect.dispatchEvent(new Event('change'));
                 }
             });

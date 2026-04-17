@@ -1,6 +1,10 @@
 # HydroSHEDS source data (large shapefiles, 2+ GB)
 data/hydrosheds/
 
+# Node
+node_modules/
+npm-debug.log*
+
 # Python
 __pycache__/
 *.pyc
