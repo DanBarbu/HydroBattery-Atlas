@@ -156,8 +156,8 @@ HB.UI.siteDetail = {
         // Parameters table
         this._renderParams(site);
 
-        // Cross-section
-        this._drawCrossSection(site);
+        // Satellite view (ANU/known sites) or canvas cross-section fallback
+        this._renderSiteView(site);
 
         // Cost breakdown — prefer ANU model for Bluefield sites
         if (site.anuResult) {
@@ -419,6 +419,131 @@ HB.UI.siteDetail = {
             tr.innerHTML = `<td>${label}</td><td>${value}</td>`;
             tbody.appendChild(tr);
         });
+    },
+
+    // -----------------------------------------------------------------------
+    // SITE VIEW — satellite mini-map (ANU/known) or canvas cross-section
+    // -----------------------------------------------------------------------
+
+    /**
+     * Router: shows a Leaflet satellite mini-map when the site has lat/lng,
+     * otherwise falls back to the canvas cross-section diagram.
+     */
+    _renderSiteView(site) {
+        const lat  = site.lat  ?? site.latitude;
+        const lng  = site.lng  ?? site.longitude;
+        const hasCoords = lat != null && lng != null && isFinite(lat) && isFinite(lng);
+
+        const mapDiv    = document.getElementById('site-satellite-map');
+        const canvas    = document.getElementById('cross-section-canvas');
+        const title     = document.getElementById('site-view-title');
+        const footer    = document.getElementById('site-view-footer');
+        const anuLink   = document.getElementById('site-anu-link');
+        const attrSpan  = document.getElementById('site-view-attribution');
+
+        if (hasCoords) {
+            // Show satellite mini-map, hide canvas
+            mapDiv.style.display  = 'block';
+            canvas.style.display  = 'none';
+            title.textContent     = 'Reservoir Pair — Satellite View';
+            footer.style.display  = 'flex';
+            attrSpan.textContent  = 'Imagery © Esri';
+            // ANU atlas link — global atlas (no deep-link API available)
+            anuLink.href = site.source_url || 'https://re100.eng.anu.edu.au/global/';
+            anuLink.style.display = '';
+
+            this._showSatelliteMap(site, lat, lng, mapDiv);
+        } else {
+            // No coords — show canvas cross-section
+            mapDiv.style.display  = 'none';
+            canvas.style.display  = 'block';
+            title.textContent     = 'Cross-Section';
+            footer.style.display  = 'none';
+            this._drawCrossSection(site);
+        }
+    },
+
+    /**
+     * Create or update the Leaflet satellite mini-map centred on the lake pair.
+     * Uses ESRI World Imagery tiles (free, no key).
+     * Draws: upper/lower reservoir markers + connecting polyline.
+     */
+    _showSatelliteMap(site, lat, lng, container) {
+        const sepKm  = site.separation_km ?? (site.tunnelLength ? site.tunnelLength / 1000 : 5);
+        const headM  = site.head_m ?? site.headHeight ?? site.headM ?? 200;
+
+        // Zoom level inversely proportional to separation
+        const zoom = sepKm < 1   ? 14
+                   : sepKm < 3   ? 13
+                   : sepKm < 8   ? 12
+                   : sepKm < 20  ? 11
+                   : sepKm < 50  ? 10 : 9;
+
+        // Estimate upper/lower reservoir positions by splitting along north–south
+        // (rough — real bearing unknown; offset is small vs actual scale).
+        // 1 degree lat ≈ 111 km, so delta = (sepKm/2)/111 degrees.
+        const deltaLat = (sepKm / 2) / 111;
+        const upperLatLng = [lat + deltaLat, lng];
+        const lowerLatLng = [lat - deltaLat, lng];
+
+        if (!this._miniMap) {
+            // First-time init
+            this._miniMap = L.map(container, {
+                center: [lat, lng],
+                zoom,
+                zoomControl:       true,
+                attributionControl: false,
+                scrollWheelZoom:   false,
+                dragging:          true,
+                doubleClickZoom:   true
+            });
+
+            L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom: 18, attribution: 'Imagery © Esri' }
+            ).addTo(this._miniMap);
+
+            // Tiny label overlay (country labels, roads)
+            L.tileLayer(
+                'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom: 18, opacity: 0.5 }
+            ).addTo(this._miniMap);
+
+            this._miniMapLayers = {};
+        } else {
+            // Pan/zoom to new site
+            this._miniMap.setView([lat, lng], zoom);
+            // Clear old markers/lines
+            Object.values(this._miniMapLayers).forEach(l => this._miniMap.removeLayer(l));
+            this._miniMapLayers = {};
+        }
+
+        // Blue circle markers for upper and lower reservoir
+        const circleOpts = (color, title) => ({
+            radius: 7, color, weight: 2,
+            fillColor: color, fillOpacity: 0.75,
+            title
+        });
+
+        const upperMarker = L.circleMarker(upperLatLng,
+            circleOpts('#1565C0', `Upper reservoir — ${Math.round(headM)}m above lower`))
+            .bindTooltip(`⬆ Upper reservoir<br>${Math.round(headM)}m head`, { permanent: false })
+            .addTo(this._miniMap);
+
+        const lowerMarker = L.circleMarker(lowerLatLng,
+            circleOpts('#42A5F5', 'Lower reservoir'))
+            .bindTooltip('⬇ Lower reservoir', { permanent: false })
+            .addTo(this._miniMap);
+
+        // Dashed polyline connecting the pair
+        const pairLine = L.polyline([upperLatLng, lowerLatLng], {
+            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85
+        }).addTo(this._miniMap);
+
+        this._miniMapLayers = { upperMarker, lowerMarker, pairLine };
+
+        // Ensure Leaflet knows the container size (panel may have just appeared)
+        setTimeout(() => { if (this._miniMap) this._miniMap.invalidateSize(); }, 120);
     },
 
     _drawCrossSection(site) {

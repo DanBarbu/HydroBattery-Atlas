@@ -339,9 +339,18 @@
                     </table>
                 </div>
 
-                <div class="detail-section">
-                    <h3>Cross-Section</h3>
+                <div class="detail-section" id="site-view-section">
+                    <h3 id="site-view-title">Cross-Section</h3>
+                    <!-- Satellite mini-map (ANU / known sites with lat+lng) -->
+                    <div id="site-satellite-map" style="width:100%;height:200px;border-radius:4px;overflow:hidden;display:none;"></div>
+                    <!-- Fallback canvas diagram (sites without coordinates) -->
                     <canvas id="cross-section-canvas" width="380" height="200"></canvas>
+                    <!-- Attribution / ANU link bar -->
+                    <div id="site-view-footer" style="display:none;font-size:10px;color:#666;margin-top:4px;justify-content:space-between;align-items:center;">
+                        <span id="site-view-attribution"></span>
+                        <a id="site-anu-link" href="#" target="_blank" rel="noopener"
+                           style="color:#1565c0;text-decoration:none;font-weight:600;">Open in ANU Atlas ↗</a>
+                    </div>
                 </div>
 
                 <div class="detail-section">
@@ -611,7 +620,7 @@
     <script src="js/ui/searchPanel.js?v=4"></script>
     <script src="js/ui/resultsPanel.js?v=3"></script>
     <script src="js/ui/costBreakdownPanel.js?v=4"></script>
-    <script src="js/ui/siteDetailPanel.js?v=9"></script>
+    <script src="js/ui/siteDetailPanel.js?v=10"></script>
     <script src="js/ui/financialParamsPanel.js?v=3"></script>
     <script src="js/ui/scaleUpPanel.js?v=4"></script>
     <script src="js/ui/sensitivityPanel.js?v=2"></script>
