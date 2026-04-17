@@ -751,10 +751,7 @@ HB.UI.siteDetail = {
                 }
 
                 // ── Pipeline LineStrings (actual ANU tunnel geometry) ──────────
-                // ispipe=true features carry ALL pair-level data in WFS properties:
-                // head, separation, average_slope, head_distance_ratio, energy,
-                // volume, water_rock_ratio, dam_volume, reservoir_area, class,
-                // energy_cost, power_cost, country.
+                // Like reservoir features, pipe data lives in the description HTML.
                 if (pipeFeats.length) {
                     const pipeLayer = L.geoJSON(
                         { type: 'FeatureCollection', features: pipeFeats },
@@ -765,30 +762,58 @@ HB.UI.siteDetail = {
                                 opacity: 0.95
                             }),
                             onEachFeature: (feature, layer) => {
-                                const p  = feature.properties;
-                                const cl = p.class;
+                                const p = feature.properties;
+
+                                // Parse description HTML (same pattern as reservoir features)
+                                const d = this._parseANUDescription(p.description);
+                                const dget = (...keys) => {
+                                    for (const k of keys) {
+                                        if (d[k] != null && d[k] !== '') return d[k];
+                                    }
+                                    // Fallback: try direct property
+                                    for (const k of keys) {
+                                        if (p[k] != null && p[k] !== '') return p[k];
+                                    }
+                                    return null;
+                                };
+
+                                const head    = dget('Head (m)', 'Head');
+                                const sep     = dget('Separation (km)', 'Separation');
+                                const slope   = dget('Average Slope (%)', 'Average slope (%)', 'Average Slope', 'average_slope');
+                                const hdr     = dget('Head/Distance Ratio', 'Head/distance ratio', 'head_distance_ratio');
+                                const energy  = dget('Energy (GWh)', 'Energy');
+                                const vol     = dget('Volume (GL)', 'Volume');
+                                const area    = dget('Reservoir Area (ha)', 'Reservoir area (ha)', 'Reservoir Area', 'reservoir_area');
+                                const wrock   = dget('Water/Rock Ratio', 'Water:Rock ratio', 'water_rock_ratio');
+                                const dvol    = dget('Dam Volume (Mm³)', 'Dam Volume (Mm3)', 'Dam Volume (GL)', 'Dam Volume', 'dam_volume');
+                                const cls     = dget('Class', 'class');
+                                const lcos    = dget('LCOS ($/MWh)', 'Energy Cost', 'energy_cost');
+                                const cpkw    = dget('Cost/kW ($/kW)', 'Power Cost', 'power_cost');
+                                const country = dget('Country');
+
+                                // DEBUG — remove after confirming keys
+                                console.log('[ANU pipe] raw props:', p);
+                                console.log('[ANU pipe] parsed description:', d);
 
                                 layer.bindTooltip(
                                     'Tunnel / Penstock — click for details',
                                     { sticky: true, className: 'anu-tip' }
                                 );
 
-                                // All values sourced directly from ANU WFS properties
                                 const rows = [
-                                    cl                    && ['Cost class',
-                                        `<strong style="color:${classColor(cl)};">${cl}</strong>`],
-                                    p.head                && ['Head',                 `${p.head} m`],
-                                    p.separation          && ['Separation',           `${p.separation} km`],
-                                    p.average_slope       && ['Average slope',        `${p.average_slope}%`],
-                                    p.head_distance_ratio && ['Head/distance ratio',  p.head_distance_ratio],
-                                    p.energy              && ['Energy',               `${p.energy} GWh`],
-                                    p.volume              && ['Volume',               `${p.volume} GL`],
-                                    p.reservoir_area      && ['Reservoir area',       `${Number(p.reservoir_area).toLocaleString()} ha`],
-                                    p.water_rock_ratio    && ['Water:Rock ratio',     p.water_rock_ratio],
-                                    p.dam_volume          && ['Dam volume',           `${p.dam_volume} Mm³`],
-                                    p.energy_cost         && ['LCOS',                 `$${p.energy_cost}/MWh`],
-                                    p.power_cost          && ['Cost per kW',          `$${p.power_cost}/kW`],
-                                    p.country             && ['Country',              p.country],
+                                    cls     && ['Cost class',          `<strong style="color:${classColor(cls)};">${cls}</strong>`],
+                                    head    && ['Head',                `${head} m`],
+                                    sep     && ['Separation',          `${sep} km`],
+                                    slope   && ['Average slope',       `${slope}%`],
+                                    hdr     && ['Head/distance ratio', hdr],
+                                    energy  && ['Energy',              `${energy} GWh`],
+                                    vol     && ['Volume',              `${vol} GL`],
+                                    area    && ['Reservoir area',      `${Number(area).toLocaleString()} ha`],
+                                    wrock   && ['Water:Rock ratio',    wrock],
+                                    dvol    && ['Dam volume',          dvol],
+                                    lcos    && ['LCOS',                `$${lcos}/MWh`],
+                                    cpkw    && ['Cost per kW',         `$${cpkw}/kW`],
+                                    country && ['Country',             country],
                                 ].filter(Boolean);
 
                                 layer.bindPopup(
