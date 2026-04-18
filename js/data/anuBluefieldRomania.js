@@ -11542,5 +11542,28 @@ HB.Data.anuBluefieldRomania = [
     "description": "Potential pair — ANU upper reservoir RES25892 (elev 1032m, 24ha, 4.1GL, dam wall 38.7m) × existing Tarnița lake (lower, elev 420m). Head 612m, sep ~6.2km. Estimated ~5.6 GWh. Highest head of all Tarnița candidates; small upper volume limits capacity. Lower reservoir already built. W/R 2.6. NOT an official ANU pair.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "wfs_fid": "5gwh_18h.1055095"
+  },
+
+  // ── Tarnița-Fântânele: both-existing brownfield pair (NOT in ANU catalogue) ─
+  // Fântânele-Beliș reservoir (upper, 990m) × Tarnița (lower, ~500m)
+  // Straight-line separation ~28 km; actual mountain tunnel ~30-35 km.
+  // Head ~490m. L/H ratio ~57 (standard PHES range, NOT 0.2km ultra-short).
+  // ANU does NOT catalogue existing-to-existing pairings — this is user-added.
+  // ⚠ GEOGRAPHIC NOTE: A circulating analysis incorrectly claims 0.2 km separation.
+  //   Actual measured straight-line distance: ~28 km. The "0.2 km / L/H=0.46"
+  //   figure is factually wrong by a factor of ~140×.
+  { "id": "ro-tarnita-fantanele-brownfield",
+    "tier": "15GWh", "class": null,
+    "name": "Fântânele-Beliș × Tarnița — Brownfield Pair (Both Existing, ~490m head)",
+    "country": "Romania", "region": "Apuseni / Cluj",
+    "lat": 46.697, "lng": 23.130,
+    "head_m": 490, "separation_km": 28, "volume_gl": 16,
+    "water_rock_ratio": null, "energy_gwh": 15,
+    "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "Both-existing brownfield pair: Fântânele-Beliș reservoir (upper, ~990m asl, 280GL total) × Tarnița lake (lower, ~500m asl, 71.7GL). Head ~490m, straight-line separation ~28km — a 30-35km mountain tunnel is required. L/H ratio ~57 (conventional PHES). Fântânele has more than enough active storage for a 15GWh cycle (~16GL needed). NOT in the ANU catalogue (ANU pairs one existing + one new reservoir only). ⚠️ A circulating analysis claims 0.2km separation and L/H=0.46 — that is a geographic error: the two dams are ~28km apart, not 200m. Estimated CAPEX ~$1.2–2.0B for 833MW with long tunnel, similar to the official Tarnița-Lăpuștești greenfield plan.",
+    "source_url": "https://ro.wikipedia.org/wiki/Barajul_F%C3%A2nt%C3%A2nele"
   }
 ];
