@@ -436,7 +436,7 @@ HB.Data.anuBluefieldRomania = [
     "id": "ro-bf-15gwh_18h-795084",
     "tier": "15GWh",
     "class": "C",
-    "name": "Tarnita-Belis Lake Pair 795084 (15GWh)",
+    "name": "Tarnița Ultra-Short Forebay Pair (ANU 795084 · 100m · 0.2km)",
     "country": "Romania",
     "region": "Apuseni / Cluj",
     "lat": 46.7269,
@@ -454,7 +454,7 @@ HB.Data.anuBluefieldRomania = [
     "storage_mwh": 15000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class C 15GWh/18h. Upper reservoir RES_143844: elevation 520m, area 136ha, volume 74GL, max depth 10m. Lower reservoir n46_e023_RES23783: elevation 420m, area 269ha, volume 71.7GL, dam wall height 61.3m, dam length 354m, dam volume 2.2GL, water-to-rock ratio 32.1. Head 100m, separation 0.2km. Exceptionally high water-to-rock ratio (32.1) means minimal excavation. LCOS $25.1/MWh, power cost $1295.4/kW.",
+    "description": "ANU Bluefield Class C · 15GWh/18h · WFS 795084. Upper reservoir RES_143844 (elev ~520m asl, 136ha, 74GL) is a plateau reservoir immediately adjacent to Tarnița. Lower reservoir n46_e023_RES23783 is Tarnița lake (thalweg ~420m, 269ha, 71.7GL active). Gross head 100m — Tarnița acts as upper storage; a new forebay ~0.2km downstream of the dam is the lower. Separation 0.2km is confirmed by ANU WFS geometry. Very high W/R (32.1) reflects a low-head design needing large-volume upper storage. Penstock: short (200m shaft or tunnel), no long galleries. Flow rate ~976 m³/s for 833MW at 100m head. ANU LCOS $25.1/MWh, power cost $1,295/kW → total CAPEX ~$1.08B for 833MW. This is ~30–45% cheaper than the official Tarnița-Lăpuștești plan ($1.5–2.0B for 1,000MW). ⚠️ NOTE: This pair is NOT connected to Fântânele-Beliș (which is 28km away) — that was a geographic error in an earlier analysis. This is a distinct ANU-identified pairing using land immediately adjacent to the existing Tarnița dam.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "15gwh_18h.795084"
