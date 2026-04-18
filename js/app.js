@@ -197,6 +197,43 @@
     console.log('HydroBattery Atlas initialized');
     console.log(`Loaded ${HB.Data.knownSites.length} known sites and ${HB.Data.mineVoids.length} mine void sites`);
 
+    // ── URL hash deep-link support ──────────────────────────────────────────
+    // Supported:
+    //   #site=SITE_ID          → open site detail panel for that site
+    //   #map=LAT,LNG,ZOOM      → fly map to position
+    // Example: https://danbarbu.github.io/HydroBattery-Atlas/#site=ro-tarnita-pot-RES25892
+    (function _handleUrlHash() {
+        const hash = window.location.hash; // e.g. "#site=ro-tarnita-pot-RES25892"
+        if (!hash) return;
+
+        if (hash.startsWith('#site=')) {
+            const siteId = hash.slice(6);
+            // Slight delay ensures map tiles and markers are fully rendered
+            setTimeout(() => {
+                // Find the site in the data
+                const site = HB.Data.knownSites.find(s => s.id === siteId);
+                if (site) {
+                    // Fly map to the site
+                    HB.Map.flyTo(site.lat, site.lng, 11);
+                    // Emit the viewSiteDetail event to open the detail panel
+                    HB.Events.emit('viewSiteDetail', siteId);
+                } else {
+                    console.warn('Hash site not found:', siteId);
+                }
+            }, 800);
+        } else if (hash.startsWith('#map=')) {
+            const parts = hash.slice(5).split(',');
+            if (parts.length >= 2) {
+                const lat  = parseFloat(parts[0]);
+                const lng  = parseFloat(parts[1]);
+                const zoom = parts[2] ? parseInt(parts[2], 10) : 8;
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    setTimeout(() => HB.Map.flyTo(lat, lng, zoom), 400);
+                }
+            }
+        }
+    })();
+
     // Update footer site count
     const siteCountEl = document.getElementById('site-count');
     if (siteCountEl) {
