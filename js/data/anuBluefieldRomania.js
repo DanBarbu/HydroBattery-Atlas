@@ -11337,6 +11337,45 @@ HB.Data.anuBluefieldRomania = [
   // Separation ~29–30 km — long but feasible for high-head PHES.
   // Energy = 9810 × head × vol_GL×1e6 × 0.81 / 3.6e12.
 
+  // ── Potential Bicaz (Izvorul Muntelui) as UPPER reservoir ────────────────
+  // Bicaz (511m, 1230GL) used as the upper reservoir; lower reservoirs below.
+  // Energy is limited entirely by the small LOWER reservoir volume —
+  // Bicaz's 1230GL is effectively infinite in comparison.
+  // Head = 511 − lower_elev. Coords = midpoint lower ↔ Bicaz dam.
+  // ANU WFS returned only 2 lower reservoirs within 30km with head ≥ 100m.
+
+  { "id": "ro-bicaz-lower-RES143687",
+    "tier": "5GWh", "class": "D",
+    "name": "Izvorul Muntelui × RES_143687 — Potential 5GWh Pair (Bicaz Upper)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.9437, "lng": 26.2504,
+    "head_m": 194, "separation_km": 11.6, "volume_gl": 10.0,
+    "water_rock_ratio": null, "energy_gwh": 4.3,
+    "dam_volume_mm3": null, "reservoir_area_ha": 164,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 278, "storage_mwh": 5000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "Potential pair — Izvorul Muntelui / Bicaz (UPPER, elev 511m, 1230GL) × ANU lower reservoir RES_143687 (elev 317m, 164ha, 10GL). Head 194m, sep 11.6km downstream Bistrița valley. Estimated ~4.3 GWh — energy limited by lower reservoir volume (10GL). Upper dam cost = 0 (Bicaz existing). RES_143687 is already the lower node in 3 official ANU pairs. NOT an official ANU pair with Bicaz as upper.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "15gwh_18h.794717"
+  },
+
+  { "id": "ro-bicaz-lower-RES1084404",
+    "tier": "2GWh", "class": "D",
+    "name": "Izvorul Muntelui × RES_1084404 — Potential 2GWh Pair (Bicaz Upper)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.9380, "lng": 26.1879,
+    "head_m": 151, "separation_km": 4.0, "volume_gl": 5.0,
+    "water_rock_ratio": null, "energy_gwh": 1.7,
+    "dam_volume_mm3": null, "reservoir_area_ha": 81,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 93, "storage_mwh": 1700,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "Potential pair — Izvorul Muntelui / Bicaz (UPPER, elev 511m, 1230GL) × ANU lower reservoir RES_1084404 (elev 360m, 81ha, 5GL). Head 151m, sep 4.0km — closest lower reservoir to Bicaz dam. Estimated ~1.7 GWh / 93 MW — tightly energy-limited by lower volume (5GL). Upper dam cost = 0. Shortest penstock option for Bicaz-as-upper configuration. NOT an official ANU pair.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "5gwh_18h.1054982"
+  },
+
   { "id": "ro-bicaz-pot-RES32777",
     "tier": "15GWh", "class": "C",
     "name": "RES32777 × Izvorul Muntelui — Potential 15GWh Pair (Class C)",
