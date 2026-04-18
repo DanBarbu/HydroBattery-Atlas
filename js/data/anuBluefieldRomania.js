@@ -11260,6 +11260,115 @@ HB.Data.anuBluefieldRomania = [
     "wfs_fid": "15gwh_18h.795130"
   },
 
+  // ── Bicaz / Izvorul Muntelui area — official ANU pairs ───────────────────
+  // ANU uses RES_143687 (elev 317m) and RES_1084404 (elev 360m) as lower
+  // reservoirs — NOT the actual Izvorul Muntelui lake (511m, 1230GL, absent
+  // from ANU new-reservoir catalogue). Coords = ANU pin centroids from WFS.
+
+  { "id": "ro-bicaz-off-15gwh-RES32777",
+    "tier": "15GWh", "class": "C",
+    "name": "RES32777 & RES_143687 — Bicaz area 15GWh (Class C)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.8138, "lng": 26.2833,
+    "head_m": 784, "separation_km": 26.0, "volume_gl": 9.1,
+    "water_rock_ratio": 5.9, "energy_gwh": 15,
+    "dam_volume_mm3": null, "reservoir_area_ha": 48,
+    "energy_cost_usd_mwh": 17.5, "power_cost_usd_kw": 1598.4,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "ANU Bluefield Class C 15GWh/18h. Upper RES32777 (elev 1101m, 48ha, 9.1GL, dam wall 37.1m) × lower RES_143687 (elev 317m). Head 784m, sep 26.0km. Note: lower reservoir is NOT Izvorul Muntelui — ANU uses a smaller downstream lake. LCOS $17.5/MWh.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "15gwh_18h.794687"
+  },
+
+  { "id": "ro-bicaz-off-5gwh-RES201",
+    "tier": "5GWh", "class": "E",
+    "name": "RES201 & RES_143687 — Bicaz area 5GWh (Class E)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.9684, "lng": 26.2874,
+    "head_m": 243, "separation_km": 7.8, "volume_gl": 9.7,
+    "water_rock_ratio": 8.5, "energy_gwh": 5,
+    "dam_volume_mm3": 1.1, "reservoir_area_ha": 52,
+    "energy_cost_usd_mwh": 39.3, "power_cost_usd_kw": 1936.6,
+    "capacity_mw": 278, "storage_mwh": 5000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "ANU Bluefield Class E 5GWh/18h. Upper RES201 (elev 560m, 52ha, 9.7GL, dam wall 40.8m, W/R 8.5) × lower RES_143687 (elev 317m). Head 243m, sep 7.8km. Closest pair to Bicaz dam. RES201 is only 49m above Izvorul Muntelui (511m) so unsuitable as direct Bicaz upper. LCOS $39.3/MWh.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "5gwh_18h.1054966"
+  },
+
+  { "id": "ro-bicaz-off-5gwh-RES32366",
+    "tier": "5GWh", "class": "E",
+    "name": "RES32366 & RES_143687 — Bicaz area 5GWh (Class E)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.8141, "lng": 26.2843,
+    "head_m": 794, "separation_km": 25.9, "volume_gl": 3.0,
+    "water_rock_ratio": 3.1, "energy_gwh": 5,
+    "dam_volume_mm3": null, "reservoir_area_ha": 17,
+    "energy_cost_usd_mwh": 32.9, "power_cost_usd_kw": 2110.9,
+    "capacity_mw": 278, "storage_mwh": 5000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "ANU Bluefield Class E 5GWh/18h. Upper RES32366 (elev 1111m, 17ha, 3.0GL, dam wall 38.3m) × lower RES_143687 (elev 317m). Head 794m, sep 25.9km. LCOS $32.9/MWh.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "5gwh_18h.1054965"
+  },
+
+  { "id": "ro-bicaz-off-5gwh-RES33085",
+    "tier": "5GWh", "class": "E",
+    "name": "RES33085 & RES_1084404 — Bicaz area 5GWh (Class E)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.8041, "lng": 26.2254,
+    "head_m": 772, "separation_km": 25.7, "volume_gl": 3.1,
+    "water_rock_ratio": 3.0, "energy_gwh": 5,
+    "dam_volume_mm3": null, "reservoir_area_ha": 17,
+    "energy_cost_usd_mwh": 34.7, "power_cost_usd_kw": 2126.9,
+    "capacity_mw": 278, "storage_mwh": 5000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "ANU Bluefield Class E 5GWh/18h. Upper RES33085 (elev 1132m, 17ha, 3.1GL, dam wall 38.1m) × lower RES_1084404 (elev 360m). Head 772m, sep 25.7km. LCOS $34.7/MWh.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "5gwh_18h.1054964"
+  },
+
+  // ── Potential Bicaz (Izvorul Muntelui) pairings ───────────────────────────
+  // Izvorul Muntelui is NOT in the ANU catalogue (too large — 1230 GL, 3100 ha).
+  // These use ANU upper-reservoir polygons that could pair with the actual lake
+  // (elev 511m) as lower reservoir. Lower dam cost = 0 (existing dam).
+  // Head = upper_elev − 511m. Coords = midpoint upper ↔ Bicaz dam.
+  // Separation ~29–30 km — long but feasible for high-head PHES.
+  // Energy = 9810 × head × vol_GL×1e6 × 0.81 / 3.6e12.
+
+  { "id": "ro-bicaz-pot-RES32777",
+    "tier": "15GWh", "class": "C",
+    "name": "RES32777 × Izvorul Muntelui — Potential 15GWh Pair (Class C)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.8222, "lng": 26.2086,
+    "head_m": 590, "separation_km": 29.5, "volume_gl": 9.1,
+    "water_rock_ratio": 5.9, "energy_gwh": 11.8,
+    "dam_volume_mm3": null, "reservoir_area_ha": 48,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "Potential pair — ANU upper RES32777 (elev 1101m, 48ha, 9.1GL, W/R 5.9) × existing Izvorul Muntelui (lower, elev 511m, 1230GL). Head 590m, sep ~29.5km. Estimated ~11.8 GWh. ANU officially pairs RES32777 with RES_143687 (784m head, 26km); Bicaz pairing gives 590m head but eliminates lower dam cost. Long penstock comparable to ANU's own pairing. NOT an official ANU pair.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "15gwh_18h.794687"
+  },
+
+  { "id": "ro-bicaz-pot-RES33011",
+    "tier": "15GWh", "class": "E",
+    "name": "RES33011 × Izvorul Muntelui — Potential 15GWh Pair (Class E)",
+    "country": "Romania", "region": "Eastern Carpathians / Neamț",
+    "lat": 46.8211, "lng": 26.2196,
+    "head_m": 669, "separation_km": 30.2, "volume_gl": 7.5,
+    "water_rock_ratio": 2.2, "energy_gwh": 13.7,
+    "dam_volume_mm3": null, "reservoir_area_ha": 21,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": false,
+    "description": "Potential pair — ANU upper RES33011 (elev 1180m, 21ha, 7.5GL, dam wall 61.6m, W/R 2.2) × existing Izvorul Muntelui (lower, elev 511m, 1230GL). Head 669m, sep ~30.2km. Estimated ~13.7 GWh — highest head of all Bicaz candidates. W/R 2.2 reflects significant upper dam excavation. ANU pairs this site with RES_143875 at 976m head; Bicaz pairing gives 669m head with zero lower dam cost. NOT an official ANU pair.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "wfs_fid": "15gwh_18h.794695"
+  },
+
   // ── Potential Tarnița pairings ────────────────────────────────────────────
   // ANU reservoir polygons within 10 km of Tarnița lake (n46_e023_RES23783,
   // elev ~420m) that could serve as upper reservoir with Tarnița as lower.
