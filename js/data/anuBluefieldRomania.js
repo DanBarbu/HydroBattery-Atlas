@@ -11231,5 +11231,32 @@ HB.Data.anuBluefieldRomania = [
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "2gwh_6h.433797"
+  },
+  {
+    "id": "ro-bf-15gwh_18h-795130",
+    "tier": "15GWh",
+    "class": "E",
+    "name": "Apuseni RES25953 & RES_143844 (15GWh Class E)",
+    "country": "Romania",
+    "region": "Apuseni / Cluj",
+    "lat": 46.7192,
+    "lng": 23.2503,
+    "head_m": 433,
+    "separation_km": 2.0,
+    "volume_gl": 17.0,
+    "water_rock_ratio": 2.0,
+    "energy_gwh": 15,
+    "dam_volume_mm3": 8.3,
+    "reservoir_area_ha": 185.8,
+    "energy_cost_usd_mwh": 91.1,
+    "power_cost_usd_kw": 771.6,
+    "capacity_mw": 833,
+    "storage_mwh": 15000,
+    "status": "anu_bluefield",
+    "configuration": "lake_pair",
+    "description": "ANU Bluefield Class E 15GWh/18h. Upper reservoir n46_e023_RES25953: elevation 953m, area 50ha, volume 17GL, dam wall height 93.1m, dam length 2922m, dam volume 8.3GL. Lower reservoir RES_143844. Head 433m, separation 2.0km, average slope 21%, water-to-rock ratio 2.0 (significant excavation required). LCOS $91.1/MWh, power cost $771.6/kW.",
+    "source_url": "https://re100.eng.anu.edu.au/global/",
+    "isdam": false,
+    "wfs_fid": "15gwh_18h.795130"
   }
 ];
