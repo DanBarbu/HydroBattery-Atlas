@@ -559,8 +559,14 @@ HB.UI.siteDetail = {
         }).addTo(this._miniMap);
         this._miniMapLayers = { upperMarker: upperPH, lowerMarker: lowerPH, pairLine };
 
-        // Ensure Leaflet reflows after panel visibility change
-        setTimeout(() => { if (this._miniMap) this._miniMap.invalidateSize(); }, 120);
+        // Fit bounds to show both reservoirs with padding; cap at zoom 14 so water bodies are visible
+        setTimeout(() => {
+            if (this._miniMap) {
+                this._miniMap.invalidateSize();
+                const bounds = L.latLngBounds([upperLatLng, lowerLatLng]).pad(0.25);
+                this._miniMap.fitBounds(bounds, { maxZoom: 14 });
+            }
+        }, 150);
 
         // Fetch real lake-perimeter polygons from ANU GeoServer (replaces placeholders)
         this._loadANUPolygons(site, lat, lng, sepKm);
