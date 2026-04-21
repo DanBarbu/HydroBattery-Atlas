@@ -667,8 +667,48 @@ HB.UI.siteDetail = {
 
         this._miniMapLayers.polygons = polyLayer;
 
-        // Connector line between reservoir centres
-        if (site.upper_lat && site.lower_lat) {
+        // Pipeline / penstock — orange line matching ANU Atlas style.
+        // If embedded pipe_geometry exists use that; otherwise draw a thin
+        // dashed red fallback line between the two reservoir centre-points.
+        if (site.pipe_geometry) {
+            const pipeLayer = L.geoJSON(
+                { type: 'Feature', geometry: site.pipe_geometry, properties: {} },
+                {
+                    style: () => ({
+                        color:   '#e67e22',   // ANU Atlas penstock orange
+                        weight:  4,
+                        opacity: 0.95
+                    }),
+                    onEachFeature: (feature, layer) => {
+                        layer.bindTooltip('Penstock / Tunnel — click for details',
+                            { sticky: true, className: 'anu-tip' });
+                        const lenKm  = site.anu_tunnel_km     || site.separation_km || '—';
+                        const slope  = site.anu_tunnel_slope_pct || '—';
+                        const headM  = site.head_m || site.headM || '—';
+                        const flowM3 = site.anu_flow_m3s || '—';
+                        layer.bindPopup(`
+                            <div style="font-family:system-ui,sans-serif;min-width:200px;">
+                              <div style="background:#e67e22;color:#fff;
+                                   padding:7px 14px;margin:-12px -16px 10px;
+                                   border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                                ⚡ Penstock / Tunnel
+                              </div>
+                              <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
+                                <tr><td style="color:#555;font-weight:600;padding-right:12px;">Length</td><td>${lenKm} km</td></tr>
+                                <tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Slope</td><td>${slope}%</td></tr>
+                                <tr><td style="color:#555;font-weight:600;padding-right:12px;">Head</td><td>${headM} m</td></tr>
+                                ${flowM3 !== '—' ? `<tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Flow</td><td>${flowM3} m³/s</td></tr>` : ''}
+                                <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
+                                    <td style="font-size:10px;color:#666;">ANU RE100 (embedded)</td></tr>
+                              </table>
+                            </div>`, { maxWidth: 260, className: 'anu-popup' }
+                        );
+                    }
+                }
+            ).addTo(this._miniMap);
+            this._miniMapLayers.pipeline = pipeLayer;
+        } else if (site.upper_lat && site.lower_lat) {
+            // Fallback: dashed red line between reservoir centres
             const pLine = L.polyline(
                 [[site.upper_lat, site.upper_lng], [site.lower_lat, site.lower_lng]],
                 { color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85 }

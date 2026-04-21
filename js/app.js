@@ -52,9 +52,10 @@
                 anu_id_upper: bf.anu_id_upper,
                 anu_id_lower: bf.anu_id_lower,
                 anu_dataset: bf.anu_dataset,
-                // Pre-fetched polygon coordinates (bypasses CORS on live WFS)
-                upper_polygon: bf.upper_polygon || null,
-                lower_polygon: bf.lower_polygon || null,
+                // Pre-fetched polygon + pipeline coordinates (bypasses CORS on live WFS)
+                upper_polygon:  bf.upper_polygon  || null,
+                lower_polygon:  bf.lower_polygon  || null,
+                pipe_geometry:  bf.pipe_geometry  || null,
                 upper_area_ha: bf.upper_area_ha || null,
                 lower_area_ha: bf.lower_area_ha || null,
                 upper_vol_gl:  bf.upper_vol_gl  || null,
