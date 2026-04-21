@@ -323,17 +323,25 @@ HB.UI.siteDetail = {
         const tbody = document.querySelector('#site-params-table tbody');
         tbody.innerHTML = '';
 
+        // Normalise field names — search results use nested objects; knownSites use flat fields
+        const upperElev  = site.upper?.elevation ?? site.upper_elevation_m ?? null;
+        const lowerElev  = site.lower?.elevation ?? site.lower_elevation_m ?? null;
+        const headH      = site.headHeight ?? site.head_m ?? null;
+        const tunnelM    = site.tunnelLength ?? site.tunnel_length_m ?? (site.separationM) ?? null;
+        const energyKWh  = site.energyKWh ?? (site.storage_mwh != null ? site.storage_mwh * 1000 : null);
+        const powerKW    = site.powerKW   ?? (site.capacity_mw  != null ? site.capacity_mw  * 1000 : null);
+
         const params = [
             ['Configuration', (site.configuration || 'lake_pair').replace(/_/g, ' ')],
             ['Country / Region', [site.country, site.region].filter(Boolean).join(', ') || '--'],
-            ['Upper Elevation', site.upper?.elevation ? `${Math.round(site.upper.elevation)}m` : '--'],
-            ['Lower Elevation', site.lower?.elevation ? `${Math.round(site.lower.elevation)}m` : '--'],
-            ['Head Height', site.headHeight ? `${Math.round(site.headHeight)}m` : '--'],
-            ['Tunnel Length', site.tunnelLength ? `${(site.tunnelLength / 1000).toFixed(1)} km` : '--'],
-            ['Energy Storage', site.energyKWh ? HB.Utils.formatEnergy(site.energyKWh) : '--'],
-            ['Power Capacity', site.powerKW ? HB.Utils.formatPower(site.powerKW) : '--'],
-            ['Storage Duration', site.energyKWh && site.powerKW ?
-                `${(site.energyKWh / site.powerKW).toFixed(1)} hours` : '--'],
+            ['Upper Elevation', upperElev != null ? `${Math.round(upperElev)} m` : '--'],
+            ['Lower Elevation', lowerElev != null ? `${Math.round(lowerElev)} m` : '--'],
+            ['Head Height',     headH     != null ? `${Math.round(headH)} m`     : '--'],
+            ['Tunnel Length',   tunnelM   != null ? `${(tunnelM / 1000).toFixed(1)} km` : '--'],
+            ['Energy Storage',  energyKWh != null ? HB.Utils.formatEnergy(energyKWh)    : '--'],
+            ['Power Capacity',  powerKW   != null ? HB.Utils.formatPower(powerKW)       : '--'],
+            ['Storage Duration', energyKWh != null && powerKW != null ?
+                `${(energyKWh / powerKW).toFixed(1)} hours` : '--'],
         ];
 
         if (site.costResult?.engineering) {

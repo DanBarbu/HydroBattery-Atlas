@@ -617,8 +617,9 @@ HB.Cost.scaleUp = {
         const _r   = _fin.realDiscount;
         const _lt  = _fin.systemLifetime;
         const _annSoldTWh = anu.financials ? anu.financials.annualSoldTWh : 0;
-        const _refurbM = 112000 * powerMW * 1000
-                       * (Math.exp(-_r * 20) + Math.exp(-_r * 40)) / 1e6;
+        // Refurb cost: ~$112/kW = $112,000/MW → in $M: 0.112 × powerMW per refurb event
+        const _refurbM = 0.112 * powerMW
+                       * (Math.exp(-_r * 20) + Math.exp(-_r * 40));
         const _amort   = _r > 0 ? _r / (1 - Math.exp(-_r * _lt)) : 1 / _lt;
         const _lcosCapActual = (_annSoldTWh > 0)
             ? ((totalCapexM + _refurbM) * _amort) / _annSoldTWh : 0;

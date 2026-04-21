@@ -251,25 +251,31 @@ HB.Data.mineVoids = [
     // -------------------------------------------------------
     {
         id: 'mv_mamut',
-        name: 'Mamut Copper Mine',
+        name: 'Mamut Copper Mine (Pit Lake)',
         country: 'Malaysia',
         region: 'Sabah',
-        lat: 6.0100,
-        lng: 116.6300,
-        status: 'potential',
+        lat: 6.0275,
+        lng: 116.6558,
+        status: 'brownfield',
         mine_type: 'open_pit',
         commodity: 'Copper',
-        // Main open pit at ~1,100 m ASL; secondary spoil terraces at ~950 m
-        upper_pit_elevation_m: 1100,
+        // ANU confirmed pit lake (n06_e116_PITL65): 1,246 m ASL, 5.2 GL
+        upper_pit_elevation_m: 1246,
         lower_pit_elevation_m: 850,
-        head_m: 250,
-        upper_pit_volume_m3: 7000000,
+        head_m: 872,           // paired with RES_154907 (374 m ASL)
+        upper_pit_volume_m3: 5200000,
         lower_pit_volume_m3: 5000000,
-        distance_between_pits_m: 1400,
-        capacity_mw: 120,
-        storage_mwh: 720,
+        distance_between_pits_m: 10200,
+        capacity_mw: 549,
+        storage_mwh: 9900,
+        headM: 872,
+        separationM: 10200,
         estimated_cost_musd: null,
-        description: 'Abandoned open-pit copper mine near Ranau, Sabah (Borneo), operated by Mamut Copper Mining Sdn. Bhd. until 1999. Elevation ~1,100 m ASL; two pit benches separated by ~1.4 km offer ~250 m head. Tropical highland site with reliable rainfall — mine-void PHES configuration. Regional cost factor 0.5× Australian baseline.',
+        anu_id: 'n06_e116_PITL65',
+        anu_dataset: 'Global Brownfield 15GWh 18h (Protected)',
+        // Cross-reference to lake pair entries
+        lake_pair_ids: ['my_mamut_res154907', 'my_mamut_kinabalu_foothills'],
+        description: 'Former open-pit copper mine (Mamut Copper Mining Sdn. Bhd., closed 1999), now a pit lake at 1,246 m ASL near Ranau, Sabah (Borneo). ANU ID: n06_e116_PITL65. Vol: 5.2 GL. Located in Crocker Range Biosphere Reserve (protected). Paired with Ranau Reservoir (RES_154907, 374 m ASL) for 872 m head — among the highest PHES heads in Southeast Asia. 10.2 km tunnel, estimated 9.9 GWh / 549 MW. Confirmed in ANU Global Brownfield 15GWh 18h (Protected) layer.',
         source_url: 'https://en.wikipedia.org/wiki/Mamut_Copper_Mine',
         developer: ''
     },

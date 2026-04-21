@@ -21,11 +21,14 @@
                 configuration: bf.configuration || 'lake_pair',
                 capacity_mw: bf.capacity_mw,
                 storage_mwh: bf.storage_mwh,
-                upper_elevation_m: bf.head_m ? Math.round(bf.head_m * 0.7 + 200) : null,
-                lower_elevation_m: bf.head_m ? 200 : null,
+                upper_elevation_m: bf.upper_elev_m || (bf.head_m ? Math.round(bf.head_m * 0.7 + 200) : null),
+                lower_elevation_m: bf.lower_elev_m || (bf.head_m ? 200 : null),
                 head_m: bf.head_m,
+                // Scale-up engine fields
+                headM: bf.headM || bf.head_m,
+                separationM: bf.separationM || (bf.separation_km ? Math.round(bf.separation_km * 1000) : null),
                 separation_km: bf.separation_km,
-                tunnel_length_m: bf.separation_km ? Math.round(bf.separation_km * 1000) : null,
+                tunnel_length_m: bf.separationM || (bf.separation_km ? Math.round(bf.separation_km * 1000) : null),
                 year_commissioned: null,
                 description: bf.description,
                 source_url: bf.source_url || 'https://re100.eng.anu.edu.au/global/',
@@ -38,7 +41,13 @@
                 anu_dam_volume_mm3: bf.dam_volume_mm3,
                 anu_reservoir_area_ha: bf.reservoir_area_ha,
                 anu_energy_cost_usd_mwh: bf.energy_cost_usd_mwh,
-                anu_power_cost_usd_kw: bf.power_cost_usd_kw
+                anu_power_cost_usd_kw: bf.power_cost_usd_kw,
+                // Extra metadata for brownfield/lake pairs
+                upper_reservoir: bf.upper_reservoir,
+                lower_reservoir: bf.lower_reservoir,
+                anu_id_upper: bf.anu_id_upper,
+                anu_id_lower: bf.anu_id_lower,
+                anu_dataset: bf.anu_dataset
             });
             bfCount++;
         });

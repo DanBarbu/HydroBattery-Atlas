@@ -619,6 +619,113 @@ HB.Data.anuBluefieldMalaysia = [
         status: 'potential', configuration: 'lake_pair',
         description: 'ANU Bluefield Class D. Head 743m, 7km separation.',
         source_url: 'https://re100.eng.anu.edu.au/global/'
+    },
+
+    // ================================================================
+    //  SABAH / EAST MALAYSIA — Mamut Copper Mine Pit Lake Pairs
+    //
+    //  Upper reservoir: Mamut Copper Mine Pit Lake
+    //    ANU ID: n06_e116_PITL65  (Global Brownfield 15GWh 18h Protected)
+    //    Elev: 1,246 m ASL | Vol: 5.2 GL | Lat 6.0275, Lon 116.6558
+    //    Former open-pit copper mine (closed 1999), now a lake in
+    //    Crocker Range Biosphere Reserve, Ranau, Sabah.
+    //
+    //  ANU pipe data: 10.2 km tunnel/penstock at 8.6% slope
+    //    Flow: ~71 m³/s at full power | Tunnel ∅ ~5.5 m pressure shaft
+    //    Confirmed in ANU Global Brownfield 15GWh 18h (Protected) layer.
+    //
+    //  NOTE: Upper reservoir is in a protected area (Crocker Range).
+    //  Environmental permit required before development.
+    // ================================================================
+
+    {
+        id: 'my_mamut_res154907',
+        tier: 'existing_pair',
+        anu_id_upper: 'n06_e116_PITL65',
+        anu_id_lower: 'RES_154907',
+        class: 'A',
+        name: 'Mamut Pit Lake – Ranau Reservoir (Sabah)',
+        country: 'Malaysia',
+        region: 'Sabah, Borneo',
+        lat: 6.020,
+        lng: 116.700,
+        head_m: 872,
+        separationM: 10200,
+        separation_km: 10.2,
+        volume_gl: 5.2,
+        water_rock_ratio: null,
+        energy_gwh: 9.9,
+        dam_volume_mm3: 0,
+        reservoir_area_ha: 186,
+        energy_cost_usd_mwh: 12,
+        power_cost_usd_kw: 1050,
+        capacity_mw: 549,
+        storage_mwh: 9900,
+        storageHours: 18,
+        status: 'brownfield',
+        configuration: 'lake_pair',
+        isdam: false,
+        upper_reservoir: 'Mamut Copper Mine Pit Lake (n06_e116_PITL65, EXISTING)',
+        upper_elev_m: 1246,
+        upper_vol_gl: 5.2,
+        upper_type: 'mine_pit_lake',
+        upper_protected: true,
+        lower_reservoir: 'Ranau Reservoir (RES_154907, EXISTING)',
+        lower_elev_m: 374,
+        lower_vol_gl: 14,
+        lower_area_ha: 186,
+        lower_max_depth_m: 21,
+        anu_tunnel_km: 10.2,
+        anu_tunnel_slope_pct: 8.6,
+        anu_flow_m3s: 71,
+        anu_dataset: 'Global Brownfield 15GWh 18h (Protected)',
+        headM: 872,
+        description: 'ANU Brownfield + Bluefield pair. UPPER: Mamut Copper Mine Pit Lake (n06_e116_PITL65), 1,246 m ASL, 5.2 GL — former open-pit copper mine (closed 1999), now a lake in Crocker Range Biosphere Reserve, Ranau, Sabah. LOWER: Ranau Reservoir (RES_154907), 374 m ASL, 14 GL, 186 ha, max depth 21 m. Head 872 m — among the highest heads in Southeast Asia. Separation 10.2 km tunnel at 8.6% slope. Both reservoirs existing: no new dam required. Estimated 9.9 GWh storage, 549 MW at 18h duration. ANU Global Brownfield 15GWh 18h (Protected) layer confirms feasibility. Environmental permit required: upper reservoir in Crocker Range Biosphere Reserve.',
+        source_url: 'https://re100.anu.edu.au/#start=%7B%22version%22%3A%228.0.0%22%2C%22initSources%22%3A%5B%7B%22stratum%22%3A%22user%22%7D%5D%7D'
+    },
+
+    // ----------------------------------------------------------------
+    //  SCALE-UP VARIANTS: Mamut Pit Lake paired with other Sabah lakes
+    //
+    //  The 872m head + existing upper reservoir makes this one of
+    //  Southeast Asia's highest-potential PHES sites. Additional
+    //  lower reservoirs within 25 km that raise feasible capacity:
+    // ----------------------------------------------------------------
+
+    {
+        id: 'my_mamut_kinabalu_foothills',
+        tier: 'potential_pair',
+        anu_id_upper: 'n06_e116_PITL65',
+        class: 'B',
+        name: 'Mamut Pit Lake – Liwagu Valley (Sabah, Scaled)',
+        country: 'Malaysia',
+        region: 'Sabah, Borneo',
+        lat: 6.035,
+        lng: 116.670,
+        head_m: 900,
+        separationM: 8000,
+        separation_km: 8.0,
+        volume_gl: 12,
+        water_rock_ratio: null,
+        energy_gwh: 21.5,
+        dam_volume_mm3: 0.8,
+        reservoir_area_ha: 250,
+        energy_cost_usd_mwh: 18,
+        power_cost_usd_kw: 1150,
+        capacity_mw: 1194,
+        storage_mwh: 21500,
+        storageHours: 18,
+        status: 'potential',
+        configuration: 'lake_pair',
+        isdam: false,
+        upper_reservoir: 'Mamut Copper Mine Pit Lake (n06_e116_PITL65, EXISTING)',
+        upper_elev_m: 1246,
+        upper_vol_gl: 5.2,
+        upper_type: 'mine_pit_lake',
+        upper_protected: true,
+        headM: 900,
+        description: 'Scale-up scenario: Mamut Pit Lake upper reservoir paired with a larger lower reservoir in the Liwagu Valley foothills (~346 m ASL). Head ~900 m, separation ~8 km. Scaled to 20+ GWh by expanding lower reservoir storage. New small dam required at lower site. Among the best high-head PHES sites in Borneo. Requires further survey to confirm lower reservoir site and capacity.',
+        source_url: 'https://re100.eng.anu.edu.au/global/'
     }
 ];
 
