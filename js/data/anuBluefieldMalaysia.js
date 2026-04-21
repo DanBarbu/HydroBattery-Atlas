@@ -668,21 +668,25 @@ HB.Data.anuBluefieldMalaysia = [
         upper_reservoir: 'Mamut Copper Mine Pit Lake (n06_e116_PITL65, EXISTING)',
         upper_elev_m: 1246,
         upper_lat: 6.0275, upper_lng: 116.6558,
-        upper_vol_gl: 5.2,
+        upper_vol_gl: 1.8,           // ANU confirmed: Global Brownfield 5GWh 18h (Protected)
+        upper_area_ha: 3.6,          // est. from vol 1.8 GL / ~50 m avg depth
         upper_type: 'mine_pit_lake',
         upper_protected: true,
+        // Per-reservoir ANU WFS layer — upper is brownfield, lower is bluefield
+        upper_anu_layer: 'global_brownfield:5gwh_18h',
         lower_reservoir: 'Ranau Reservoir (RES_154907, EXISTING)',
         lower_elev_m: 374,
         lower_lat: 6.0122, lower_lng: 116.7467,
         lower_vol_gl: 14,
-        lower_area_ha: 186,
-        lower_max_depth_m: 21,
+        lower_area_ha: 186,          // ANU confirmed: 186 ha
+        lower_max_depth_m: 21,       // ANU confirmed: 21 m estimated max depth
+        lower_anu_layer: 'global_bluefield:15gwh_18h',
         anu_tunnel_km: 10.2,
         anu_tunnel_slope_pct: 8.6,
         anu_flow_m3s: 71,
-        anu_dataset: 'Global Brownfield 15GWh 18h (Protected)',
+        anu_dataset: 'Global Brownfield 5GWh 18h (Protected) + Global Bluefield 15GWh 18h',
         headM: 872,
-        description: 'ANU Brownfield + Bluefield pair. UPPER: Mamut Copper Mine Pit Lake (n06_e116_PITL65), 1,246 m ASL, 5.2 GL — former open-pit copper mine (closed 1999), now a lake in Crocker Range Biosphere Reserve, Ranau, Sabah. LOWER: Ranau Reservoir (RES_154907), 374 m ASL, 14 GL, 186 ha, max depth 21 m. Head 872 m — among the highest heads in Southeast Asia. Separation 10.2 km tunnel at 8.6% slope. Both reservoirs existing: no new dam required. Estimated 9.9 GWh storage, 549 MW at 18h duration. ANU Global Brownfield 15GWh 18h (Protected) layer confirms feasibility. Environmental permit required: upper reservoir in Crocker Range Biosphere Reserve.',
+        description: 'ANU Brownfield + Bluefield pair. UPPER: Mamut Copper Mine Pit Lake (n06_e116_PITL65), bottom elev 1,246 m ASL, 1.8 GL — ANU Global Brownfield 5GWh 18h (Protected). Former open-pit copper mine (closed 1999), now a lake in Crocker Range Biosphere Reserve, Ranau, Sabah. LOWER: Ranau Reservoir (RES_154907), 374 m ASL, 14 GL, 186 ha, max depth 21 m — ANU Global Bluefield 15GWh 18h. Head 872 m — among the highest heads in Southeast Asia. Separation 10.2 km tunnel at 8.6% slope. Both reservoirs existing: no new dam required. Estimated 9.9 GWh storage, 549 MW at 18h duration. Environmental permit required: upper reservoir in Crocker Range Biosphere Reserve.',
         source_url: 'https://re100.anu.edu.au/#start=%7B%22version%22%3A%228.0.0%22%2C%22initSources%22%3A%5B%7B%22stratum%22%3A%22user%22%7D%5D%7D'
     },
 

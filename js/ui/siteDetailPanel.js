@@ -631,25 +631,60 @@ HB.UI.siteDetail = {
      * or from the WFS properties directly (pipeline features), matching the ANU Atlas.
      */
     _loadANUPolygons(site, lat, lng, sepKm) {
-        const { ws, layer } = this._anuWfsLayer(site);
-
-        // Bounding box: 1.6× separation so both reservoirs fit; min ±0.08°
-        const margin = Math.max(0.08, (sepKm * 1.6) / 111);
-        const bbox = `${(lng - margin).toFixed(5)},${(lat - margin).toFixed(5)},`
-                   + `${(lng + margin).toFixed(5)},${(lat + margin).toFixed(5)},EPSG:4326`;
-
-        const url = `https://re100.anu.edu.au/geoserver/${ws}/wfs`
-                  + `?service=WFS&version=2.0.0&request=GetFeature`
-                  + `&typeNames=${encodeURIComponent(layer)}`
-                  + `&outputFormat=application%2Fjson`
-                  + `&count=120`
-                  + `&bbox=${bbox}`;
-
         const fetchId = `${lat},${lng}`;
         this._pendingFetch = fetchId;
 
-        fetch(url)
-            .then(r => { if (!r.ok) throw new Error(`WFS ${r.status}`); return r.json(); })
+        // ── Dual-layer: upper and lower reservoirs in different ANU workspaces ──
+        // (e.g. Mamut: upper in global_brownfield:5gwh_18h,
+        //              lower in global_bluefield:15gwh_18h)
+        const hasDual = site.upper_anu_layer && site.lower_anu_layer
+                     && site.upper_anu_layer !== site.lower_anu_layer
+                     && site.upper_lat && site.lower_lat;
+
+        let fetchPromise;
+        if (hasDual) {
+            // Small bbox centred on each reservoir (~6 km radius)
+            const m = 0.06;
+            const mkUrl = (lyr, rlat, rlng) => {
+                const ws2 = lyr.split(':')[0];
+                return `https://re100.anu.edu.au/geoserver/${ws2}/wfs`
+                     + `?service=WFS&version=2.0.0&request=GetFeature`
+                     + `&typeNames=${encodeURIComponent(lyr)}`
+                     + `&outputFormat=application%2Fjson&count=30`
+                     + `&bbox=${(rlng-m).toFixed(5)},${(rlat-m).toFixed(5)},`
+                     + `${(rlng+m).toFixed(5)},${(rlat+m).toFixed(5)},EPSG:4326`;
+            };
+            const upUrl = mkUrl(site.upper_anu_layer, site.upper_lat, site.upper_lng);
+            const loUrl = mkUrl(site.lower_anu_layer, site.lower_lat, site.lower_lng);
+
+            fetchPromise = Promise.all([
+                fetch(upUrl).then(r => r.ok ? r.json() : {features:[]}).catch(() => ({features:[]})),
+                fetch(loUrl).then(r => r.ok ? r.json() : {features:[]}).catch(() => ({features:[]}))
+            ]).then(([upGj, loGj]) => {
+                // Force-tag each feature with the correct isupper value so the
+                // existing render block can colour them upper (dark blue) / lower (light blue)
+                const upFeats = (upGj.features || []).map(f =>
+                    ({ ...f, properties: { ...f.properties, isupper: '1' } }));
+                const loFeats = (loGj.features || []).map(f =>
+                    ({ ...f, properties: { ...f.properties, isupper: '0' } }));
+                return { features: [...upFeats, ...loFeats] };
+            });
+        } else {
+            // ── Single-layer: both reservoirs in the same ANU workspace ──────
+            const { ws, layer } = this._anuWfsLayer(site);
+            const margin = Math.max(0.08, (sepKm * 1.6) / 111);
+            const bbox = `${(lng - margin).toFixed(5)},${(lat - margin).toFixed(5)},`
+                       + `${(lng + margin).toFixed(5)},${(lat + margin).toFixed(5)},EPSG:4326`;
+            const url = `https://re100.anu.edu.au/geoserver/${ws}/wfs`
+                      + `?service=WFS&version=2.0.0&request=GetFeature`
+                      + `&typeNames=${encodeURIComponent(layer)}`
+                      + `&outputFormat=application%2Fjson&count=120`
+                      + `&bbox=${bbox}`;
+            fetchPromise = fetch(url)
+                .then(r => { if (!r.ok) throw new Error(`WFS ${r.status}`); return r.json(); });
+        }
+
+        fetchPromise
             .then(geojson => {
                 if (this._pendingFetch !== fetchId || !this._miniMap) return;
 
