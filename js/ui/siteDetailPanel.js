@@ -559,21 +559,20 @@ HB.UI.siteDetail = {
         }).addTo(this._miniMap);
         this._miniMapLayers = { upperMarker: upperPH, lowerMarker: lowerPH, pairLine };
 
-        // Fit bounds to show both reservoirs with padding; cap at zoom 14 so water bodies are visible
-        setTimeout(() => {
-            if (this._miniMap) {
-                this._miniMap.invalidateSize();
-                const bounds = L.latLngBounds([upperLatLng, lowerLatLng]).pad(0.25);
-                this._miniMap.fitBounds(bounds, { maxZoom: 14 });
-            }
-        }, 150);
-
-        // If site has pre-fetched polygon coordinates, render them directly
-        // (bypasses CORS — ANU WFS is not accessible from browser cross-origin).
-        // Otherwise attempt live WFS fetch (works for same-origin or CORS-enabled servers).
+        // If site has pre-fetched polygon coordinates, render them directly —
+        // _drawEmbeddedPolygons handles its own fitBounds inside a setTimeout.
+        // Otherwise fit bounds to placeholder markers, then attempt live WFS fetch.
         if (site.upper_polygon || site.lower_polygon) {
             this._drawEmbeddedPolygons(site);
         } else {
+            // Fit bounds to show both placeholder markers while WFS loads
+            setTimeout(() => {
+                if (this._miniMap) {
+                    this._miniMap.invalidateSize();
+                    const bounds = L.latLngBounds([upperLatLng, lowerLatLng]).pad(0.25);
+                    this._miniMap.fitBounds(bounds, { maxZoom: 14 });
+                }
+            }, 150);
             this._loadANUPolygons(site, lat, lng, sepKm);
         }
     },
