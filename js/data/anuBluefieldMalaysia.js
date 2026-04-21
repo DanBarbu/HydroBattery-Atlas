@@ -690,17 +690,37 @@ HB.Data.anuBluefieldMalaysia = [
         // ── Embedded polygon + pipeline coordinates (GeoJSON [lng,lat]) ─────────
         // ANU WFS for PITL65 is Protected (requires auth) — data embedded here.
         //
-        // upper_polygon: 12-point approximation of Mamut Copper Mine Pit Lake
-        //   Centre lat 6.0275 lng 116.6558, radius ~150 m (vol 1.8 GL / ~50 m depth)
-        //   Source: ANU Global Brownfield 5GWh 18h (Protected) — n06_e116_PITL65
+        // upper_polygon: REAL 21-node outline of Mamut Copper Mine Pit Lake
+        //   Source: OpenStreetMap Way 153957334 "Lombong Tembaga Mamut"
+        //     tags: natural=water, water=basin, depth=500, wikidata=Q14547021
+        //   Confirmed matches ANU PITL65 centroid (6.0275, 116.6558).
+        //   Extent: ~720m E-W × ~940m N-S (full pit complex surface outline).
+        //   ANU WFS layer global_brownfield:5gwh_18h is Protected — requires auth.
+        //   GeoJSON coordinate order: [longitude, latitude]
         upper_polygon: {
             type: 'Polygon',
             coordinates: [[
-                [116.6558, 6.0289], [116.6565, 6.0287], [116.6570, 6.0282],
-                [116.6572, 6.0275], [116.6570, 6.0268], [116.6565, 6.0263],
-                [116.6558, 6.0261], [116.6551, 6.0263], [116.6546, 6.0268],
-                [116.6544, 6.0275], [116.6546, 6.0282], [116.6551, 6.0287],
-                [116.6558, 6.0289]
+                [116.6524400, 6.0261887],
+                [116.6523976, 6.0273604],
+                [116.6524964, 6.0286026],
+                [116.6527364, 6.0296331],
+                [116.6531599, 6.0305084],
+                [116.6537528, 6.0307625],
+                [116.6544586, 6.0305648],
+                [116.6551786, 6.0307272],
+                [116.6555244, 6.0312283],
+                [116.6561738, 6.0314895],
+                [116.6567243, 6.0312989],
+                [116.6572961, 6.0311224],
+                [116.6577054, 6.0307272],
+                [116.6586928, 6.0288817],
+                [116.6588339, 6.0269901],
+                [116.6587069, 6.0251409],
+                [116.6576266, 6.0232716],
+                [116.6555836, 6.0229563],
+                [116.6544373, 6.0231236],
+                [116.6529021, 6.0244075],
+                [116.6524400, 6.0261887]
             ]]
         },
         // lower_polygon: exact 28-vertex outline of Ranau Reservoir (RES_154907)
@@ -722,15 +742,15 @@ HB.Data.anuBluefieldMalaysia = [
             ]]]
         },
         // pipe_geometry: approximated penstock/tunnel centreline
-        //   From Mamut pit lake surface [116.6558, 6.0275] (1246 m ASL)
-        //   To Ranau Reservoir intake   [116.7381, 6.0128] ( 374 m ASL)
+        //   From Mamut pit lake centroid [116.6556, 6.0272] (OSM polygon centre, ~1246 m ASL)
+        //   To Ranau Reservoir intake    [116.7381, 6.0128] (RES_154907 polygon entry, 374 m ASL)
         //   10.2 km, 8.6% average slope — ANU confirmed (anu_tunnel_km / slope_pct above)
-        //   Note: PITL65 not in public WFS so pipeline not retrievable from server;
-        //   endpoint coords match where other ANU bluefield pipes terminate at RES_154907.
+        //   Note: PITL65 not in public WFS so pipeline coords are approximate;
+        //   lower endpoint matches where other ANU bluefield pipes terminate at RES_154907.
         pipe_geometry: {
             type: 'LineString',
             coordinates: [
-                [116.6558, 6.0275],
+                [116.6556, 6.0272],
                 [116.7381, 6.0128]
             ]
         },
