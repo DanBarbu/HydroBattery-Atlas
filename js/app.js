@@ -44,7 +44,11 @@
                 anu_power_cost_usd_kw: bf.power_cost_usd_kw,
                 // Extra metadata for brownfield/lake pairs
                 upper_reservoir: bf.upper_reservoir,
+                upper_lat: bf.upper_lat,
+                upper_lng: bf.upper_lng,
                 lower_reservoir: bf.lower_reservoir,
+                lower_lat: bf.lower_lat,
+                lower_lng: bf.lower_lng,
                 anu_id_upper: bf.anu_id_upper,
                 anu_id_lower: bf.anu_id_lower,
                 anu_dataset: bf.anu_dataset

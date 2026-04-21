@@ -476,7 +476,26 @@ HB.UI.siteDetail = {
      * Uses ESRI World Imagery tiles (free, no key) + ANU GeoServer WFS polygons.
      */
     _showSatelliteMap(site, lat, lng, container) {
-        const sepKm = site.separation_km ?? (site.tunnelLength ? site.tunnelLength / 1000 : 5);
+        const sepKm = site.separation_km ?? (site.separationM ? site.separationM / 1000 : site.tunnelLength ? site.tunnelLength / 1000 : 5);
+
+        // Use exact reservoir coordinates when available, otherwise estimate from centre + separation
+        const hasExactCoords = site.upper_lat != null && site.upper_lng != null
+                            && site.lower_lat != null && site.lower_lng != null;
+        const headM   = site.head_m ?? site.headHeight ?? site.headM ?? 200;
+        let upperLatLng, lowerLatLng, centerLat, centerLng;
+
+        if (hasExactCoords) {
+            upperLatLng = [site.upper_lat, site.upper_lng];
+            lowerLatLng = [site.lower_lat, site.lower_lng];
+            centerLat   = (site.upper_lat + site.lower_lat) / 2;
+            centerLng   = (site.upper_lng + site.lower_lng) / 2;
+        } else {
+            const deltaLat = (sepKm / 2) / 111;
+            upperLatLng = [lat + deltaLat, lng];
+            lowerLatLng = [lat - deltaLat, lng];
+            centerLat   = lat;
+            centerLng   = lng;
+        }
 
         // Zoom level inversely proportional to separation
         const zoom = sepKm < 1   ? 14
@@ -486,9 +505,8 @@ HB.UI.siteDetail = {
                    : sepKm < 50  ? 10 : 9;
 
         if (!this._miniMap) {
-            // First-time initialisation
             this._miniMap = L.map(container, {
-                center: [lat, lng],
+                center: [centerLat, centerLng],
                 zoom,
                 zoomControl:        true,
                 attributionControl: false,
@@ -497,13 +515,11 @@ HB.UI.siteDetail = {
                 doubleClickZoom:    true
             });
 
-            // Base: ESRI satellite imagery (free, no key required)
             L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18 }
             ).addTo(this._miniMap);
 
-            // Overlay: place names / country labels
             L.tileLayer(
                 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18, opacity: 0.55 }
@@ -511,31 +527,35 @@ HB.UI.siteDetail = {
 
             this._miniMapLayers = {};
         } else {
-            // Pan/zoom to new site; clear previous site's layers
-            this._miniMap.setView([lat, lng], zoom);
+            this._miniMap.setView([centerLat, centerLng], zoom);
             Object.values(this._miniMapLayers).forEach(l => {
                 if (l) this._miniMap.removeLayer(l);
             });
             this._miniMapLayers = {};
         }
 
-        // --- Placeholder markers (shown while WFS polygons load) ---
-        const headM    = site.head_m ?? site.headHeight ?? site.headM ?? 200;
-        const deltaLat = (sepKm / 2) / 111;
+        // --- Reservoir markers ---
         const circleOpts = (color, ttl) => ({
-            radius: 7, color, weight: 2,
-            fillColor: color, fillOpacity: 0.70, title: ttl
+            radius: 8, color, weight: 2,
+            fillColor: color, fillOpacity: 0.75, title: ttl
         });
-        const upperPH = L.circleMarker([lat + deltaLat, lng],
-            circleOpts('#1565C0', `Upper reservoir — ${Math.round(headM)}m head`))
-            .bindTooltip(`⬆ Upper reservoir<br>${Math.round(headM)}m head`)
+        const upperLabel = site.upper_reservoir
+            ? `⬆ ${site.upper_reservoir.replace(/ \(.*/, '')}<br>${Math.round(headM)} m head · ${site.upper_elev_m ?? ''}m ASL`
+            : `⬆ Upper reservoir — ${Math.round(headM)} m head`;
+        const lowerLabel = site.lower_reservoir
+            ? `⬇ ${site.lower_reservoir.replace(/ \(.*/, '')}<br>${site.lower_elev_m ?? ''}m ASL`
+            : '⬇ Lower reservoir';
+
+        const upperPH = L.circleMarker(upperLatLng,
+            circleOpts('#1565C0', upperLabel))
+            .bindTooltip(upperLabel, { permanent: false })
             .addTo(this._miniMap);
-        const lowerPH = L.circleMarker([lat - deltaLat, lng],
-            circleOpts('#42A5F5', 'Lower reservoir'))
-            .bindTooltip('⬇ Lower reservoir')
+        const lowerPH = L.circleMarker(lowerLatLng,
+            circleOpts('#42A5F5', lowerLabel))
+            .bindTooltip(lowerLabel, { permanent: false })
             .addTo(this._miniMap);
-        const pairLine = L.polyline([[lat + deltaLat, lng], [lat - deltaLat, lng]], {
-            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.80
+        const pairLine = L.polyline([upperLatLng, lowerLatLng], {
+            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85
         }).addTo(this._miniMap);
         this._miniMapLayers = { upperMarker: upperPH, lowerMarker: lowerPH, pairLine };
 
