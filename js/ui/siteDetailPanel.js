@@ -662,13 +662,24 @@ HB.UI.siteDetail = {
                 const isUp  = v => v === '1' || v === 1;
                 const isLow = v => v === '0' || v === 0;
 
-                const reservoirFeats = all.filter(f =>
+                const strictResFeat = all.filter(f =>
                     !f.properties.isdam &&
                     (isUp(f.properties.isupper) || isLow(f.properties.isupper))
                 );
                 const pipeFeats = all.filter(f => f.properties.ispipe);
 
-                if (!reservoirFeats.length && !pipeFeats.length) return;
+                // Lenient fallback: accept any non-dam non-pipe polygon.
+                // Pit-lake / brownfield features may not have isupper set.
+                const reservoirFeats = strictResFeat.length > 0
+                    ? strictResFeat
+                    : all.filter(f => !f.properties.isdam && !f.properties.ispipe &&
+                          (f.geometry?.type === 'Polygon' ||
+                           f.geometry?.type === 'MultiPolygon'));
+
+                if (!reservoirFeats.length && !pipeFeats.length) {
+                    this._drawFallbackReservoirs(site);
+                    return;
+                }
 
                 // Remove placeholder markers/line
                 ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
@@ -856,8 +867,61 @@ HB.UI.siteDetail = {
                 if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Data © ANU RE100';
             })
             .catch(() => {
-                // WFS unavailable or CORS — placeholder markers/line remain visible
+                // WFS unavailable or CORS — draw estimated circles from known reservoir data
+                this._drawFallbackReservoirs(site);
             });
+    },
+
+    /**
+     * When ANU WFS returns no polygon data (empty layer, CORS block, network error),
+     * draw estimated L.circle shapes sized from the site's known area or volume.
+     * Removes the placeholder dot-markers placed earlier by _showSatelliteMap.
+     */
+    _drawFallbackReservoirs(site) {
+        if (!this._miniMap) return;
+        if (!site.upper_lat || !site.lower_lat) return;   // need exact coords
+
+        // Remove placeholder dot-markers
+        ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
+            if (this._miniMapLayers?.[k]) {
+                this._miniMap.removeLayer(this._miniMapLayers[k]);
+                delete this._miniMapLayers[k];
+            }
+        });
+
+        // Radius (m) from area; fall back to volume/assumed-depth (40 m)
+        const radiusFrom = (areaHa, volGl, defaultHa) => {
+            const areaM2 = areaHa ? areaHa * 10000
+                         : volGl  ? (volGl * 1e6) / 40
+                         : defaultHa * 10000;
+            return Math.sqrt(areaM2 / Math.PI);
+        };
+
+        const upperR = radiusFrom(site.upper_area_ha, site.upper_vol_gl, 5);
+        const lowerR = radiusFrom(site.lower_area_ha, site.lower_vol_gl, 10);
+
+        const upperCircle = L.circle([site.upper_lat, site.upper_lng], {
+            radius: upperR,
+            fillColor: '#1565C0', fillOpacity: 0.40,
+            color: '#0D47A1', weight: 2.5, opacity: 0.95
+        }).bindTooltip('⬆ Upper reservoir (estimated outline)', { sticky: true })
+         .addTo(this._miniMap);
+
+        const lowerCircle = L.circle([site.lower_lat, site.lower_lng], {
+            radius: lowerR,
+            fillColor: '#42A5F5', fillOpacity: 0.40,
+            color: '#1976D2', weight: 2.5, opacity: 0.95
+        }).bindTooltip('⬇ Lower reservoir (estimated outline)', { sticky: true })
+         .addTo(this._miniMap);
+
+        const pairLine = L.polyline(
+            [[site.upper_lat, site.upper_lng], [site.lower_lat, site.lower_lng]],
+            { color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85 }
+        ).addTo(this._miniMap);
+
+        this._miniMapLayers.upperCircle = upperCircle;
+        this._miniMapLayers.lowerCircle = lowerCircle;
+        this._miniMapLayers.pairLine    = pairLine;
     },
 
     _drawCrossSection(site) {
