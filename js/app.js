@@ -110,6 +110,39 @@
     _mergeAnuDataset(HB.Data.anuGreenfieldIndonesia,   'ANU Greenfield Indonesia');
     _mergeAnuDataset(HB.Data.anuBrownfieldIndonesia,   'ANU Brownfield Indonesia');
 
+    // Merge Olt River cascade hydropower plants (Romania)
+    // Source: GEM Global Hydropower Tracker + OpenStreetMap Overpass API
+    if (HB.Data.oltCascadeRomania && HB.Data.oltCascadeRomania.length) {
+        HB.Data.oltCascadeRomania.forEach(function (s) {
+            HB.Data.knownSites.push({
+                id:                 s.id,
+                name:               s.name,
+                country:            s.country,
+                region:             s.region,
+                lat:                s.lat,
+                lng:                s.lng,
+                status:             s.status,
+                configuration:      s.configuration,
+                capacity_mw:        s.capacity_mw,
+                storage_mwh:        s.storage_mwh,
+                head_m:             s.head_m,
+                headM:              s.headM || s.head_m,
+                separationM:        s.separationM,
+                tunnel_length_m:    s.separationM,
+                upper_elevation_m:  s.upper_elevation_m,
+                lower_elevation_m:  s.lower_elevation_m,
+                year_commissioned:  s.year_commissioned,
+                description:        s.description,
+                source_url:         s.source_url,
+                isdam:              s.isdam,
+                gem_river:          s.gem_river,
+                gem_owner:          s.gem_owner,
+                gem_technology:     s.gem_technology
+            });
+        });
+        console.log('Merged ' + HB.Data.oltCascadeRomania.length + ' Olt cascade Romania sites');
+    }
+
     // Merge ANU Bluefield Romania data into knownSites
     if (HB.Data.anuBluefieldRomania && HB.Data.anuBluefieldRomania.length) {
         var bfRoCount = 0;
