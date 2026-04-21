@@ -676,12 +676,56 @@ HB.UI.siteDetail = {
             this._miniMapLayers.pairLine = pLine;
         }
 
-        // Fit map to show both polygons
-        setTimeout(() => {
-            if (this._miniMap && polyLayer.getBounds().isValid()) {
-                this._miniMap.invalidateSize();
-                this._miniMap.fitBounds(polyLayer.getBounds().pad(0.2), { maxZoom: 14 });
+        // Compute individual bounds for zoom buttons
+        const upperFeats = features.filter(f => isUp(f));
+        const lowerFeats = features.filter(f => !isUp(f));
+        const upperBounds = upperFeats.length
+            ? L.geoJSON({ type: 'FeatureCollection', features: upperFeats }).getBounds()
+            : null;
+        const lowerBounds = lowerFeats.length
+            ? L.geoJSON({ type: 'FeatureCollection', features: lowerFeats }).getBounds()
+            : null;
+        const bothBounds  = polyLayer.getBounds();
+
+        // Reservoir zoom buttons — visible when two separate polygons exist
+        const btnDiv = document.getElementById('site-reservoir-zoom-btns');
+        if (btnDiv) {
+            btnDiv.innerHTML = '';
+            if (upperBounds && lowerBounds) {
+                const mkBtn = (label, color, fn) => {
+                    const b = document.createElement('button');
+                    b.textContent = label;
+                    b.style.cssText = `font-size:11px;padding:2px 9px;border:1px solid ${color};`
+                        + `background:#fff;color:${color};border-radius:3px;cursor:pointer;`
+                        + `font-family:system-ui,sans-serif;font-weight:600;`;
+                    b.addEventListener('mouseover', () => b.style.background = '#f0f4ff');
+                    b.addEventListener('mouseout',  () => b.style.background = '#fff');
+                    b.addEventListener('click', fn);
+                    return b;
+                };
+                btnDiv.appendChild(mkBtn('⬇ Lower Reservoir', '#1976D2', () => {
+                    this._miniMap.fitBounds(lowerBounds.pad(0.25), { maxZoom: 15 });
+                }));
+                btnDiv.appendChild(mkBtn('⬆ Upper Reservoir', '#0D47A1', () => {
+                    this._miniMap.fitBounds(upperBounds.pad(0.5),  { maxZoom: 16 });
+                }));
+                btnDiv.appendChild(mkBtn('↔ Both', '#555', () => {
+                    this._miniMap.fitBounds(bothBounds.pad(0.15),  { maxZoom: 13 });
+                }));
+                btnDiv.style.display = 'flex';
+            } else {
+                btnDiv.style.display = 'none';
             }
+        }
+
+        // Default view: lower reservoir at high zoom (larger and more visible);
+        // fall back to combined bounds if only one polygon exists.
+        setTimeout(() => {
+            if (!this._miniMap) return;
+            this._miniMap.invalidateSize();
+            const target = lowerBounds && lowerBounds.isValid() ? lowerBounds : bothBounds;
+            const pad    = (lowerBounds && upperBounds) ? 0.35 : 0.2;
+            this._miniMap.fitBounds(target.pad(pad), { maxZoom: 15 });
         }, 150);
 
         const attrEl = document.getElementById('site-view-attribution');
