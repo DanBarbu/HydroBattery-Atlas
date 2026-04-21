@@ -676,12 +676,16 @@ HB.UI.siteDetail = {
                           (f.geometry?.type === 'Polygon' ||
                            f.geometry?.type === 'MultiPolygon'));
 
-                if (!reservoirFeats.length && !pipeFeats.length) {
+                // If no reservoir polygons found, draw fallback circles regardless of
+                // whether a pipe/tunnel feature was found (the WFS for Mamut returns
+                // the tunnel LineString but no reservoir MultiPolygons).
+                if (!reservoirFeats.length) {
                     this._drawFallbackReservoirs(site);
-                    return;
+                    if (!pipeFeats.length) return;   // nothing else to draw
+                    // else fall through — still render the real tunnel geometry below
                 }
 
-                // Remove placeholder markers/line
+                // Remove placeholder markers/line (if fallback didn't already)
                 ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
                     if (this._miniMapLayers[k]) {
                         this._miniMap.removeLayer(this._miniMapLayers[k]);
@@ -889,12 +893,13 @@ HB.UI.siteDetail = {
             }
         });
 
-        // Radius (m) from area; fall back to volume/assumed-depth (40 m)
+        // Radius (m) from area; fall back to volume/assumed-depth (40 m).
+        // Enforce minimum 350 m so the circle is clearly visible at wide zoom.
         const radiusFrom = (areaHa, volGl, defaultHa) => {
             const areaM2 = areaHa ? areaHa * 10000
                          : volGl  ? (volGl * 1e6) / 40
                          : defaultHa * 10000;
-            return Math.sqrt(areaM2 / Math.PI);
+            return Math.max(350, Math.sqrt(areaM2 / Math.PI));
         };
 
         const upperR = radiusFrom(site.upper_area_ha, site.upper_vol_gl, 5);
