@@ -568,8 +568,125 @@ HB.UI.siteDetail = {
             }
         }, 150);
 
-        // Fetch real lake-perimeter polygons from ANU GeoServer (replaces placeholders)
-        this._loadANUPolygons(site, lat, lng, sepKm);
+        // If site has pre-fetched polygon coordinates, render them directly
+        // (bypasses CORS — ANU WFS is not accessible from browser cross-origin).
+        // Otherwise attempt live WFS fetch (works for same-origin or CORS-enabled servers).
+        if (site.upper_polygon || site.lower_polygon) {
+            this._drawEmbeddedPolygons(site);
+        } else {
+            this._loadANUPolygons(site, lat, lng, sepKm);
+        }
+    },
+
+    /**
+     * Render reservoir polygons that are embedded directly in the site data object.
+     * Used when the ANU WFS is not accessible cross-origin (CORS blocked) or
+     * when the layer requires authentication ("Protected" brownfield sites).
+     *
+     * Expects site.upper_polygon and/or site.lower_polygon as GeoJSON Geometry
+     * objects (type Polygon or MultiPolygon, coordinates in [lng,lat] order).
+     */
+    _drawEmbeddedPolygons(site) {
+        if (!this._miniMap) return;
+
+        // Remove placeholder dot-markers placed by _showSatelliteMap
+        ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
+            if (this._miniMapLayers?.[k]) {
+                this._miniMap.removeLayer(this._miniMapLayers[k]);
+                delete this._miniMapLayers[k];
+            }
+        });
+
+        const features = [];
+        if (site.upper_polygon) {
+            features.push({
+                type: 'Feature',
+                properties: {
+                    isupper: '1', isdam: false, ispipe: false,
+                    identifier: site.anu_id_upper || 'Upper reservoir'
+                },
+                geometry: site.upper_polygon
+            });
+        }
+        if (site.lower_polygon) {
+            features.push({
+                type: 'Feature',
+                properties: {
+                    isupper: '0', isdam: false, ispipe: false,
+                    identifier: site.anu_id_lower || 'Lower reservoir'
+                },
+                geometry: site.lower_polygon
+            });
+        }
+        if (!features.length) return;
+
+        const isUp = f => f.properties.isupper === '1' || f.properties.isupper === 1;
+
+        const polyLayer = L.geoJSON(
+            { type: 'FeatureCollection', features },
+            {
+                style: f => {
+                    const up = isUp(f);
+                    return {
+                        fillColor:   up ? '#1565C0' : '#42A5F5',
+                        fillOpacity: 0.45,
+                        color:       up ? '#0D47A1' : '#1976D2',
+                        weight: 2.5, opacity: 0.95
+                    };
+                },
+                onEachFeature: (feature, layer) => {
+                    const up  = isUp(feature);
+                    const rid = feature.properties.identifier;
+                    const elev = up ? site.upper_elev_m : site.lower_elev_m;
+                    const area = up ? (site.upper_area_ha || '—') : (site.lower_area_ha || '—');
+                    const vol  = up ? (site.upper_vol_gl  || '—') : (site.lower_vol_gl  || '—');
+
+                    layer.bindTooltip(
+                        `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
+                        { sticky: true, className: 'anu-tip' }
+                    );
+                    layer.bindPopup(`
+                        <div style="font-family:system-ui,sans-serif;min-width:200px;">
+                          <div style="background:${up ? '#1565C0' : '#1976D2'};color:#fff;
+                               padding:7px 14px;margin:-12px -16px 10px;
+                               border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                            ${up ? '⬆ Upper' : '⬇ Lower'} Reservoir
+                          </div>
+                          <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
+                            <tr><td style="color:#555;font-weight:600;padding-right:12px;">ID</td><td>${rid}</td></tr>
+                            ${elev  != null ? `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Elevation</td><td>${elev} m ASL</td></tr>` : ''}
+                            ${area !== '—'  ? `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Area</td><td>${area} ha</td></tr>` : ''}
+                            ${vol  !== '—'  ? `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Volume</td><td>${vol} GL</td></tr>` : ''}
+                            <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
+                                <td style="font-size:10px;color:#666;">ANU RE100 (embedded)</td></tr>
+                          </table>
+                        </div>`, { maxWidth: 280, className: 'anu-popup' }
+                    );
+                }
+            }
+        ).addTo(this._miniMap);
+
+        this._miniMapLayers.polygons = polyLayer;
+
+        // Connector line between reservoir centres
+        if (site.upper_lat && site.lower_lat) {
+            const pLine = L.polyline(
+                [[site.upper_lat, site.upper_lng], [site.lower_lat, site.lower_lng]],
+                { color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85 }
+            ).addTo(this._miniMap);
+            this._miniMapLayers.pairLine = pLine;
+        }
+
+        // Fit map to show both polygons
+        setTimeout(() => {
+            if (this._miniMap && polyLayer.getBounds().isValid()) {
+                this._miniMap.invalidateSize();
+                this._miniMap.fitBounds(polyLayer.getBounds().pad(0.2), { maxZoom: 14 });
+            }
+        }, 150);
+
+        const attrEl = document.getElementById('site-view-attribution');
+        if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Reservoir outlines © ANU RE100';
     },
 
     /**

@@ -51,7 +51,16 @@
                 lower_lng: bf.lower_lng,
                 anu_id_upper: bf.anu_id_upper,
                 anu_id_lower: bf.anu_id_lower,
-                anu_dataset: bf.anu_dataset
+                anu_dataset: bf.anu_dataset,
+                // Pre-fetched polygon coordinates (bypasses CORS on live WFS)
+                upper_polygon: bf.upper_polygon || null,
+                lower_polygon: bf.lower_polygon || null,
+                upper_area_ha: bf.upper_area_ha || null,
+                lower_area_ha: bf.lower_area_ha || null,
+                upper_vol_gl:  bf.upper_vol_gl  || null,
+                lower_vol_gl:  bf.lower_vol_gl  || null,
+                upper_elev_m:  bf.upper_elev_m  || null,
+                lower_elev_m:  bf.lower_elev_m  || null
             });
             bfCount++;
         });

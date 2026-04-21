@@ -686,6 +686,42 @@ HB.Data.anuBluefieldMalaysia = [
         anu_flow_m3s: 71,
         anu_dataset: 'Global Brownfield 5GWh 18h (Protected) + Global Bluefield 15GWh 18h',
         headM: 872,
+
+        // ── Embedded polygon coordinates (GeoJSON [lng,lat]) ─────────────────
+        // ANU WFS is CORS-blocked from browser; polygons fetched server-side
+        // and embedded here for reliable rendering without CORS dependency.
+        //
+        // upper_polygon: 12-point approximation of Mamut pit lake
+        //   Centre lat 6.0275 lng 116.6558, radius ~150 m (vol 1.8 GL / ~50 m depth)
+        //   PITL65 is in 'Global Brownfield 5GWh 18h (Protected)' — requires auth
+        upper_polygon: {
+            type: 'Polygon',
+            coordinates: [[
+                [116.6558, 6.0289], [116.6565, 6.0287], [116.6570, 6.0282],
+                [116.6572, 6.0275], [116.6570, 6.0268], [116.6565, 6.0263],
+                [116.6558, 6.0261], [116.6551, 6.0263], [116.6546, 6.0268],
+                [116.6544, 6.0275], [116.6546, 6.0282], [116.6551, 6.0287],
+                [116.6558, 6.0289]
+            ]]
+        },
+        // lower_polygon: exact 28-vertex outline of Ranau Reservoir (RES_154907)
+        //   Fetched from global_bluefield:15gwh_18h via server-side WFS query
+        //   Area 186 ha, elevation 374 m ASL, volume 14 GL
+        lower_polygon: {
+            type: 'MultiPolygon',
+            coordinates: [[[
+                [116.7473, 6.0123], [116.7492, 6.0134], [116.7516, 6.0142],
+                [116.7530, 6.0119], [116.7535, 6.0090], [116.7533, 6.0074],
+                [116.7524, 6.0069], [116.7514, 6.0058], [116.7500, 6.0041],
+                [116.7479, 6.0034], [116.7457, 6.0041], [116.7446, 6.0055],
+                [116.7426, 6.0081], [116.7398, 6.0106], [116.7384, 6.0121],
+                [116.7381, 6.0132], [116.7393, 6.0151], [116.7415, 6.0178],
+                [116.7428, 6.0194], [116.7443, 6.0198], [116.7461, 6.0197],
+                [116.7471, 6.0188], [116.7482, 6.0177], [116.7491, 6.0167],
+                [116.7480, 6.0149], [116.7468, 6.0133], [116.7468, 6.0127],
+                [116.7473, 6.0123]
+            ]]]
+        },
         description: 'ANU Brownfield + Bluefield pair. UPPER: Mamut Copper Mine Pit Lake (n06_e116_PITL65), bottom elev 1,246 m ASL, 1.8 GL — ANU Global Brownfield 5GWh 18h (Protected). Former open-pit copper mine (closed 1999), now a lake in Crocker Range Biosphere Reserve, Ranau, Sabah. LOWER: Ranau Reservoir (RES_154907), 374 m ASL, 14 GL, 186 ha, max depth 21 m — ANU Global Bluefield 15GWh 18h. Head 872 m — among the highest heads in Southeast Asia. Separation 10.2 km tunnel at 8.6% slope. Both reservoirs existing: no new dam required. Estimated 9.9 GWh storage, 549 MW at 18h duration. Environmental permit required: upper reservoir in Crocker Range Biosphere Reserve.',
         source_url: 'https://re100.anu.edu.au/#start=%7B%22version%22%3A%228.0.0%22%2C%22initSources%22%3A%5B%7B%22stratum%22%3A%22user%22%7D%5D%7D'
     },
