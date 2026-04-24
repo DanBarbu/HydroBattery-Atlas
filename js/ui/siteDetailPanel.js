@@ -308,7 +308,11 @@ HB.UI.siteDetail = {
             gsa: site.gsa || null,
             lat: site.lat,
             lng: site.lng,
-            storage_mwh: site.storage_mwh
+            storage_mwh: site.storage_mwh,
+            // Embedded polygon / pipeline data (required for _drawEmbeddedPolygons)
+            upper_polygon: site.upper_polygon || null,
+            lower_polygon: site.lower_polygon || null,
+            pipe_geometry: site.pipe_geometry || null,
         };
 
         this.show(detailSite);
