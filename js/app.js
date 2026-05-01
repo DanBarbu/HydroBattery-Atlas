@@ -61,7 +61,11 @@
                 upper_vol_gl:  bf.upper_vol_gl  || null,
                 lower_vol_gl:  bf.lower_vol_gl  || null,
                 upper_elev_m:  bf.upper_elev_m  || null,
-                lower_elev_m:  bf.lower_elev_m  || null
+                lower_elev_m:  bf.lower_elev_m  || null,
+                // ANU tunnel fields for satellite map popup
+                anu_tunnel_km:       bf.anu_tunnel_km       || null,
+                anu_tunnel_slope_pct: bf.anu_tunnel_slope_pct || bf.slope_pct || null,
+                anu_flow_m3s:        bf.anu_flow_m3s        || bf.flow_rate_m3s || null
             });
             bfCount++;
         });
@@ -142,6 +146,7 @@
                 anu_id_lower:          s.anu_id_lower  || null,
                 anu_dataset:           s.anu_dataset  || null,
                 // ANU tunnel fields used by satellite map popup
+                anu_tunnel_km:         s.anu_tunnel_km || s.tunnel_km || null,
                 anu_tunnel_slope_pct:  s.slope_pct  || null,
                 anu_flow_m3s:          s.flow_rate_m3s  || null
             });
@@ -388,8 +393,8 @@
      * Setup browse tab filter controls
      */
     function _setupBrowseFilters() {
-        const statusCheckboxes = document.querySelectorAll('#tab-browse .checkbox-group:first-of-type input');
-        const configCheckboxes = document.querySelectorAll('#tab-browse .checkbox-group:last-of-type input');
+        const statusCheckboxes = document.querySelectorAll('#filter-status-group input[type="checkbox"]');
+        const configCheckboxes = document.querySelectorAll('#filter-config-group input[type="checkbox"]');
         const minCapInput = document.getElementById('filter-min-capacity');
         const countrySelect = document.getElementById('filter-country');
         const nameInput = document.getElementById('filter-site-name');
@@ -415,7 +420,7 @@
 
         statusCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
         configCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
-        minCapInput.addEventListener('change', applyFilters);
+        if (minCapInput) minCapInput.addEventListener('change', applyFilters);
         if (countrySelect) countrySelect.addEventListener('change', applyFilters);
         if (nameInput) nameInput.addEventListener('input', applyFilters);
     }

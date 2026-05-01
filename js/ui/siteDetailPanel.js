@@ -577,7 +577,7 @@ HB.UI.siteDetail = {
         // Use exact reservoir coordinates when available, otherwise estimate from centre + separation
         const hasExactCoords = site.upper_lat != null && site.upper_lng != null
                             && site.lower_lat != null && site.lower_lng != null;
-        const headM   = site.head_m ?? site.headHeight ?? site.headM ?? 200;
+        const headM   = site.head_m ?? site.headHeight ?? site.headM ?? null;
         let upperLatLng, lowerLatLng, centerLat, centerLng;
 
         if (hasExactCoords) {
@@ -646,8 +646,8 @@ HB.UI.siteDetail = {
         const uElevLabel = uRes.elevation ?? site.upper_elev_m ?? site.upper_elevation_m ?? null;
         const lElevLabel = lRes.elevation ?? site.lower_elev_m ?? site.lower_elevation_m ?? null;
         const upperLabel = uName
-            ? `⬆ ${uName.replace(/ \(.*/, '')}<br>${Math.round(headM)} m head · ${uElevLabel != null ? uElevLabel + 'm ASL' : ''}`
-            : `⬆ Upper reservoir — ${Math.round(headM)} m head`;
+            ? `⬆ ${uName.replace(/ \(.*/, '')}<br>${headM != null ? Math.round(headM) + ' m head · ' : ''}${uElevLabel != null ? uElevLabel + 'm ASL' : ''}`
+            : `⬆ Upper reservoir${headM != null ? ' — ' + Math.round(headM) + ' m head' : ''}`;
         const lowerLabel = lName
             ? `⬇ ${lName.replace(/ \(.*/, '')}<br>${lElevLabel != null ? lElevLabel + 'm ASL' : ''}`
             : '⬇ Lower reservoir';
@@ -845,8 +845,8 @@ HB.UI.siteDetail = {
                               </div>
                               <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
                                 <tr><td style="color:#555;font-weight:600;padding-right:12px;">Length</td><td>${lenKm} km</td></tr>
-                                <tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Slope</td><td>${slope}%</td></tr>
-                                <tr><td style="color:#555;font-weight:600;padding-right:12px;">Head</td><td>${headM} m</td></tr>
+                                <tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Slope</td><td>${slope !== '—' ? slope + '%' : '—'}</td></tr>
+                                <tr><td style="color:#555;font-weight:600;padding-right:12px;">Head</td><td>${headM !== '—' ? Math.round(headM) + ' m' : '—'}</td></tr>
                                 ${flowM3 !== '—' ? `<tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Flow</td><td>${flowM3} m³/s</td></tr>` : ''}
                                 <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
                                     <td style="font-size:10px;color:#666;">ANU RE100 (embedded)</td></tr>
@@ -857,7 +857,7 @@ HB.UI.siteDetail = {
                 }
             ).addTo(this._miniMap);
             this._miniMapLayers.pipeline = pipeLayer;
-        } else if (site.upper_lat && site.lower_lat) {
+        } else if (site.upper_lat != null && site.lower_lat != null) {
             // Fallback: dashed red line between reservoir centres
             const pLine = L.polyline(
                 [[site.upper_lat, site.upper_lng], [site.lower_lat, site.lower_lng]],
