@@ -1292,10 +1292,48 @@ HB.UI.siteDetail = {
         // Resolve area/volume — support both nested detailSite objects and flat fields
         const u = site.upper || {};
         const l = site.lower || {};
-        const uArea = u.area_ha   ?? site.upper_area_ha  ?? null;
-        const uVol  = u.volume_gl ?? site.upper_volume_gl ?? site.upper_vol_gl ?? null;
-        const lArea = l.area_ha   ?? site.lower_area_ha  ?? null;
-        const lVol  = l.volume_gl ?? site.lower_volume_gl ?? site.lower_vol_gl ?? null;
+        const uArea  = u.area_ha    ?? site.upper_area_ha   ?? null;
+        const uVol   = u.volume_gl  ?? site.upper_volume_gl ?? site.upper_vol_gl  ?? null;
+        const uElev  = u.elevation  ?? site.upper_elevation_m ?? site.upper_elev_m ?? null;
+        const uLabel = u.label      ?? site.upper_reservoir  ?? null;
+        const uVolA  = u.volume_active_gl ?? null;
+        const uDamH  = u.dam_height_m ?? null;
+        const uDepth = u.depth_fluct_m ?? null;
+
+        const lArea  = l.area_ha    ?? site.lower_area_ha   ?? null;
+        const lVol   = l.volume_gl  ?? site.lower_volume_gl ?? site.lower_vol_gl  ?? null;
+        const lElev  = l.elevation  ?? site.lower_elevation_m ?? site.lower_elev_m ?? null;
+        const lLabel = l.label      ?? site.lower_reservoir  ?? null;
+        const lVolA  = l.volume_active_gl ?? null;
+        const lVolT  = l.volume_total_gl  ?? null;
+        const lDamH  = l.dam_height_m ?? null;
+        const lDepth = l.depth_fluct_m ?? null;
+
+        // Build popup HTML for a reservoir circle
+        const resPopup = (isUpper, name, elev, area, vol, volA, volT, damH, depthF, estimated) => {
+            const title = isUpper ? '⬆ Upper Reservoir' : '⬇ Lower Reservoir';
+            const bgColor = isUpper ? '#1565C0' : '#1976D2';
+            const volStr = volA != null && volT != null ? `${volA} GL active / ${volT} GL total`
+                         : volA != null ? `${volA} GL active`
+                         : volT != null ? `${volT} GL total`
+                         : vol  != null ? `${vol} GL` : null;
+            const rows = [
+                name   && `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Name</td><td>${name}</td></tr>`,
+                elev  != null && `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Elevation</td><td>${Math.round(elev)} m ASL</td></tr>`,
+                area  != null && `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Area</td><td>${area} ha</td></tr>`,
+                volStr && `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Volume</td><td>${volStr}</td></tr>`,
+                depthF != null && `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Level Fluctuation</td><td>${depthF} m</td></tr>`,
+                damH  != null && `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Dam Height</td><td>${damH} m</td></tr>`,
+                `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td><td style="font-size:10px;color:#666;">${estimated ? 'Estimated from pit volume' : 'ANU RE100'}</td></tr>`
+            ].filter(Boolean).join('');
+            return `<div style="font-family:system-ui,sans-serif;min-width:210px;">
+              <div style="background:${bgColor};color:#fff;padding:7px 14px;margin:-12px -16px 10px;
+                   border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">${title}</div>
+              <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">${rows}</table>
+            </div>`;
+        };
+
+        const isEstimated = !site.upper_lat;
 
         // Radius (m) from area; fall back to volume/assumed-depth (40 m).
         // Enforce minimum 350 m so the circle is clearly visible at wide zoom.
@@ -1313,15 +1351,17 @@ HB.UI.siteDetail = {
             radius: upperR,
             fillColor: '#1565C0', fillOpacity: 0.40,
             color: '#0D47A1', weight: 2.5, opacity: 0.95
-        }).bindTooltip('⬆ Upper reservoir (estimated outline)', { sticky: true })
-         .addTo(this._miniMap);
+        }).bindTooltip('⬆ Upper reservoir — click for details', { sticky: true })
+          .bindPopup(resPopup(true,  uLabel, uElev, uArea, uVol, uVolA, null,  uDamH, uDepth, isEstimated), { maxWidth: 280, className: 'anu-popup' })
+          .addTo(this._miniMap);
 
         const lowerCircle = L.circle([lowerLat, lowerLng], {
             radius: lowerR,
             fillColor: '#42A5F5', fillOpacity: 0.40,
             color: '#1976D2', weight: 2.5, opacity: 0.95
-        }).bindTooltip('⬇ Lower reservoir (estimated outline)', { sticky: true })
-         .addTo(this._miniMap);
+        }).bindTooltip('⬇ Lower reservoir — click for details', { sticky: true })
+          .bindPopup(resPopup(false, lLabel, lElev, lArea, lVol, lVolA, lVolT, lDamH, lDepth, isEstimated), { maxWidth: 280, className: 'anu-popup' })
+          .addTo(this._miniMap);
 
         const pairLine = L.polyline(
             [[upperLat, upperLng], [lowerLat, lowerLng]],
