@@ -68,6 +68,11 @@ HB.UI.siteDetail = {
                     upper_elevation_m: mv.upper_pit_elevation_m,
                     lower_elevation_m: mv.lower_pit_elevation_m,
                     tunnel_length_m: mv.distance_between_pits_m,
+                    bearing_deg: mv.bearing_deg || null,
+                    upper_area_ha: mv.upper_pit_volume_m3 ? Math.max(1, Math.round(mv.upper_pit_volume_m3 / 80000)) : null,
+                    lower_area_ha: mv.lower_pit_volume_m3 ? Math.max(1, Math.round(mv.lower_pit_volume_m3 / 80000)) : null,
+                    upper_volume_gl: mv.upper_pit_volume_m3 ? +(mv.upper_pit_volume_m3 / 1e6).toFixed(1) : null,
+                    lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
                     description: mv.description, source_url: mv.source_url
                 };
             }
@@ -110,8 +115,9 @@ HB.UI.siteDetail = {
             status: site.status,
             country: site.country,
             region: site.region,
-            upper: { elevation: site.upper_elevation_m },
-            lower: { elevation: site.lower_elevation_m },
+            upper: { elevation: site.upper_elevation_m, area_ha: site.upper_area_ha, volume_gl: site.upper_volume_gl },
+            lower: { elevation: site.lower_elevation_m, area_ha: site.lower_area_ha, volume_gl: site.lower_volume_gl },
+            bearing_deg: site.bearing_deg,
             headHeight,
             tunnelLength,
             energyKWh,
@@ -147,9 +153,14 @@ HB.UI.siteDetail = {
             ['Configuration', (site.configuration || 'lake_pair').replace(/_/g, ' ')],
             ['Country / Region', [site.country, site.region].filter(Boolean).join(', ') || '--'],
             ['Upper Elevation', site.upper?.elevation ? `${Math.round(site.upper.elevation)}m` : '--'],
+            ['Upper Pit Area', site.upper?.area_ha ? `${site.upper.area_ha} ha` : '--'],
+            ['Upper Pit Volume', site.upper?.volume_gl ? `${site.upper.volume_gl} GL` : '--'],
             ['Lower Elevation', site.lower?.elevation ? `${Math.round(site.lower.elevation)}m` : '--'],
+            ['Lower Pit Area', site.lower?.area_ha ? `${site.lower.area_ha} ha` : '--'],
+            ['Lower Pit Volume', site.lower?.volume_gl ? `${site.lower.volume_gl} GL` : '--'],
             ['Head Height', site.headHeight ? `${Math.round(site.headHeight)}m` : '--'],
             ['Tunnel Length', site.tunnelLength ? `${(site.tunnelLength / 1000).toFixed(1)} km` : '--'],
+            ['Bearing', site.bearing_deg != null ? `${site.bearing_deg}°` : '--'],
             ['Energy Storage', site.energyKWh ? HB.Utils.formatEnergy(site.energyKWh) : '--'],
             ['Power Capacity', site.powerKW ? HB.Utils.formatPower(site.powerKW) : '--'],
             ['Storage Duration', site.energyKWh && site.powerKW ?
