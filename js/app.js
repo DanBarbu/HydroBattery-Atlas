@@ -140,7 +140,10 @@
                 existing_plant_year:   s.existing_plant_year  || null,
                 anu_id_upper:          s.anu_id_upper  || null,
                 anu_id_lower:          s.anu_id_lower  || null,
-                anu_dataset:           s.anu_dataset  || null
+                anu_dataset:           s.anu_dataset  || null,
+                // ANU tunnel fields used by satellite map popup
+                anu_tunnel_slope_pct:  s.slope_pct  || null,
+                anu_flow_m3s:          s.flow_rate_m3s  || null
             });
         });
         console.log('Merged ' + dataset.length + ' ' + label + ' sites');
@@ -266,7 +269,10 @@
                 existing_plant_year:   bf.existing_plant_year  || null,
                 anu_id_upper:          bf.anu_id_upper  || null,
                 anu_id_lower:          bf.anu_id_lower  || null,
-                anu_dataset:           bf.anu_dataset  || null
+                anu_dataset:           bf.anu_dataset  || null,
+                // ANU tunnel fields used by satellite map popup
+                anu_tunnel_slope_pct:  bf.slope_pct  || null,
+                anu_flow_m3s:          bf.flow_rate_m3s  || null
             });
             bfRoCount++;
         });

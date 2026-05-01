@@ -806,7 +806,7 @@ HB.UI.siteDetail = {
                             { sticky: true, className: 'anu-tip' });
                         const lenKm  = site.anu_tunnel_km     || site.separation_km || '—';
                         const slope  = site.anu_tunnel_slope_pct || '—';
-                        const headM  = site.head_m || site.headM || '—';
+                        const headM  = site.headHeight ?? site.head_m ?? site.headM ?? '—';
                         const flowM3 = site.anu_flow_m3s || '—';
                         layer.bindPopup(`
                             <div style="font-family:system-ui,sans-serif;min-width:200px;">
