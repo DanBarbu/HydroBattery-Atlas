@@ -42,6 +42,13 @@ HB.Markers = {
             storage_mwh: mv.storage_mwh,
             head_m: mv.head_m,
             tunnel_length_m: mv.distance_between_pits_m,
+            bearing_deg: mv.bearing_deg || null,
+            upper_elevation_m: mv.upper_pit_elevation_m || null,
+            lower_elevation_m: mv.lower_pit_elevation_m || null,
+            upper_area_ha: mv.upper_pit_volume_m3 ? Math.max(1, Math.round(mv.upper_pit_volume_m3 / 80000)) : null,
+            lower_area_ha: mv.lower_pit_volume_m3 ? Math.max(1, Math.round(mv.lower_pit_volume_m3 / 80000)) : null,
+            upper_volume_gl: mv.upper_pit_volume_m3 ? +(mv.upper_pit_volume_m3 / 1e6).toFixed(1) : null,
+            lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
             description: mv.description,
             source_url: mv.source_url
         }))];
@@ -246,7 +253,16 @@ HB.Markers = {
             lat: mv.lat, lng: mv.lng, status: mv.status,
             configuration: 'mine_void',
             capacity_mw: mv.capacity_mw, storage_mwh: mv.storage_mwh,
-            head_m: mv.head_m, description: mv.description, source_url: mv.source_url
+            head_m: mv.head_m,
+            tunnel_length_m: mv.distance_between_pits_m,
+            bearing_deg: mv.bearing_deg || null,
+            upper_elevation_m: mv.upper_pit_elevation_m || null,
+            lower_elevation_m: mv.lower_pit_elevation_m || null,
+            upper_area_ha: mv.upper_pit_volume_m3 ? Math.max(1, Math.round(mv.upper_pit_volume_m3 / 80000)) : null,
+            lower_area_ha: mv.lower_pit_volume_m3 ? Math.max(1, Math.round(mv.lower_pit_volume_m3 / 80000)) : null,
+            upper_volume_gl: mv.upper_pit_volume_m3 ? +(mv.upper_pit_volume_m3 / 1e6).toFixed(1) : null,
+            lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
+            description: mv.description, source_url: mv.source_url
         }))];
 
         allSites.forEach(site => {
