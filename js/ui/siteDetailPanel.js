@@ -877,36 +877,7 @@ HB.UI.siteDetail = {
             : null;
         const bothBounds  = polyLayer.getBounds();
 
-        // Reservoir zoom buttons — visible when two separate polygons exist
-        const btnDiv = document.getElementById('site-reservoir-zoom-btns');
-        if (btnDiv) {
-            btnDiv.innerHTML = '';
-            if (upperBounds && lowerBounds) {
-                const mkBtn = (label, color, fn) => {
-                    const b = document.createElement('button');
-                    b.textContent = label;
-                    b.style.cssText = `font-size:11px;padding:2px 9px;border:1px solid ${color};`
-                        + `background:#fff;color:${color};border-radius:3px;cursor:pointer;`
-                        + `font-family:system-ui,sans-serif;font-weight:600;`;
-                    b.addEventListener('mouseover', () => b.style.background = '#f0f4ff');
-                    b.addEventListener('mouseout',  () => b.style.background = '#fff');
-                    b.addEventListener('click', fn);
-                    return b;
-                };
-                btnDiv.appendChild(mkBtn('⬇ Lower Reservoir', '#1976D2', () => {
-                    this._miniMap.fitBounds(lowerBounds.pad(0.25), { maxZoom: 15 });
-                }));
-                btnDiv.appendChild(mkBtn('⬆ Upper Reservoir', '#0D47A1', () => {
-                    this._miniMap.fitBounds(upperBounds.pad(0.5),  { maxZoom: 16 });
-                }));
-                btnDiv.appendChild(mkBtn('↔ Both', '#555', () => {
-                    this._miniMap.fitBounds(bothBounds.pad(0.15),  { maxZoom: 13 });
-                }));
-                btnDiv.style.display = 'flex';
-            } else {
-                btnDiv.style.display = 'none';
-            }
-        }
+        this._setupZoomButtons(upperBounds, lowerBounds, bothBounds);
 
         // Default view: lower reservoir at high zoom (larger and more visible);
         // fall back to combined bounds if only one polygon exists.
@@ -983,6 +954,16 @@ HB.UI.siteDetail = {
     _loadANUPolygons(site, lat, lng, sepKm) {
         const fetchId = `${lat},${lng}`;
         this._pendingFetch = fetchId;
+
+        // Skip WFS entirely for non-ANU sites (mine voids, operational, proposed, etc.)
+        // to avoid unnecessary network requests that always fail via CORS.
+        const isAnuSite = site.anu_id_upper || site.anu_id_lower
+            || (site.status || '').startsWith('anu_')
+            || site.anu_tier || site.anu_class;
+        if (!isAnuSite) {
+            this._drawFallbackReservoirs(site);
+            return;
+        }
 
         // ── Dual-layer: upper and lower reservoirs in different ANU workspaces ──
         // (e.g. Mamut: upper in global_brownfield:5gwh_18h,
@@ -1253,7 +1234,18 @@ HB.UI.siteDetail = {
                 }
 
                 const attrEl = document.getElementById('site-view-attribution');
-                if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Data © ANU RE100';
+                if (attrEl) attrEl.textContent = 'Imagery © Esri  |  Reservoir outlines © ANU RE100';
+
+                // Zoom buttons — compute bounds from rendered reservoir polygons
+                if (this._miniMapLayers.polygons) {
+                    const isUp = v => v === '1' || v === 1;
+                    const renderedFeats = reservoirFeats;
+                    const uFeats = renderedFeats.filter(f => isUp(f.properties.isupper));
+                    const lFeats = renderedFeats.filter(f => !isUp(f.properties.isupper));
+                    const uBounds = uFeats.length ? L.geoJSON({ type: 'FeatureCollection', features: uFeats }).getBounds() : null;
+                    const lBounds = lFeats.length ? L.geoJSON({ type: 'FeatureCollection', features: lFeats }).getBounds() : null;
+                    this._setupZoomButtons(uBounds, lBounds, this._miniMapLayers.polygons.getBounds());
+                }
             })
             .catch(() => {
                 // WFS unavailable or CORS — draw estimated circles from known reservoir data
@@ -1266,6 +1258,38 @@ HB.UI.siteDetail = {
      * draw estimated L.circle shapes sized from the site's known area or volume.
      * Removes the placeholder dot-markers placed earlier by _showSatelliteMap.
      */
+
+    /**
+     * Create/update the Lower Reservoir / Upper Reservoir / Both zoom buttons.
+     * Called from _drawEmbeddedPolygons, _loadANUPolygons, and _drawFallbackReservoirs
+     * so every code path gets working zoom buttons.
+     */
+    _setupZoomButtons(upperBounds, lowerBounds, bothBounds) {
+        const btnDiv = document.getElementById('site-reservoir-zoom-btns');
+        if (!btnDiv || !this._miniMap) return;
+        btnDiv.innerHTML = '';
+        if (!upperBounds || !lowerBounds) { btnDiv.style.display = 'none'; return; }
+        const mkBtn = (label, color, fn) => {
+            const b = document.createElement('button');
+            b.textContent = label;
+            b.style.cssText = `font-size:11px;padding:2px 9px;border:1px solid ${color};`
+                + `background:#fff;color:${color};border-radius:3px;cursor:pointer;`
+                + `font-family:system-ui,sans-serif;font-weight:600;`;
+            b.addEventListener('mouseover', () => b.style.background = '#f0f4ff');
+            b.addEventListener('mouseout',  () => b.style.background = '#fff');
+            b.addEventListener('click', fn);
+            return b;
+        };
+        const both = bothBounds || L.latLngBounds([upperBounds, lowerBounds]);
+        btnDiv.appendChild(mkBtn('⬇ Lower Reservoir', '#1976D2', () =>
+            this._miniMap.fitBounds(lowerBounds.pad(0.25), { maxZoom: 15 })));
+        btnDiv.appendChild(mkBtn('⬆ Upper Reservoir', '#0D47A1', () =>
+            this._miniMap.fitBounds(upperBounds.pad(0.5),  { maxZoom: 16 })));
+        btnDiv.appendChild(mkBtn('↔ Both', '#555', () =>
+            this._miniMap.fitBounds(both.pad(0.15), { maxZoom: 13 })));
+        btnDiv.style.display = 'flex';
+    },
+
     _drawFallbackReservoirs(site) {
         if (!this._miniMap) return;
 
@@ -1398,6 +1422,10 @@ HB.UI.siteDetail = {
         this._miniMapLayers.upperCircle = upperCircle;
         this._miniMapLayers.lowerCircle = lowerCircle;
         this._miniMapLayers.pairLine    = pairLine;
+
+        const uBounds = upperCircle.getBounds();
+        const lBounds = lowerCircle.getBounds();
+        this._setupZoomButtons(uBounds, lBounds, uBounds.extend(lBounds));
 
         this._miniMap.fitBounds(
             L.latLngBounds([[upperLat, upperLng], [lowerLat, lowerLng]]).pad(0.4),
