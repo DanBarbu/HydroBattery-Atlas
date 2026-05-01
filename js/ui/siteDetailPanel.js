@@ -290,8 +290,20 @@ HB.UI.siteDetail = {
             status: site.status,
             country: site.country,
             region: site.region,
-            upper: { elevation: site.upper_elevation_m, area_ha: site.upper_area_ha, volume_gl: site.upper_volume_gl },
-            lower: { elevation: site.lower_elevation_m, area_ha: site.lower_area_ha, volume_gl: site.lower_volume_gl },
+            upper: {
+                elevation: site.upper_elevation_m ?? site.upper_elev_m ?? null,
+                area_ha:   site.upper_area_ha ?? null,
+                volume_gl: site.upper_volume_gl ?? site.upper_vol_gl ?? null,
+                max_depth_m: site.upper_max_depth_m ?? null,
+                label: site.upper_reservoir || null,
+            },
+            lower: {
+                elevation: site.lower_elevation_m ?? site.lower_elev_m ?? null,
+                area_ha:   site.lower_area_ha ?? null,
+                volume_gl: site.lower_volume_gl ?? site.lower_vol_gl ?? null,
+                max_depth_m: site.lower_max_depth_m ?? null,
+                label: site.lower_reservoir || null,
+            },
             bearing_deg: site.bearing_deg,
             headHeight,
             tunnelLength,
@@ -334,8 +346,8 @@ HB.UI.siteDetail = {
         tbody.innerHTML = '';
 
         // Normalise field names — search results use nested objects; knownSites use flat fields
-        const upperElev  = site.upper?.elevation ?? site.upper_elevation_m ?? null;
-        const lowerElev  = site.lower?.elevation ?? site.lower_elevation_m ?? null;
+        const upperElev  = site.upper?.elevation ?? site.upper_elevation_m ?? site.upper_elev_m ?? null;
+        const lowerElev  = site.lower?.elevation ?? site.lower_elevation_m ?? site.lower_elev_m ?? null;
         const headH      = site.headHeight ?? site.head_m ?? null;
         const tunnelM    = site.tunnelLength ?? site.tunnel_length_m ?? (site.separationM) ?? null;
         const energyKWh  = site.energyKWh ?? (site.storage_mwh != null ? site.storage_mwh * 1000 : null);
@@ -344,14 +356,18 @@ HB.UI.siteDetail = {
         const params = [
             ['Configuration', (site.configuration || 'lake_pair').replace(/_/g, ' ')],
             ['Country / Region', [site.country, site.region].filter(Boolean).join(', ') || '--'],
+            ...(site.upper?.label   ? [['Upper Reservoir', site.upper.label]]   : []),
             ['Upper Elevation', upperElev != null ? `${Math.round(upperElev)} m` : '--'],
-            ...(site.configuration === 'mine_void' && site.upper?.area_ha   ? [['Upper Pit Area',   `${site.upper.area_ha} ha`]] : []),
-            ...(site.configuration === 'mine_void' && site.upper?.volume_gl ? [['Upper Pit Volume', `${site.upper.volume_gl} GL`]] : []),
+            ...(site.upper?.area_ha    != null ? [['Upper Reservoir Area',   `${site.upper.area_ha} ha`]]    : []),
+            ...(site.upper?.volume_gl  != null ? [['Upper Reservoir Volume', `${site.upper.volume_gl} GL`]]  : []),
+            ...(site.upper?.max_depth_m != null ? [['Upper Max Depth',       `${site.upper.max_depth_m} m`]] : []),
+            ...(site.lower?.label   ? [['Lower Reservoir', site.lower.label]]   : []),
             ['Lower Elevation', lowerElev != null ? `${Math.round(lowerElev)} m` : '--'],
-            ...(site.configuration === 'mine_void' && site.lower?.area_ha   ? [['Lower Pit Area',   `${site.lower.area_ha} ha`]] : []),
-            ...(site.configuration === 'mine_void' && site.lower?.volume_gl ? [['Lower Pit Volume', `${site.lower.volume_gl} GL`]] : []),
+            ...(site.lower?.area_ha    != null ? [['Lower Reservoir Area',   `${site.lower.area_ha} ha`]]    : []),
+            ...(site.lower?.volume_gl  != null ? [['Lower Reservoir Volume', `${site.lower.volume_gl} GL`]]  : []),
+            ...(site.lower?.max_depth_m != null ? [['Lower Max Depth',       `${site.lower.max_depth_m} m`]] : []),
             ['Head Height',     headH     != null ? `${Math.round(headH)} m`     : '--'],
-            ...(site.configuration === 'mine_void' && site.bearing_deg != null ? [['Bearing', `${site.bearing_deg}°`]] : []),
+            ...(site.bearing_deg != null ? [['Bearing', `${site.bearing_deg}°`]] : []),
             ['Tunnel Length',   tunnelM   != null ? `${(tunnelM / 1000).toFixed(1)} km` : '--'],
             ['Energy Storage',  energyKWh != null ? HB.Utils.formatEnergy(energyKWh)    : '--'],
             ['Power Capacity',  powerKW   != null ? HB.Utils.formatPower(powerKW)       : '--'],
