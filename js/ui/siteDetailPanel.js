@@ -56,6 +56,7 @@ HB.UI.siteDetail = {
 
         setTimeout(() => {
             if (HB.Map && HB.Map.map) HB.Map.map.invalidateSize();
+            if (this._miniMap) this._miniMap.invalidateSize();
         }, 350);
     },
 
@@ -86,6 +87,7 @@ HB.UI.siteDetail = {
             collapseBtn.style.transition = '';
             setTimeout(() => {
                 if (HB.Map && HB.Map.map) HB.Map.map.invalidateSize();
+                if (this._miniMap) this._miniMap.invalidateSize();
             }, 50);
         };
 
@@ -352,6 +354,11 @@ HB.UI.siteDetail = {
             anu_tunnel_km: site.anu_tunnel_km || null,
             anu_tunnel_slope_pct: site.anu_tunnel_slope_pct || null,
             anu_flow_m3s: site.anu_flow_m3s || null,
+            // Exact reservoir lat/lng for satellite map centering
+            upper_lat: site.upper_lat ?? null,
+            upper_lng: site.upper_lng ?? null,
+            lower_lat: site.lower_lat ?? null,
+            lower_lng: site.lower_lng ?? null,
         };
 
         this.show(detailSite);
@@ -615,12 +622,15 @@ HB.UI.siteDetail = {
             ).addTo(this._miniMap);
 
             this._miniMapLayers = {};
+            // Must call invalidateSize after Leaflet renders into a previously-hidden div
+            setTimeout(() => this._miniMap.invalidateSize(), 100);
         } else {
             this._miniMap.setView([centerLat, centerLng], zoom);
             Object.values(this._miniMapLayers).forEach(l => {
                 if (l) this._miniMap.removeLayer(l);
             });
             this._miniMapLayers = {};
+            setTimeout(() => this._miniMap.invalidateSize(), 50);
         }
 
         // --- Reservoir markers ---
@@ -628,11 +638,18 @@ HB.UI.siteDetail = {
             radius: 8, color, weight: 2,
             fillColor: color, fillOpacity: 0.75, title: ttl
         });
-        const upperLabel = site.upper_reservoir
-            ? `⬆ ${site.upper_reservoir.replace(/ \(.*/, '')}<br>${Math.round(headM)} m head · ${site.upper_elev_m ?? ''}m ASL`
+        // Resolve labels from nested upper/lower objects (detailSite path) with flat fallbacks
+        const uRes  = site.upper || {};
+        const lRes  = site.lower || {};
+        const uName = uRes.label || site.upper_reservoir || null;
+        const lName = lRes.label || site.lower_reservoir || null;
+        const uElevLabel = uRes.elevation ?? site.upper_elev_m ?? site.upper_elevation_m ?? null;
+        const lElevLabel = lRes.elevation ?? site.lower_elev_m ?? site.lower_elevation_m ?? null;
+        const upperLabel = uName
+            ? `⬆ ${uName.replace(/ \(.*/, '')}<br>${Math.round(headM)} m head · ${uElevLabel != null ? uElevLabel + 'm ASL' : ''}`
             : `⬆ Upper reservoir — ${Math.round(headM)} m head`;
-        const lowerLabel = site.lower_reservoir
-            ? `⬇ ${site.lower_reservoir.replace(/ \(.*/, '')}<br>${site.lower_elev_m ?? ''}m ASL`
+        const lowerLabel = lName
+            ? `⬇ ${lName.replace(/ \(.*/, '')}<br>${lElevLabel != null ? lElevLabel + 'm ASL' : ''}`
             : '⬇ Lower reservoir';
 
         const upperPH = L.circleMarker(upperLatLng,
