@@ -386,6 +386,7 @@
         const configCheckboxes = document.querySelectorAll('#tab-browse .checkbox-group:last-of-type input');
         const minCapInput = document.getElementById('filter-min-capacity');
         const countrySelect = document.getElementById('filter-country');
+        const nameInput = document.getElementById('filter-site-name');
 
         const applyFilters = () => {
             const statuses = [];
@@ -400,15 +401,17 @@
 
             const minCapacityMW = parseFloat(minCapInput.value) || 0;
             const country = countrySelect ? countrySelect.value : 'all';
+            const nameQuery = nameInput ? nameInput.value.trim().toLowerCase() : '';
 
             HB.Markers.filterKnownSites({ statuses, configurations, minCapacityMW, country });
-            _populateKnownSitesList({ statuses, configurations, minCapacityMW, country });
+            _populateKnownSitesList({ statuses, configurations, minCapacityMW, country, nameQuery });
         };
 
         statusCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
         configCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
         minCapInput.addEventListener('change', applyFilters);
         if (countrySelect) countrySelect.addEventListener('change', applyFilters);
+        if (nameInput) nameInput.addEventListener('input', applyFilters);
     }
 
     /**
@@ -466,6 +469,12 @@
             }
             if (filters.minCapacityMW > 0) {
                 allSites = allSites.filter(s => (s.capacity_mw || 0) >= filters.minCapacityMW);
+            }
+            if (filters.nameQuery) {
+                allSites = allSites.filter(s =>
+                    (s.name || '').toLowerCase().includes(filters.nameQuery) ||
+                    (s.region || '').toLowerCase().includes(filters.nameQuery)
+                );
             }
         }
 

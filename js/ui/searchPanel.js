@@ -98,6 +98,9 @@ HB.UI.searchPanel = {
                     const lng = parseFloat(coordMatch[2]);
                     HB.Map.flyTo(lat, lng, 10);
                     suggestions.classList.add('hidden');
+                    document.getElementById('right-panel').classList.add('hidden');
+                    const collapseBtn = document.getElementById('right-panel-collapse-btn');
+                    if (collapseBtn) collapseBtn.style.display = 'none';
                     return;
                 }
 
@@ -126,6 +129,9 @@ HB.UI.searchPanel = {
                             HB.Map.flyTo(parseFloat(r.lat), parseFloat(r.lon), 11);
                             input.value = r.display_name.split(',')[0];
                             suggestions.classList.add('hidden');
+                            document.getElementById('right-panel').classList.add('hidden');
+                            const collapseBtn = document.getElementById('right-panel-collapse-btn');
+                            if (collapseBtn) collapseBtn.style.display = 'none';
                         });
                         suggestions.appendChild(div);
                     });
