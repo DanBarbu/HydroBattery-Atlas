@@ -291,18 +291,34 @@ HB.UI.siteDetail = {
             country: site.country,
             region: site.region,
             upper: {
-                elevation: site.upper_elevation_m ?? site.upper_elev_m ?? null,
-                area_ha:   site.upper_area_ha ?? null,
-                volume_gl: site.upper_volume_gl ?? site.upper_vol_gl ?? null,
-                max_depth_m: site.upper_max_depth_m ?? null,
-                label: site.upper_reservoir || null,
+                label:            site.upper_reservoir || null,
+                reservoir_id:     site.upper_reservoir_id || null,
+                elevation:        site.upper_elevation_m ?? site.upper_elev_m ?? site.upper_elev_nwl_m ?? null,
+                elev_nwl_m:       site.upper_elev_nwl_m ?? null,
+                elev_min_m:       site.upper_elev_min_m ?? null,
+                area_ha:          site.upper_area_ha ?? null,
+                volume_gl:        site.upper_volume_gl ?? site.upper_vol_gl ?? null,
+                volume_active_gl: site.upper_volume_active_gl ?? null,
+                max_depth_m:      site.upper_max_depth_m ?? null,
+                depth_fluct_m:    site.upper_depth_fluct_m ?? null,
+                dam_height_m:     site.upper_dam_height_m ?? null,
+                dam_crest_m:      site.upper_dam_crest_m ?? null,
             },
             lower: {
-                elevation: site.lower_elevation_m ?? site.lower_elev_m ?? null,
-                area_ha:   site.lower_area_ha ?? null,
-                volume_gl: site.lower_volume_gl ?? site.lower_vol_gl ?? null,
-                max_depth_m: site.lower_max_depth_m ?? null,
-                label: site.lower_reservoir || null,
+                label:            site.lower_reservoir || null,
+                reservoir_id:     site.lower_reservoir_id || null,
+                elevation:        site.lower_elevation_m ?? site.lower_elev_m ?? site.lower_elev_nwl_m ?? null,
+                elev_nwl_m:       site.lower_elev_nwl_m ?? null,
+                elev_min_m:       site.lower_elev_min_m ?? null,
+                area_ha:          site.lower_area_ha ?? null,
+                volume_gl:        site.lower_volume_gl ?? site.lower_vol_gl ?? null,
+                volume_total_gl:  site.lower_volume_total_gl ?? null,
+                volume_active_gl: site.lower_volume_active_gl ?? null,
+                max_depth_m:      site.lower_max_depth_m ?? null,
+                depth_fluct_m:    site.lower_depth_fluct_m ?? null,
+                dam_height_m:     site.lower_dam_height_m ?? null,
+                dam_length_m:     site.lower_dam_length_m ?? null,
+                dam_volume_gl:    site.lower_dam_volume_gl ?? null,
             },
             bearing_deg: site.bearing_deg,
             headHeight,
@@ -346,26 +362,63 @@ HB.UI.siteDetail = {
         tbody.innerHTML = '';
 
         // Normalise field names — search results use nested objects; knownSites use flat fields
-        const upperElev  = site.upper?.elevation ?? site.upper_elevation_m ?? site.upper_elev_m ?? null;
-        const lowerElev  = site.lower?.elevation ?? site.lower_elevation_m ?? site.lower_elev_m ?? null;
+        const upperElev  = site.upper?.elevation ?? site.upper_elevation_m ?? site.upper_elev_m ?? site.upper_elev_nwl_m ?? null;
+        const lowerElev  = site.lower?.elevation ?? site.lower_elevation_m ?? site.lower_elev_m ?? site.lower_elev_nwl_m ?? null;
         const headH      = site.headHeight ?? site.head_m ?? null;
-        const tunnelM    = site.tunnelLength ?? site.tunnel_length_m ?? (site.separationM) ?? null;
+        const tunnelM    = site.tunnelLength ?? site.tunnel_length_m ?? site.separationM ?? null;
         const energyKWh  = site.energyKWh ?? (site.storage_mwh != null ? site.storage_mwh * 1000 : null);
         const powerKW    = site.powerKW   ?? (site.capacity_mw  != null ? site.capacity_mw  * 1000 : null);
+
+        // Helper to resolve reservoir sub-fields — works for both detailSite (nested)
+        // and raw knownSite objects (flat), so the panel renders correctly in both paths.
+        const u = site.upper || {};
+        const l = site.lower || {};
+        const uLabel     = u.label         || site.upper_reservoir     || null;
+        const uArea      = u.area_ha       ?? site.upper_area_ha       ?? null;
+        const uVol       = u.volume_gl     ?? site.upper_volume_gl     ?? site.upper_vol_gl     ?? null;
+        const uVolActive = u.volume_active_gl ?? site.upper_volume_active_gl ?? null;
+        const uDepthF    = u.depth_fluct_m ?? site.upper_depth_fluct_m ?? null;
+        const uDamH      = u.dam_height_m  ?? site.upper_dam_height_m  ?? null;
+        const uElev2     = u.elev_nwl_m    ?? site.upper_elev_nwl_m    ?? null;
+        const uElevMin   = u.elev_min_m    ?? site.upper_elev_min_m    ?? null;
+
+        const lLabel     = l.label         || site.lower_reservoir     || null;
+        const lArea      = l.area_ha       ?? site.lower_area_ha       ?? null;
+        const lVol       = l.volume_gl     ?? site.lower_volume_gl     ?? site.lower_vol_gl     ?? null;
+        const lVolTotal  = l.volume_total_gl  ?? site.lower_volume_total_gl  ?? null;
+        const lVolActive = l.volume_active_gl ?? site.lower_volume_active_gl ?? null;
+        const lDepth     = l.max_depth_m   ?? site.lower_max_depth_m   ?? null;
+        const lDepthF    = l.depth_fluct_m ?? site.lower_depth_fluct_m ?? null;
+        const lDamH      = l.dam_height_m  ?? site.lower_dam_height_m  ?? null;
+        const lDamLen    = l.dam_length_m  ?? site.lower_dam_length_m  ?? null;
+        const lElev2     = l.elev_nwl_m    ?? site.lower_elev_nwl_m    ?? null;
+        const lElevMin   = l.elev_min_m    ?? site.lower_elev_min_m    ?? null;
 
         const params = [
             ['Configuration', (site.configuration || 'lake_pair').replace(/_/g, ' ')],
             ['Country / Region', [site.country, site.region].filter(Boolean).join(', ') || '--'],
-            ...(site.upper?.label   ? [['Upper Reservoir', site.upper.label]]   : []),
-            ['Upper Elevation', upperElev != null ? `${Math.round(upperElev)} m` : '--'],
-            ...(site.upper?.area_ha    != null ? [['Upper Reservoir Area',   `${site.upper.area_ha} ha`]]    : []),
-            ...(site.upper?.volume_gl  != null ? [['Upper Reservoir Volume', `${site.upper.volume_gl} GL`]]  : []),
-            ...(site.upper?.max_depth_m != null ? [['Upper Max Depth',       `${site.upper.max_depth_m} m`]] : []),
-            ...(site.lower?.label   ? [['Lower Reservoir', site.lower.label]]   : []),
-            ['Lower Elevation', lowerElev != null ? `${Math.round(lowerElev)} m` : '--'],
-            ...(site.lower?.area_ha    != null ? [['Lower Reservoir Area',   `${site.lower.area_ha} ha`]]    : []),
-            ...(site.lower?.volume_gl  != null ? [['Lower Reservoir Volume', `${site.lower.volume_gl} GL`]]  : []),
-            ...(site.lower?.max_depth_m != null ? [['Lower Max Depth',       `${site.lower.max_depth_m} m`]] : []),
+            ...(uLabel    ? [['Upper Reservoir', uLabel]]                                               : []),
+            ['Upper Elevation',   upperElev != null ? `${Math.round(upperElev)} m` : '--'],
+            ...(uElev2  != null && uElev2  !== upperElev ? [['Upper NWL',          `${Math.round(uElev2)} m`]]  : []),
+            ...(uElevMin != null                         ? [['Upper Min Level',    `${Math.round(uElevMin)} m`]] : []),
+            ...(uArea    != null ? [['Upper Reservoir Area',   `${uArea} ha`]]                          : []),
+            ...(uVol     != null ? [['Upper Reservoir Volume', uVolActive != null ? `${uVolActive} GL active / ${uVol} GL total` : `${uVol} GL`]] : []),
+            ...(uDepthF  != null ? [['Upper Level Fluctuation', `${uDepthF} m`]]                        : []),
+            ...(uDamH    != null ? [['Upper Dam Height', `${uDamH} m`]]                                 : []),
+            ...(lLabel    ? [['Lower Reservoir', lLabel]]                                               : []),
+            ['Lower Elevation',   lowerElev != null ? `${Math.round(lowerElev)} m` : '--'],
+            ...(lElev2  != null && lElev2  !== lowerElev ? [['Lower NWL',          `${Math.round(lElev2)} m`]]  : []),
+            ...(lElevMin != null                         ? [['Lower Min Level',    `${Math.round(lElevMin)} m`]] : []),
+            ...(lArea    != null ? [['Lower Reservoir Area',   `${lArea} ha`]]                          : []),
+            ...(lVol != null || lVolTotal != null ? [['Lower Reservoir Volume',
+                lVolActive != null && lVolTotal != null ? `${lVolActive} GL active / ${lVolTotal} GL total`
+                : lVolActive != null                    ? `${lVolActive} GL active`
+                : lVolTotal  != null                    ? `${lVolTotal} GL total`
+                                                        : `${lVol} GL`]]                               : []),
+            ...(lDepth   != null ? [['Lower Max Depth',   `${lDepth} m`]]                               : []),
+            ...(lDepthF  != null ? [['Lower Level Fluctuation', `${lDepthF} m`]]                        : []),
+            ...(lDamH    != null ? [['Lower Dam Height',  `${lDamH} m`]]                                : []),
+            ...(lDamLen  != null ? [['Lower Dam Length',  `${lDamLen} m`]]                              : []),
             ['Head Height',     headH     != null ? `${Math.round(headH)} m`     : '--'],
             ...(site.bearing_deg != null ? [['Bearing', `${site.bearing_deg}°`]] : []),
             ['Tunnel Length',   tunnelM   != null ? `${(tunnelM / 1000).toFixed(1)} km` : '--'],
