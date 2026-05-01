@@ -1280,7 +1280,8 @@ HB.UI.siteDetail = {
             b.addEventListener('click', fn);
             return b;
         };
-        const both = bothBounds || L.latLngBounds([upperBounds, lowerBounds]);
+        const both = bothBounds
+            || L.latLngBounds(upperBounds.getSouthWest(), upperBounds.getNorthEast()).extend(lowerBounds);
         btnDiv.appendChild(mkBtn('⬇ Lower Reservoir', '#1976D2', () =>
             this._miniMap.fitBounds(lowerBounds.pad(0.25), { maxZoom: 15 })));
         btnDiv.appendChild(mkBtn('⬆ Upper Reservoir', '#0D47A1', () =>
@@ -1425,7 +1426,9 @@ HB.UI.siteDetail = {
 
         const uBounds = upperCircle.getBounds();
         const lBounds = lowerCircle.getBounds();
-        this._setupZoomButtons(uBounds, lBounds, uBounds.extend(lBounds));
+        // Create bothBounds as a NEW copy to avoid mutating uBounds
+        const bothBounds = L.latLngBounds(uBounds.getSouthWest(), uBounds.getNorthEast()).extend(lBounds);
+        this._setupZoomButtons(uBounds, lBounds, bothBounds);
 
         this._miniMap.fitBounds(
             L.latLngBounds([[upperLat, upperLng], [lowerLat, lowerLng]]).pad(0.4),
