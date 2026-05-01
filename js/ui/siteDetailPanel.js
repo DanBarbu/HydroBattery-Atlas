@@ -661,8 +661,36 @@ HB.UI.siteDetail = {
             .bindTooltip(lowerLabel, { permanent: false })
             .addTo(this._miniMap);
         const pairLine = L.polyline([upperLatLng, lowerLatLng], {
-            color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85
+            color: '#e74c3c', weight: 3, dashArray: '6 4', opacity: 0.85
         }).addTo(this._miniMap);
+
+        // Add tunnel/penstock popup to the pair line so all site types get clickable data
+        {
+            const lenKm  = site.anu_tunnel_km || site.separation_km
+                           || (site.tunnelLength ? (site.tunnelLength / 1000).toFixed(1) : null) || '—';
+            const slope  = site.anu_tunnel_slope_pct || '—';
+            const headM  = site.headHeight ?? site.head_m ?? site.headM ?? '—';
+            const flowM3 = site.anu_flow_m3s || '—';
+            pairLine.bindTooltip('Penstock / Tunnel — click for details', { sticky: true, className: 'anu-tip' });
+            pairLine.bindPopup(`
+                <div style="font-family:system-ui,sans-serif;min-width:200px;">
+                  <div style="background:#e67e22;color:#fff;
+                       padding:7px 14px;margin:-12px -16px 10px;
+                       border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                    ⚡ Penstock / Tunnel
+                  </div>
+                  <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Length</td><td>${lenKm} km</td></tr>
+                    <tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Slope</td><td>${slope !== '—' ? slope + '%' : '—'}</td></tr>
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Head</td><td>${headM !== '—' ? Math.round(headM) + ' m' : '—'}</td></tr>
+                    ${flowM3 !== '—' ? `<tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Flow</td><td>${flowM3} m³/s</td></tr>` : ''}
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
+                        <td style="font-size:10px;color:#666;">${site.anu_tunnel_km ? 'ANU RE100 (embedded)' : 'Estimated'}</td></tr>
+                  </table>
+                </div>`, { maxWidth: 260, className: 'anu-popup' }
+            );
+        }
+
         this._miniMapLayers = { upperMarker: upperPH, lowerMarker: lowerPH, pairLine };
 
         // If site has pre-fetched polygon coordinates, render them directly —
@@ -1240,7 +1268,6 @@ HB.UI.siteDetail = {
      */
     _drawFallbackReservoirs(site) {
         if (!this._miniMap) return;
-        if (!site.upper_lat || !site.lower_lat) return;   // need exact coords
 
         // Remove placeholder dot-markers
         ['upperMarker', 'lowerMarker', 'pairLine'].forEach(k => {
@@ -1249,6 +1276,26 @@ HB.UI.siteDetail = {
                 delete this._miniMapLayers[k];
             }
         });
+
+        // Resolve coords — use exact if available, otherwise estimate from center ± half-tunnel
+        let upperLat = site.upper_lat, upperLng = site.upper_lng;
+        let lowerLat = site.lower_lat, lowerLng = site.lower_lng;
+        if (!upperLat || !lowerLat) {
+            const centerLat = site.lat ?? 0;
+            const centerLng = site.lng ?? 0;
+            const sepKm = site.separation_km ?? (site.tunnelLength ? site.tunnelLength / 1000 : 2);
+            const delta = (sepKm / 2) / 111;
+            upperLat = centerLat + delta; upperLng = centerLng;
+            lowerLat = centerLat - delta; lowerLng = centerLng;
+        }
+
+        // Resolve area/volume — support both nested detailSite objects and flat fields
+        const u = site.upper || {};
+        const l = site.lower || {};
+        const uArea = u.area_ha   ?? site.upper_area_ha  ?? null;
+        const uVol  = u.volume_gl ?? site.upper_volume_gl ?? site.upper_vol_gl ?? null;
+        const lArea = l.area_ha   ?? site.lower_area_ha  ?? null;
+        const lVol  = l.volume_gl ?? site.lower_volume_gl ?? site.lower_vol_gl ?? null;
 
         // Radius (m) from area; fall back to volume/assumed-depth (40 m).
         // Enforce minimum 350 m so the circle is clearly visible at wide zoom.
@@ -1259,17 +1306,17 @@ HB.UI.siteDetail = {
             return Math.max(350, Math.sqrt(areaM2 / Math.PI));
         };
 
-        const upperR = radiusFrom(site.upper_area_ha, site.upper_vol_gl, 5);
-        const lowerR = radiusFrom(site.lower_area_ha, site.lower_vol_gl, 10);
+        const upperR = radiusFrom(uArea, uVol, 5);
+        const lowerR = radiusFrom(lArea, lVol, 10);
 
-        const upperCircle = L.circle([site.upper_lat, site.upper_lng], {
+        const upperCircle = L.circle([upperLat, upperLng], {
             radius: upperR,
             fillColor: '#1565C0', fillOpacity: 0.40,
             color: '#0D47A1', weight: 2.5, opacity: 0.95
         }).bindTooltip('⬆ Upper reservoir (estimated outline)', { sticky: true })
          .addTo(this._miniMap);
 
-        const lowerCircle = L.circle([site.lower_lat, site.lower_lng], {
+        const lowerCircle = L.circle([lowerLat, lowerLng], {
             radius: lowerR,
             fillColor: '#42A5F5', fillOpacity: 0.40,
             color: '#1976D2', weight: 2.5, opacity: 0.95
@@ -1277,13 +1324,45 @@ HB.UI.siteDetail = {
          .addTo(this._miniMap);
 
         const pairLine = L.polyline(
-            [[site.upper_lat, site.upper_lng], [site.lower_lat, site.lower_lng]],
-            { color: '#e74c3c', weight: 2, dashArray: '6 4', opacity: 0.85 }
+            [[upperLat, upperLng], [lowerLat, lowerLng]],
+            { color: '#e74c3c', weight: 3, dashArray: '6 4', opacity: 0.85 }
         ).addTo(this._miniMap);
+
+        // Popup with available penstock data
+        {
+            const lenKm  = site.anu_tunnel_km || site.separation_km
+                           || (site.tunnelLength ? (site.tunnelLength / 1000).toFixed(1) : null) || '—';
+            const slope  = site.anu_tunnel_slope_pct || '—';
+            const headM  = site.headHeight ?? site.head_m ?? site.headM ?? '—';
+            const flowM3 = site.anu_flow_m3s || '—';
+            pairLine.bindTooltip('Penstock / Tunnel — click for details', { sticky: true, className: 'anu-tip' });
+            pairLine.bindPopup(`
+                <div style="font-family:system-ui,sans-serif;min-width:200px;">
+                  <div style="background:#e67e22;color:#fff;
+                       padding:7px 14px;margin:-12px -16px 10px;
+                       border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">
+                    ⚡ Penstock / Tunnel
+                  </div>
+                  <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Length</td><td>${lenKm} km</td></tr>
+                    <tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Slope</td><td>${slope !== '—' ? slope + '%' : '—'}</td></tr>
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Head</td><td>${headM !== '—' ? Math.round(headM) + ' m' : '—'}</td></tr>
+                    ${flowM3 !== '—' ? `<tr style="background:#FFF3E0;"><td style="color:#555;font-weight:600;padding-right:12px;">Flow</td><td>${flowM3} m³/s</td></tr>` : ''}
+                    <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
+                        <td style="font-size:10px;color:#666;">${site.anu_tunnel_km ? 'ANU RE100 (embedded)' : 'Estimated'}</td></tr>
+                  </table>
+                </div>`, { maxWidth: 260, className: 'anu-popup' }
+            );
+        }
 
         this._miniMapLayers.upperCircle = upperCircle;
         this._miniMapLayers.lowerCircle = lowerCircle;
         this._miniMapLayers.pairLine    = pairLine;
+
+        this._miniMap.fitBounds(
+            L.latLngBounds([[upperLat, upperLng], [lowerLat, lowerLng]]).pad(0.4),
+            { maxZoom: 14 }
+        );
     },
 
     _drawCrossSection(site) {
