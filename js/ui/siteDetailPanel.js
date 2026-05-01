@@ -347,6 +347,11 @@ HB.UI.siteDetail = {
             upper_polygon: site.upper_polygon || null,
             lower_polygon: site.lower_polygon || null,
             pipe_geometry: site.pipe_geometry || null,
+            anu_id_upper: site.anu_id_upper || null,
+            anu_id_lower: site.anu_id_lower || null,
+            anu_tunnel_km: site.anu_tunnel_km || null,
+            anu_tunnel_slope_pct: site.anu_tunnel_slope_pct || null,
+            anu_flow_m3s: site.anu_flow_m3s || null,
         };
 
         this.show(detailSite);
@@ -686,7 +691,7 @@ HB.UI.siteDetail = {
                 type: 'Feature',
                 properties: {
                     isupper: '1', isdam: false, ispipe: false,
-                    identifier: site.anu_id_upper || 'Upper reservoir'
+                    identifier: site.anu_id_upper || site.upper?.reservoir_id || site.upper?.label || 'Upper reservoir'
                 },
                 geometry: site.upper_polygon
             });
@@ -696,7 +701,7 @@ HB.UI.siteDetail = {
                 type: 'Feature',
                 properties: {
                     isupper: '0', isdam: false, ispipe: false,
-                    identifier: site.anu_id_lower || 'Lower reservoir'
+                    identifier: site.anu_id_lower || site.lower?.reservoir_id || site.lower?.label || 'Lower reservoir'
                 },
                 geometry: site.lower_polygon
             });
@@ -720,9 +725,23 @@ HB.UI.siteDetail = {
                 onEachFeature: (feature, layer) => {
                     const up  = isUp(feature);
                     const rid = feature.properties.identifier;
-                    const elev = up ? site.upper_elev_m : site.lower_elev_m;
-                    const area = up ? (site.upper_area_ha || '—') : (site.lower_area_ha || '—');
-                    const vol  = up ? (site.upper_vol_gl  || '—') : (site.lower_vol_gl  || '—');
+                    const res  = up ? site.upper : site.lower;
+                    const elev = res?.elevation ?? (up ? site.upper_elev_m : site.lower_elev_m) ?? null;
+                    const area = res?.area_ha   ?? (up ? site.upper_area_ha : site.lower_area_ha) ?? null;
+                    const vol  = res?.volume_gl ?? (up ? (site.upper_vol_gl ?? site.upper_volume_gl) : (site.lower_vol_gl ?? site.lower_volume_gl)) ?? null;
+                    const volA = res?.volume_active_gl ?? (up ? site.upper_volume_active_gl : site.lower_volume_active_gl) ?? null;
+                    const volT = res?.volume_total_gl  ?? (up ? null : site.lower_volume_total_gl) ?? null;
+                    const dep  = res?.max_depth_m   ?? (up ? site.upper_max_depth_m : site.lower_max_depth_m) ?? null;
+                    const dflc = res?.depth_fluct_m ?? (up ? site.upper_depth_fluct_m : site.lower_depth_fluct_m) ?? null;
+                    const damH = res?.dam_height_m  ?? (up ? site.upper_dam_height_m : site.lower_dam_height_m) ?? null;
+
+                    const volStr = volA != null && volT != null ? `${volA} GL active / ${volT} GL total`
+                                 : volA != null ? `${volA} GL active`
+                                 : volT != null ? `${volT} GL total`
+                                 : vol  != null ? `${vol} GL` : null;
+
+                    const td = (label, value, shade) =>
+                        `<tr${shade ? ' style="background:#EEF4FB;"' : ''}><td style="color:#555;font-weight:600;padding-right:12px;white-space:nowrap;">${label}</td><td>${value}</td></tr>`;
 
                     layer.bindTooltip(
                         `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
@@ -736,14 +755,16 @@ HB.UI.siteDetail = {
                             ${up ? '⬆ Upper' : '⬇ Lower'} Reservoir
                           </div>
                           <table style="font-size:11.5px;border-collapse:collapse;width:100%;line-height:1.6;">
-                            <tr><td style="color:#555;font-weight:600;padding-right:12px;">ID</td><td>${rid}</td></tr>
-                            ${elev  != null ? `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Elevation</td><td>${elev} m ASL</td></tr>` : ''}
-                            ${area !== '—'  ? `<tr><td style="color:#555;font-weight:600;padding-right:12px;">Area</td><td>${area} ha</td></tr>` : ''}
-                            ${vol  !== '—'  ? `<tr style="background:#EEF4FB;"><td style="color:#555;font-weight:600;padding-right:12px;">Volume</td><td>${vol} GL</td></tr>` : ''}
-                            <tr><td style="color:#555;font-weight:600;padding-right:12px;">Source</td>
-                                <td style="font-size:10px;color:#666;">ANU RE100 (embedded)</td></tr>
+                            ${td('ID',        rid,          false)}
+                            ${elev   != null ? td('Elevation',        `${elev} m ASL`,  true)  : ''}
+                            ${area   != null ? td('Area',             `${area} ha`,     false) : ''}
+                            ${volStr != null ? td('Volume',           volStr,           true)  : ''}
+                            ${dep    != null ? td('Max Depth',        `${dep} m`,       false) : ''}
+                            ${dflc   != null ? td('Level Fluctuation',`${dflc} m`,      true)  : ''}
+                            ${damH   != null ? td('Dam Height',       `${damH} m`,      false) : ''}
+                            ${td('Source', '<span style="font-size:10px;color:#666;">ANU RE100 (embedded)</span>', true)}
                           </table>
-                        </div>`, { maxWidth: 280, className: 'anu-popup' }
+                        </div>`, { maxWidth: 300, className: 'anu-popup' }
                     );
                 }
             }
