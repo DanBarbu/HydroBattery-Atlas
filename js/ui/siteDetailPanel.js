@@ -1409,6 +1409,41 @@ HB.UI.siteDetail = {
             { color: '#e74c3c', weight: 3, dashArray: '6 4', opacity: 0.85 }
         ).addTo(this._miniMap);
 
+        // Draggable centre handles — lets user visually correct reservoir positions.
+        // Dragging updates the circle, the connecting line, and the coord display.
+        const coordBox = document.getElementById('minimap-coords');
+        const addDragHandle = (lat, lng, isUpper, circle) => {
+            const col = isUpper ? '#0D47A1' : '#1976D2';
+            const lbl = isUpper ? '⬆' : '⬇';
+            const handle = L.marker([lat, lng], {
+                draggable: true,
+                zIndexOffset: 1000,
+                icon: L.divIcon({
+                    html: `<div title="Drag to reposition" style="width:22px;height:22px;background:${col};border-radius:50%;border:3px solid #fff;cursor:grab;box-shadow:0 2px 5px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✥</div>`,
+                    iconSize: [22, 22], iconAnchor: [11, 11], className: ''
+                })
+            }).addTo(this._miniMap);
+            handle.on('drag', e => {
+                const {lat: la, lng: lo} = e.latlng;
+                circle.setLatLng([la, lo]);
+                const uPos = isUpper ? [la, lo] : (this._miniMapLayers.upperHandle?.getLatLng() || [upperLat, upperLng]);
+                const lPos = isUpper ? (this._miniMapLayers.lowerHandle?.getLatLng() || [lowerLat, lowerLng]) : [la, lo];
+                pairLine.setLatLngs([uPos, lPos]);
+                if (coordBox) {
+                    coordBox.style.display = 'block';
+                    coordBox.style.background = 'rgba(13,71,161,.9)';
+                    coordBox.textContent = `${lbl} ${la.toFixed(5)}, ${lo.toFixed(5)}  ← copy to mineVoids.js`;
+                }
+            });
+            handle.on('dragend', e => {
+                const {lat: la, lng: lo} = e.latlng;
+                if (coordBox) coordBox.textContent = `${lbl} FINAL: ${la.toFixed(5)}, ${lo.toFixed(5)}  ← copy to mineVoids.js`;
+            });
+            return handle;
+        };
+        this._miniMapLayers.upperHandle = addDragHandle(upperLat, upperLng, true,  upperCircle);
+        this._miniMapLayers.lowerHandle = addDragHandle(lowerLat, lowerLng, false, lowerCircle);
+
         // Popup with available penstock data
         {
             const lenKm  = site.anu_tunnel_km || site.separation_km
