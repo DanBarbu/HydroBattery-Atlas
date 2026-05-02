@@ -359,12 +359,12 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
         distance_between_pits_m: 2000,
-        // Cetate pit (upper, S of town per OSM landuse=quarry centroid ~46.306, 23.132)
-        // Lower reservoir in Rosia River valley N of the pit (lower elevation)
-        upper_lat: 46.3058,
-        upper_lng: 23.1318,
-        lower_lat: 46.3168,
-        lower_lng: 23.1048,
+        // Cetate pit on the hill south of the village (upper, ~46.297°N);
+        // lower reservoir in the Abrud River valley to the NW (uninhabited).
+        upper_lat: 46.2972,
+        upper_lng: 23.1148,
+        lower_lat: 46.3280,
+        lower_lng: 23.0920,
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,

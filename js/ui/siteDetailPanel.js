@@ -625,17 +625,28 @@ HB.UI.siteDetail = {
                 { maxZoom: 18, opacity: 0.55 }
             ).addTo(this._miniMap);
 
-            // Coordinate crosshair overlay — shows lat/lng under cursor so positions can be verified
+            // Coordinate overlay — always visible; hover shows live lat/lng; click pins + copies
             const coordBox = document.createElement('div');
             coordBox.id = 'minimap-coords';
-            coordBox.style.cssText = 'position:absolute;bottom:6px;left:6px;z-index:1000;background:rgba(0,0,0,0.65);color:#fff;font-size:10px;font-family:monospace;padding:2px 6px;border-radius:3px;pointer-events:none;display:none;';
+            coordBox.style.cssText = 'position:absolute;bottom:6px;left:6px;z-index:1000;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;font-family:monospace;padding:3px 7px;border-radius:3px;pointer-events:none;';
+            coordBox.textContent = 'Hover · click to pin coords';
             container.style.position = 'relative';
             container.appendChild(coordBox);
             this._miniMap.on('mousemove', e => {
-                coordBox.style.display = 'block';
-                coordBox.textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+                coordBox.style.background = 'rgba(0,0,0,0.65)';
+                coordBox.textContent = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
             });
-            this._miniMap.on('mouseout', () => { coordBox.style.display = 'none'; });
+            this._miniMap.on('mouseout', () => {
+                coordBox.style.background = 'rgba(0,0,0,0.55)';
+                coordBox.textContent = 'Hover · click to pin coords';
+            });
+            this._miniMap.on('click', e => {
+                const la = e.latlng.lat.toFixed(6), lo = e.latlng.lng.toFixed(6);
+                coordBox.style.background = 'rgba(13,71,161,0.95)';
+                coordBox.style.fontSize = '11px';
+                coordBox.textContent = `📍 ${la}, ${lo}  ← report to Claude`;
+                if (navigator.clipboard) navigator.clipboard.writeText(`${la}, ${lo}`).catch(() => {});
+            });
 
             this._miniMapLayers = {};
             // Must call invalidateSize after Leaflet renders into a previously-hidden div
