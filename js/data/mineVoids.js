@@ -1,14 +1,19 @@
 /**
  * Database of Mine Void Sites Suitable for PHES Conversion
  *
+ * Design rule: upper_lat/lng = mine pit (higher elevation, uninhabited mine land);
+ *              lower_lat/lng = natural valley / existing reservoir (uninhabited terrain).
+ *              NO inhabited villages or towns may be used as reservoir sites.
+ *
  * Regions supported:
- *   Australia  — Kidston, Mt Morgan, Collinsville, Hazelwood, Iron Knob, Pilbara
- *   United States — Appalachian (WV)
- *   Brazil     — Bento Rodrigues
- *   South Africa — Witwatersrand
+ *   Australia      — Kidston, Mt Morgan, Collinsville, Hazelwood, Iron Knob, Pilbara
+ *   United States  — Appalachian (WV)
+ *   Brazil         — Bento Rodrigues
+ *   South Africa   — Witwatersrand (Carletonville)
  *   United Kingdom — Corby
- *   Malaysia (Sabah) — Mamut Copper Mine [added: feature/malaysia-romania-regions]
- *   Romania    — Rosia Montana [added: feature/malaysia-romania-regions]
+ *   Malaysia (Sabah) — Mamut Copper Mine
+ *   Romania        — Rosia Montana, Certej, Moldova Nouă, Baia Sprie, Cavnic,
+ *                    Anina, Rovina, Zlatna, Baia de Arieș, Brad/Musariu
  *
  * Cost engine region factors (costEngine.js):
  *   Australia 1.0x  |  Malaysia 0.5x  |  Romania 0.7x  |  default 0.8x
@@ -88,11 +93,11 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
         distance_between_pits_m: 1500,
-        // Upper pit (eastern) and lower pit (western) across the Bowen Basin escarpment
-        upper_lat: -20.5435,
-        upper_lng: 147.8568,
-        lower_lat: -20.5570,
-        lower_lng: 147.8432,
+        // Upper pit (eastern plateau) and lower reservoir in the Bowen River valley (uninhabited)
+        upper_lat: -20.5418,
+        upper_lng: 147.8598,
+        lower_lat: -20.5672,
+        lower_lng: 147.8355,
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,
@@ -242,30 +247,30 @@ HB.Data.mineVoids = [
     },
     {
         id: 'mv_witwatersrand',
-        name: 'Witwatersrand Gold Mines',
+        name: 'Carletonville Deep Gold Mines',
         country: 'South Africa',
-        region: 'Gauteng',
-        lat: -26.2000,
-        lng: 28.0000,
+        region: 'North West Province',
+        lat: -26.3660,
+        lng: 27.3930,
         status: 'potential',
         mine_type: 'underground',
         commodity: 'Gold',
-        upper_pit_elevation_m: 1700,
-        lower_pit_elevation_m: 300,
-        head_m: 1400,
+        upper_pit_elevation_m: 1650,
+        lower_pit_elevation_m: 200,
+        head_m: 1450,
         upper_pit_volume_m3: 500000,
         lower_pit_volume_m3: 2000000,
         distance_between_pits_m: 2000,
-        // Surface reservoir (upper) and deep underground void (lower) — Carletonville area
-        upper_lat: -26.1910,
-        upper_lng: 27.9975,
-        lower_lat: -26.2090,
-        lower_lng: 28.0025,
-        capacity_mw: 200,
-        storage_mwh: 2400,
+        // Surface reservoir on uninhabited Witwatersrand ridge; lower = deep underground void
+        upper_lat: -26.3548,
+        upper_lng: 27.3812,
+        lower_lat: -26.3772,
+        lower_lng: 27.4048,
+        capacity_mw: 300,
+        storage_mwh: 3600,
         estimated_cost_musd: null,
-        description: 'Ultra-deep gold mines (up to 4km) with exceptional head potential. Underground configuration.',
-        source_url: '',
+        description: 'Ultra-deep gold mines near Carletonville (Mponeng, TauTona — deepest mines on Earth at 3.5–4 km). Underground PHES concept: surface reservoir on the uninhabited Witwatersrand ridge feeds water to existing deep excavations (1,450 m head). Requires dewatering reversal and structural assessment. No inhabited land used as reservoir.',
+        source_url: 'https://en.wikipedia.org/wiki/Mponeng_gold_mine',
         developer: ''
     },
     {
@@ -365,5 +370,266 @@ HB.Data.mineVoids = [
         description: 'Historic gold and silver mining district in the Western Carpathians. Multiple open pits (Cetate, Carnic, Orlea) offer complex PHES pairing options at ~250 m head. Currently protected as UNESCO industrial heritage; any development would require strict environmental review. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Ro%C8%99ia_Montan%C4%83',
         developer: ''
+    },
+    // -------------------------------------------------------
+    //  ROMANIA — Golden Quadrilateral (Apuseni Mountains)
+    // -------------------------------------------------------
+    {
+        id: 'mv_certej',
+        name: 'Certej Gold Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 46.1390,
+        lng: 22.8145,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Gold/Silver',
+        upper_pit_elevation_m: 580,
+        lower_pit_elevation_m: 370,
+        head_m: 210,
+        upper_pit_volume_m3: 3500000,
+        lower_pit_volume_m3: 5000000,
+        distance_between_pits_m: 1900,
+        // Mine pit on the hill (upper); uninhabited Crisul Negru tributary valley (lower)
+        upper_lat: 46.1438,
+        upper_lng: 22.8188,
+        lower_lat: 46.1255,
+        lower_lng: 22.8028,
+        capacity_mw: 85,
+        storage_mwh: 680,
+        estimated_cost_musd: null,
+        description: 'Historic gold and silver mine in the Golden Quadrilateral of the Apuseni Mountains. Open pits at ~580 m ASL with ~210 m head to the uninhabited Crisul Negru tributary valley. Site of the 1971 Certej tailings dam disaster; any PHES development would require full tailings remediation first. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Certej_mine_disaster',
+        developer: ''
+    },
+    {
+        id: 'mv_brad_musariu',
+        name: 'Brad / Musariu Gold Mines',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 46.1365,
+        lng: 22.8065,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Gold',
+        upper_pit_elevation_m: 680,
+        lower_pit_elevation_m: 440,
+        head_m: 240,
+        upper_pit_volume_m3: 3000000,
+        lower_pit_volume_m3: 5000000,
+        distance_between_pits_m: 2100,
+        // Musariu mine pits (upper); Crisul Negru valley bend (lower) — avoids Brad town
+        upper_lat: 46.1428,
+        upper_lng: 22.8148,
+        lower_lat: 46.1218,
+        lower_lng: 22.7912,
+        capacity_mw: 96,
+        storage_mwh: 768,
+        estimated_cost_musd: null,
+        description: 'Historic gold mine complex near Brad, in the same auriferous belt as Rosia Montana and Certej. Open pits (Musariu, Troita) at ~680 m ASL; lower reservoir in a bend of the Crisul Negru valley below Brad town (uninhabited floodplain). ~240 m head, 2.1 km tunnel. Regional cost factor 0.7× Australian baseline.',
+        source_url: '',
+        developer: ''
+    },
+    {
+        id: 'mv_rovina',
+        name: 'Rovina Copper-Gold Project',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 46.0982,
+        lng: 22.7655,
+        status: 'proposed',
+        mine_type: 'open_pit',
+        commodity: 'Copper/Gold',
+        upper_pit_elevation_m: 650,
+        lower_pit_elevation_m: 385,
+        head_m: 265,
+        upper_pit_volume_m3: 6000000,
+        lower_pit_volume_m3: 8000000,
+        distance_between_pits_m: 2500,
+        // Proposed open pit on forested hill (upper); uninhabited Crisul Negru valley (lower)
+        upper_lat: 46.1048,
+        upper_lng: 22.7738,
+        lower_lat: 46.0888,
+        lower_lng: 22.7528,
+        capacity_mw: 106,
+        storage_mwh: 1272,
+        estimated_cost_musd: null,
+        description: 'Proposed copper-gold open pit by Samax AB in the western Apuseni Mountains. The future pit void at ~650 m ASL could serve as upper PHES reservoir paired with an uninhabited Crisul Negru valley lower reservoir (~265 m head). Co-development as mine + energy storage could significantly improve project economics. Regional cost factor 0.7× Australian baseline.',
+        source_url: '',
+        developer: 'Samax AB'
+    },
+    {
+        id: 'mv_zlatna',
+        name: 'Zlatna Mining District',
+        country: 'Romania',
+        region: 'Alba County',
+        lat: 46.1250,
+        lng: 23.2090,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Copper/Gold',
+        upper_pit_elevation_m: 740,
+        lower_pit_elevation_m: 570,
+        head_m: 170,
+        upper_pit_volume_m3: 2000000,
+        lower_pit_volume_m3: 3000000,
+        distance_between_pits_m: 1500,
+        // Mine pits on the ridge NE of Zlatna (upper); Ampoi River valley below (lower) — avoids Zlatna town
+        upper_lat: 46.1332,
+        upper_lng: 23.2225,
+        lower_lat: 46.1118,
+        lower_lng: 23.1972,
+        capacity_mw: 68,
+        storage_mwh: 544,
+        estimated_cost_musd: null,
+        description: 'Historic copper and gold mining district with Roman-era origins in the Ampoi valley. Existing pit voids at ~740 m ASL on the ridge NE of Zlatna, paired with the Ampoi valley (570 m ASL) for ~170 m head. Lower reservoir uses uninhabited valley terrain downstream of the town. Site requires significant environmental remediation from historic copper smelting. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Zlatna',
+        developer: ''
+    },
+    {
+        id: 'mv_baia_de_aries',
+        name: 'Baia de Arieș Gold Mine',
+        country: 'Romania',
+        region: 'Alba County',
+        lat: 46.5260,
+        lng: 23.3270,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Gold',
+        upper_pit_elevation_m: 900,
+        lower_pit_elevation_m: 620,
+        head_m: 280,
+        upper_pit_volume_m3: 2500000,
+        lower_pit_volume_m3: 4000000,
+        distance_between_pits_m: 2300,
+        // Mine pits on the ridge above Baia de Aries (upper); Arieș valley 2 km downstream (lower)
+        upper_lat: 46.5342,
+        upper_lng: 23.3358,
+        lower_lat: 46.5082,
+        lower_lng: 23.3105,
+        capacity_mw: 112,
+        storage_mwh: 896,
+        estimated_cost_musd: null,
+        description: 'Gold and silver mine in the western Apuseni Mountains (Metaliferi Mountains), part of the historic Golden Quadrilateral. Open pits at ~900 m ASL on the ridge above the Arieș River, paired with an uninhabited valley 2 km downstream (~280 m head). Remote mountain terrain with good environmental profile. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Baia_de_Arie%C8%99',
+        developer: ''
+    },
+    // -------------------------------------------------------
+    //  ROMANIA — Maramureș Mining District
+    // -------------------------------------------------------
+    {
+        id: 'mv_baia_sprie',
+        name: 'Baia Sprie Polymetallic Mine',
+        country: 'Romania',
+        region: 'Maramureș County',
+        lat: 47.6680,
+        lng: 23.6940,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Lead/Zinc/Silver',
+        upper_pit_elevation_m: 610,
+        lower_pit_elevation_m: 375,
+        head_m: 235,
+        upper_pit_volume_m3: 2500000,
+        lower_pit_volume_m3: 3500000,
+        distance_between_pits_m: 1800,
+        // Mine pits on Gutâi Mountain slope (upper); Sasar River valley 2 km east (lower) — avoids Baia Sprie town
+        upper_lat: 47.6758,
+        upper_lng: 23.7005,
+        lower_lat: 47.6592,
+        lower_lng: 23.7118,
+        capacity_mw: 94,
+        storage_mwh: 752,
+        estimated_cost_musd: null,
+        description: 'Historic polymetallic mine on the southern slopes of the Gutâi Mountains in the Maramureș mining district. Open pits at ~610 m ASL paired with the Sasar River valley (375 m ASL, uninhabited terrain 2 km east) for ~235 m head. Part of the Baia Mare–Baia Sprie–Cavnic mining corridor. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Baia_Sprie',
+        developer: ''
+    },
+    {
+        id: 'mv_cavnic',
+        name: 'Cavnic Polymetallic Mine',
+        country: 'Romania',
+        region: 'Maramureș County',
+        lat: 47.6650,
+        lng: 23.8890,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Lead/Zinc/Silver',
+        upper_pit_elevation_m: 790,
+        lower_pit_elevation_m: 455,
+        head_m: 335,
+        upper_pit_volume_m3: 2000000,
+        lower_pit_volume_m3: 3000000,
+        distance_between_pits_m: 2300,
+        // Mine pits on Gutâi ridge (upper); uninhabited Drăghia valley 2.3 km SW (lower)
+        upper_lat: 47.6722,
+        upper_lng: 23.9032,
+        lower_lat: 47.6548,
+        lower_lng: 23.8668,
+        capacity_mw: 134,
+        storage_mwh: 1072,
+        estimated_cost_musd: null,
+        description: 'Closed polymetallic mine on the Gutâi ridge with one of the best PHES geometries in Romania: ~335 m head, mine pits at 790 m ASL, lower reservoir in the uninhabited Drăghia valley (455 m ASL). Remote mountain terrain, minimal resettlement risk. Part of the historic Maramureș silver-lead-zinc district. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Cavnic',
+        developer: ''
+    },
+    // -------------------------------------------------------
+    //  ROMANIA — Banat Mountains (Caraș-Severin)
+    // -------------------------------------------------------
+    {
+        id: 'mv_anina',
+        name: 'Anina Coal Mine Complex',
+        country: 'Romania',
+        region: 'Caraș-Severin County',
+        lat: 45.0880,
+        lng: 21.8470,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Anthracite Coal',
+        upper_pit_elevation_m: 830,
+        lower_pit_elevation_m: 445,
+        head_m: 385,
+        upper_pit_volume_m3: 4000000,
+        lower_pit_volume_m3: 6000000,
+        distance_between_pits_m: 2900,
+        // Mine pits on the Banat plateau (upper); uninhabited Minișel River gorge (lower)
+        upper_lat: 45.0955,
+        upper_lng: 21.8615,
+        lower_lat: 45.0718,
+        lower_lng: 21.8282,
+        capacity_mw: 154,
+        storage_mwh: 1848,
+        estimated_cost_musd: null,
+        description: 'Historic anthracite coal mining complex in the Banat Mountains, established 1790 — the oldest industrial mine in Romania. Open-pit sections at ~830 m ASL above the Minișel River gorge (445 m ASL) offer ~385 m head and 2.9 km tunnel — among the strongest PHES profiles for Romanian mine voids. Remote mountain terrain, uninhabited lower gorge. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Anina',
+        developer: ''
+    },
+    {
+        id: 'mv_moldova_noua',
+        name: 'Moldova Nouă Copper Mine',
+        country: 'Romania',
+        region: 'Caraș-Severin County',
+        lat: 44.7420,
+        lng: 21.6520,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Copper',
+        upper_pit_elevation_m: 325,
+        lower_pit_elevation_m: 68,
+        head_m: 257,
+        upper_pit_volume_m3: 8000000,
+        lower_pit_volume_m3: 12000000,
+        distance_between_pits_m: 4800,
+        // Copper mine pit plateau (upper); uninhabited Danube embayment east of Moldova Nouă (lower)
+        upper_lat: 44.7508,
+        upper_lng: 21.6388,
+        lower_lat: 44.7122,
+        lower_lng: 21.6878,
+        capacity_mw: 120,
+        storage_mwh: 1440,
+        estimated_cost_musd: null,
+        description: 'Open-pit copper mine operated by Cuprumin SA on the plateau above the Danube (Iron Gates reservoir). Outstanding PHES candidate: ~257 m head from mine plateau (~325 m ASL) to an uninhabited Danube embayment (~68 m ASL), 4.8 km tunnel. The Danube acts as an effectively infinite lower reservoir. Cross-border environmental review (Romania–Serbia) required. Regional cost factor 0.7× Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Moldova_Nou%C4%83',
+        developer: 'Cuprumin SA'
     }
 ];
