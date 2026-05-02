@@ -32,6 +32,11 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 4500000,
         lower_pit_volume_m3: 5000000,
         distance_between_pits_m: 900,
+        // K1 pit (upper reservoir) and K2 pit (lower reservoir) — Genex Kidston PHES
+        upper_lat: -18.8615,
+        upper_lng: 144.1525,
+        lower_lat: -18.8800,
+        lower_lng: 144.1640,
         capacity_mw: 250,
         storage_mwh: 2000,
         estimated_cost_musd: 580,
@@ -299,6 +304,11 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
         distance_between_pits_m: 2000,
+        // Cetate open pit (upper) and Rosia valley lower reservoir
+        upper_lat: 46.3020,
+        upper_lng: 23.1245,
+        lower_lat: 46.3130,
+        lower_lng: 23.1080,
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,
