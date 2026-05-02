@@ -354,11 +354,11 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
         distance_between_pits_m: 2000,
-        // Cetate open pit (upper, SE of town) and Rosia valley lower reservoir (NW)
-        upper_lat: 46.2995,
-        upper_lng: 23.1305,
-        lower_lat: 46.3148,
-        lower_lng: 23.1068,
+        // Cetate/Carnic pit complex (upper, NE hills, ~1000m ASL) and Rosia valley lower reservoir (SW)
+        upper_lat: 46.3102,
+        upper_lng: 23.1328,
+        lower_lat: 46.2988,
+        lower_lng: 23.1072,
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,
