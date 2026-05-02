@@ -625,6 +625,18 @@ HB.UI.siteDetail = {
                 { maxZoom: 18, opacity: 0.55 }
             ).addTo(this._miniMap);
 
+            // Coordinate crosshair overlay — shows lat/lng under cursor so positions can be verified
+            const coordBox = document.createElement('div');
+            coordBox.id = 'minimap-coords';
+            coordBox.style.cssText = 'position:absolute;bottom:6px;left:6px;z-index:1000;background:rgba(0,0,0,0.65);color:#fff;font-size:10px;font-family:monospace;padding:2px 6px;border-radius:3px;pointer-events:none;display:none;';
+            container.style.position = 'relative';
+            container.appendChild(coordBox);
+            this._miniMap.on('mousemove', e => {
+                coordBox.style.display = 'block';
+                coordBox.textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+            });
+            this._miniMap.on('mouseout', () => { coordBox.style.display = 'none'; });
+
             this._miniMapLayers = {};
             // Must call invalidateSize after Leaflet renders into a previously-hidden div
             setTimeout(() => this._miniMap.invalidateSize(), 100);
