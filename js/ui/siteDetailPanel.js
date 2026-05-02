@@ -571,6 +571,27 @@ HB.UI.siteDetail = {
         }
     },
 
+    _setMiniMapTiles(mode) {
+        if (!this._miniMap || !this._mmEsriSat) return;
+        if (mode === this._mmMode) return;
+        const satBtn = document.getElementById('mm-btn-sat');
+        const mapBtn = document.getElementById('mm-btn-map');
+        if (mode === 'map') {
+            this._miniMap.removeLayer(this._mmEsriSat);
+            this._miniMap.removeLayer(this._mmEsriLabels);
+            this._miniMap.addLayer(this._mmOsm);
+            if (satBtn) { satBtn.style.background = '#fff'; satBtn.style.color = '#333'; }
+            if (mapBtn) { mapBtn.style.background = '#1976D2'; mapBtn.style.color = '#fff'; }
+        } else {
+            this._miniMap.removeLayer(this._mmOsm);
+            this._miniMap.addLayer(this._mmEsriSat);
+            this._miniMap.addLayer(this._mmEsriLabels);
+            if (satBtn) { satBtn.style.background = '#1976D2'; satBtn.style.color = '#fff'; }
+            if (mapBtn) { mapBtn.style.background = '#fff'; mapBtn.style.color = '#333'; }
+        }
+        this._mmMode = mode;
+    },
+
     /**
      * Create or update the Leaflet satellite mini-map centred on the lake pair.
      * Uses ESRI World Imagery tiles (free, no key) + ANU GeoServer WFS polygons.
@@ -615,43 +636,33 @@ HB.UI.siteDetail = {
                 doubleClickZoom:    true
             });
 
-            const esriSat = L.tileLayer(
+            this._mmEsriSat = L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18 }
             ).addTo(this._miniMap);
 
-            const esriLabels = L.tileLayer(
+            this._mmEsriLabels = L.tileLayer(
                 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18, opacity: 0.55 }
             ).addTo(this._miniMap);
 
-            const osmLayer = L.tileLayer(
+            this._mmOsm = L.tileLayer(
                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 { maxZoom: 19, opacity: 1.0 }
             );
+            this._mmMode = 'sat';
 
             // Sat / Map toggle — OSM tiles show quarry outlines, useful for locating mine pits
             const tileToggle = L.control({ position: 'topright' });
             tileToggle.onAdd = () => {
                 const d = L.DomUtil.create('div');
+                d.id = 'mm-tile-toggle';
                 d.style.cssText = 'background:#fff;border-radius:4px;border:1px solid rgba(0,0,0,0.3);overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.4);font-family:system-ui,sans-serif;font-size:10px;';
                 d.innerHTML = '<button id="mm-btn-sat" style="padding:3px 8px;border:none;background:#1976D2;color:#fff;cursor:pointer;font-size:10px;">🛰 Sat</button>'
                             + '<button id="mm-btn-map" style="padding:3px 8px;border:none;background:#fff;color:#333;cursor:pointer;font-size:10px;">🗺 Map</button>';
                 L.DomEvent.disableClickPropagation(d);
-                L.DomEvent.on(d.querySelector('#mm-btn-sat'), 'click', () => {
-                    d.querySelector('#mm-btn-sat').style.cssText += 'background:#1976D2;color:#fff;';
-                    d.querySelector('#mm-btn-map').style.cssText += 'background:#fff;color:#333;';
-                    this._miniMap.addLayer(esriSat);
-                    this._miniMap.addLayer(esriLabels);
-                    this._miniMap.removeLayer(osmLayer);
-                });
-                L.DomEvent.on(d.querySelector('#mm-btn-map'), 'click', () => {
-                    d.querySelector('#mm-btn-map').style.cssText += 'background:#1976D2;color:#fff;';
-                    d.querySelector('#mm-btn-sat').style.cssText += 'background:#fff;color:#333;';
-                    this._miniMap.removeLayer(esriSat);
-                    this._miniMap.removeLayer(esriLabels);
-                    this._miniMap.addLayer(osmLayer);
-                });
+                L.DomEvent.on(d.querySelector('#mm-btn-sat'), 'click', () => this._setMiniMapTiles('sat'));
+                L.DomEvent.on(d.querySelector('#mm-btn-map'), 'click', () => this._setMiniMapTiles('map'));
                 return d;
             };
             tileToggle.addTo(this._miniMap);
@@ -680,6 +691,8 @@ HB.UI.siteDetail = {
             });
 
             this._miniMapLayers = {};
+            // Mine void sites default to OSM map mode so quarry outlines are immediately visible
+            if (site.configuration === 'mine_void') this._setMiniMapTiles('map');
             // Must call invalidateSize after Leaflet renders into a previously-hidden div
             setTimeout(() => this._miniMap.invalidateSize(), 100);
         } else {
@@ -688,6 +701,8 @@ HB.UI.siteDetail = {
                 if (l) this._miniMap.removeLayer(l);
             });
             this._miniMapLayers = {};
+            // Switch tile mode automatically when navigating between site types
+            this._setMiniMapTiles(site.configuration === 'mine_void' ? 'map' : 'sat');
             setTimeout(() => this._miniMap.invalidateSize(), 50);
         }
 
