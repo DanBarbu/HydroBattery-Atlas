@@ -615,15 +615,46 @@ HB.UI.siteDetail = {
                 doubleClickZoom:    true
             });
 
-            L.tileLayer(
+            const esriSat = L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18 }
             ).addTo(this._miniMap);
 
-            L.tileLayer(
+            const esriLabels = L.tileLayer(
                 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
                 { maxZoom: 18, opacity: 0.55 }
             ).addTo(this._miniMap);
+
+            const osmLayer = L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                { maxZoom: 19, opacity: 1.0 }
+            );
+
+            // Sat / Map toggle — OSM tiles show quarry outlines, useful for locating mine pits
+            const tileToggle = L.control({ position: 'topright' });
+            tileToggle.onAdd = () => {
+                const d = L.DomUtil.create('div');
+                d.style.cssText = 'background:#fff;border-radius:4px;border:1px solid rgba(0,0,0,0.3);overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.4);font-family:system-ui,sans-serif;font-size:10px;';
+                d.innerHTML = '<button id="mm-btn-sat" style="padding:3px 8px;border:none;background:#1976D2;color:#fff;cursor:pointer;font-size:10px;">🛰 Sat</button>'
+                            + '<button id="mm-btn-map" style="padding:3px 8px;border:none;background:#fff;color:#333;cursor:pointer;font-size:10px;">🗺 Map</button>';
+                L.DomEvent.disableClickPropagation(d);
+                L.DomEvent.on(d.querySelector('#mm-btn-sat'), 'click', () => {
+                    d.querySelector('#mm-btn-sat').style.cssText += 'background:#1976D2;color:#fff;';
+                    d.querySelector('#mm-btn-map').style.cssText += 'background:#fff;color:#333;';
+                    this._miniMap.addLayer(esriSat);
+                    this._miniMap.addLayer(esriLabels);
+                    this._miniMap.removeLayer(osmLayer);
+                });
+                L.DomEvent.on(d.querySelector('#mm-btn-map'), 'click', () => {
+                    d.querySelector('#mm-btn-map').style.cssText += 'background:#1976D2;color:#fff;';
+                    d.querySelector('#mm-btn-sat').style.cssText += 'background:#fff;color:#333;';
+                    this._miniMap.removeLayer(esriSat);
+                    this._miniMap.removeLayer(esriLabels);
+                    this._miniMap.addLayer(osmLayer);
+                });
+                return d;
+            };
+            tileToggle.addTo(this._miniMap);
 
             // Coordinate overlay — always visible; hover shows live lat/lng; click pins + copies
             const coordBox = document.createElement('div');
