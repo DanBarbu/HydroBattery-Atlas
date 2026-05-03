@@ -358,12 +358,13 @@ HB.Data.mineVoids = [
         head_m: 250,
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
-        distance_between_pits_m: 2000,
+        distance_between_pits_m: 7100,
         // User-pinned coordinate from satellite click-to-pin tool
         upper_lat: 46.311652,
         upper_lng: 23.175339,
-        lower_lat: 46.3280,
-        lower_lng: 23.0920,
+        // Lower reservoir = Iazul de decantare Geamăna (Geamana tailings lake, ~700 m ASL)
+        lower_lat: 46.2882,
+        lower_lng: 23.0820,
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,
