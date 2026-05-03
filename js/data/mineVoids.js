@@ -359,10 +359,9 @@ HB.Data.mineVoids = [
         upper_pit_volume_m3: 6000000,
         lower_pit_volume_m3: 8000000,
         distance_between_pits_m: 2000,
-        // Cetate pit on the hill south of the village (upper, ~46.297°N);
-        // lower reservoir in the Abrud River valley to the NW (uninhabited).
-        upper_lat: 46.2972,
-        upper_lng: 23.1148,
+        // User-pinned coordinate from satellite click-to-pin tool
+        upper_lat: 46.311652,
+        upper_lng: 23.175339,
         lower_lat: 46.3280,
         lower_lng: 23.0920,
         capacity_mw: 150,
