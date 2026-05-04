@@ -208,7 +208,8 @@ HB.UI.siteDetail = {
                     lower_area_ha: mv.lower_pit_volume_m3 ? Math.max(1, Math.round(mv.lower_pit_volume_m3 / 80000)) : null,
                     upper_volume_gl: mv.upper_pit_volume_m3 ? +(mv.upper_pit_volume_m3 / 1e6).toFixed(1) : null,
                     lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
-                    description: mv.description, source_url: mv.source_url
+                    description: mv.description, source_url: mv.source_url,
+                    water_contamination: mv.water_contamination || null
                 };
             }
         }
@@ -289,6 +290,7 @@ HB.UI.siteDetail = {
             energyKWh,
             powerKW,
             configuration: site.configuration || 'lake_pair',
+            waterContamination: site.water_contamination || null,
         });
 
         const detailSite = {
@@ -363,6 +365,7 @@ HB.UI.siteDetail = {
             upper_lng: site.upper_lng ?? null,
             lower_lat: site.lower_lat ?? null,
             lower_lng: site.lower_lng ?? null,
+            water_contamination: site.water_contamination || null,
         };
 
         this.show(detailSite);
@@ -520,6 +523,23 @@ HB.UI.siteDetail = {
 
         if (site.description) {
             params.push(['Description', site.description]);
+        }
+
+        if (site.water_contamination) {
+            const wc = site.water_contamination;
+            const riskLabel = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' }[wc.risk] || wc.risk;
+            const contaminants = (wc.contaminants || []).map(c => c.replace(/_/g, ' ')).join(', ');
+            const techStack = [
+                '⚡ Electrocoagulation (heavy-metals floc)',
+                '🔬 UF/NF Membrane filtration',
+                '🧲 Ion-exchange heavy-metals polishing',
+                '💨 Aeration cascade (O₂ byproduct)',
+                '☀️ On-site solar + battery power supply'
+            ].join('<br>');
+            params.push(['Water Treatment Risk', riskLabel]);
+            params.push(['Contaminants', contaminants]);
+            params.push(['Treatment Technology', techStack]);
+            if (wc.treatment_note) params.push(['Compliance Note', wc.treatment_note]);
         }
 
         params.forEach(([label, value]) => {

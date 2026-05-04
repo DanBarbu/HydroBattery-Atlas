@@ -448,7 +448,23 @@ HB.Cost.engine = {
         const civilResult = HB.Cost.civil.calculate({ capacityMW, terrain, constructionSubtotal });
         const hardCostSubtotal = constructionSubtotal + civilResult.total;
         const envResult = HB.Cost.environmental.calculate({ constructionSubtotal: hardCostSubtotal, capacityMW, constructionYears: HB.State.constructionYears, discountRate: HB.State.discountRate });
-        const totalCAPEX = hardCostSubtotal + envResult.total;
+
+        // Water treatment & remediation — for contaminated mine void reservoirs.
+        // Covers: mobile electrocoagulation units, UF/NF membrane filtration, heavy-metals
+        // ion-exchange columns, activated-carbon polishing, aeration cascade (usable byproduct),
+        // and the on-site renewable (solar + battery) system powering all treatment loads.
+        // CAPEX scaled to flow rate Q (m³/s): treatmentBase × Q^0.65
+        //   High risk (cyanide / Au-Ag tailings pond): $1.68M × Q^0.65  → ~$30M @ 68 m³/s
+        //   Medium risk (Cu/Zn pit lake):               $1.00M × Q^0.65  → ~$19M @ 75 m³/s
+        //   Low risk (mild acid drainage):               $0.50M × Q^0.65  → ~$9M  @ 50 m³/s
+        const wc = site.waterContamination;
+        const treatmentCost = (() => {
+            if (!wc || !wc.risk) return 0;
+            const base = { high: 1680000, medium: 1000000, low: 500000 }[wc.risk] || 0;
+            return base * Math.pow(Math.max(1, flowRate), 0.65);
+        })();
+
+        const totalCAPEX = hardCostSubtotal + envResult.total + treatmentCost;
 
         // Also run ANU model for comparison if we have head data
         let anuResult = null;
@@ -482,12 +498,13 @@ HB.Cost.engine = {
                 costPerKWh: Math.round(costPerKWh * 100) / 100,
                 lcos: Math.round(lcos * 100) / 100,
                 breakdown: [
-                    { name: 'Dam & Reservoir', value: damResult.total, color: '#4a90d9' },
-                    { name: 'Water Conveyance', value: tunnelResult.total, color: '#e74c3c' },
-                    { name: 'Powerhouse & E/M', value: powerhouseResult.total, color: '#2ecc71' },
-                    { name: 'Electrical', value: electricalResult.total, color: '#f39c12' },
-                    { name: 'Civil Works', value: civilResult.total, color: '#9b59b6' },
-                    { name: 'Environmental & Soft', value: envResult.total, color: '#1abc9c' }
+                    { name: 'Dam & Reservoir',        value: damResult.total,        color: '#4a90d9' },
+                    { name: 'Water Conveyance',        value: tunnelResult.total,     color: '#e74c3c' },
+                    { name: 'Powerhouse & E/M',        value: powerhouseResult.total, color: '#2ecc71' },
+                    { name: 'Electrical',              value: electricalResult.total, color: '#f39c12' },
+                    { name: 'Civil Works',             value: civilResult.total,      color: '#9b59b6' },
+                    { name: 'Environmental & Soft',    value: envResult.total,        color: '#1abc9c' },
+                    ...(treatmentCost > 0 ? [{ name: 'Water Treatment & Remediation', value: treatmentCost, color: '#00BCD4' }] : [])
                 ]
             },
             engineering: {

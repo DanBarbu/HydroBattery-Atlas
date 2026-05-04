@@ -331,6 +331,12 @@ HB.Data.mineVoids = [
         upper_lng: 116.6558,
         lower_lat: 5.9628,
         lower_lng: 116.6932,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['copper', 'heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Former copper mine pit lake contains elevated Cu, Zn, Mn and acidic leachate. Sidestream electrocoagulation + membrane polishing required before turbine discharge into Ranau watershed.'
+        },
         anu_id: 'n06_e116_PITL65',
         anu_dataset: 'Global Brownfield 15GWh 18h (Protected)',
         // Cross-reference to lake pair entries
@@ -365,6 +371,12 @@ HB.Data.mineVoids = [
         // Lower reservoir = Iazul de decantare Geamăna (user-pinned)
         lower_lat: 46.329198,
         lower_lng: 23.219319,
+        water_contamination: {
+            risk: 'high',
+            contaminants: ['cyanide_residue', 'heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'tailings_pond',
+            treatment_note: 'Tailings pond contains gold-processing cyanide residue and heavy metals (Au, Ag, Pb, Zn, As). EU DNSH and UNESCO EIA compliance require full treatment before pump intake and after turbine discharge.'
+        },
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: null,
