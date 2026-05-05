@@ -17,12 +17,30 @@ interface Track {
   geometry: { type: "Point"; coordinates: [number, number] };
   altitude_m?: number;
   classification?: string;
+  app6d_sidc?: string;
   observed_at: string;
 }
 
 const WS_URL =
   (import.meta as unknown as { env: Record<string, string> }).env
     .VITE_WS_URL ?? "ws://localhost:7000/tracks";
+
+// APP-6D affiliation → colour. Sprint 1 mapping; full library in Sprint 9.
+function affiliationColour(sidc: string | undefined): Color {
+  if (!sidc || sidc.length < 2) return Color.fromCssColorString("#888888");
+  switch (sidc[1]) {
+    case "F":
+      return Color.fromCssColorString("#3273dc"); // friendly blue
+    case "H":
+      return Color.fromCssColorString("#e63946"); // hostile red
+    case "N":
+      return Color.fromCssColorString("#3ddc97"); // neutral green
+    case "U":
+      return Color.fromCssColorString("#f4d35e"); // unknown yellow
+    default:
+      return Color.fromCssColorString("#888888");
+  }
+}
 
 export function Globe() {
   const { t } = useI18n();
@@ -31,9 +49,13 @@ export function Globe() {
   const entityBySource = useRef<Map<string, ReturnType<Viewer["entities"]["add"]>>>(
     new Map(),
   );
+  const [viewerReady, setViewerReady] = useState(false);
   const [connected, setConnected] = useState(false);
   const [tracks, setTracks] = useState<Map<string, Track>>(new Map());
 
+  // Cesium viewer lifecycle. Retro improvement (Sprint 0): mark viewer as
+  // ready only after the first render frame to suppress the initial flicker
+  // we saw on Linux dev VMs.
   useEffect(() => {
     if (!containerRef.current || viewerRef.current) return;
     const viewer = new Viewer(containerRef.current, {
@@ -52,13 +74,22 @@ export function Globe() {
       duration: 0,
     });
     viewerRef.current = viewer;
+
+    const removePostRender = viewer.scene.postRender.addEventListener(() => {
+      setViewerReady(true);
+      removePostRender();
+    });
+
     return () => {
       viewer.destroy();
       viewerRef.current = null;
     };
   }, []);
 
+  // Defer WebSocket connect until the viewer is ready. This prevents the
+  // first burst of tracks racing the first Cesium frame.
   useEffect(() => {
+    if (!viewerReady) return;
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -89,7 +120,7 @@ export function Globe() {
       if (reconnectTimer) clearTimeout(reconnectTimer);
       ws?.close();
     };
-  }, []);
+  }, [viewerReady]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -97,16 +128,17 @@ export function Globe() {
     for (const [source, track] of tracks) {
       const [lon, lat] = track.geometry.coordinates;
       const position = Cartesian3.fromDegrees(lon, lat, track.altitude_m ?? 0);
+      const colour = affiliationColour(track.app6d_sidc);
       const existing = entityBySource.current.get(source);
       if (existing) {
         existing.position = position as never;
+        if (existing.point) existing.point.color = colour as never;
       } else {
         const entity = viewer.entities.add({
           position,
-          billboard: undefined,
           point: {
             pixelSize: 14,
-            color: Color.fromCssColorString("#3273dc"),
+            color: colour,
             outlineColor: Color.WHITE,
             outlineWidth: 2,
           },

@@ -6,16 +6,23 @@ This directory holds the running skeleton produced by Sprint 0 — the foundatio
 
 ```
 will-platform/
-├── docker-compose.yml          # Orchestrates the dev environment
-├── .env.example                # Copy to .env before first bring-up
-├── .gitlab-ci.yml              # Lint / test / build / Trivy / Grype / canary
+├── docker-compose.yml             # Orchestrates the dev environment
+├── .env.example                   # Copy to .env before first bring-up
+├── .gitlab-ci.yml                 # Lint / test / build / Trivy / Grype / canary
+├── contracts/proto/will/sensor/v1 # Plugin SDK gRPC contract (Sprint 1)
 ├── docker/
-│   ├── postgres/init.sql       # Bootstraps PostGIS extensions
-│   └── will-core-stub/         # FastAPI healthz stub (real fork: Sprint 1+)
-├── db/migrations/              # Flyway migrations (V0001 tracks + classification)
-├── plugins/sim-gps-puck/       # Reference plugin: simulated GPS puck
-├── services/websocket-bridge/  # MQTT → WebSocket relay with dedup
-└── frontend/                   # React + Vite + CesiumJS dashboard with RO/EN i18n
+│   ├── postgres/init.sql          # Bootstraps PostGIS extensions
+│   └── will-core-stub/            # FastAPI healthz stub (real fork: Sprint 1+)
+├── db/migrations/                 # Flyway migrations (V0001 tracks + classification)
+├── plugins/
+│   ├── sim-gps-puck/              # Sprint 0 simulated GPS plugin
+│   ├── reference-echo/            # Sprint 1 reference plugin (tutorial target)
+│   ├── atak-mil/                  # Sprint 1 ATAK-MIL CoT adapter (Go)
+│   └── cot-replay/                # Sprint 1 synthetic CoT generator (demo aid)
+├── services/
+│   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup
+│   └── plugin-loader/             # Sprint 1 plugin loader + /v1/plugins API
+└── frontend/                      # React + Vite + CesiumJS dashboard with RO/EN i18n
 ```
 
 ## Quick start

@@ -122,6 +122,68 @@ services:
     networks:
       - will-net
 
+  plugin-loader:
+    build:
+      context: ./services/plugin-loader
+    container_name: will-plugin-loader
+    environment:
+      HTTP_ADDR: ":8080"
+      PLUGIN_BOOTSTRAP_NAME: atak-mil
+      PLUGIN_BOOTSTRAP_VERSION: "0.1.0"
+      PLUGIN_BOOTSTRAP_VENDOR: "WILL Romania"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  atak-mil:
+    build:
+      context: ./plugins/atak-mil
+    container_name: will-atak-mil
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      LISTEN_ADDR: "0.0.0.0:8087"
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/cot/atak-mil
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    ports:
+      - "8087:8087/udp"
+    networks:
+      - will-net
+
+  cot-replay:
+    build:
+      context: ./plugins/cot-replay
+    container_name: will-cot-replay
+    depends_on:
+      atak-mil:
+        condition: service_started
+    environment:
+      ATAK_HOST: atak-mil
+      ATAK_PORT: "8087"
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
+  reference-echo:
+    build:
+      context: ./plugins/reference-echo
+    container_name: will-reference-echo
+    environment:
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
   frontend:
     build:
       context: ./frontend
@@ -129,8 +191,11 @@ services:
     depends_on:
       websocket-bridge:
         condition: service_healthy
+      plugin-loader:
+        condition: service_healthy
     environment:
       VITE_WS_URL: ws://localhost:7000/tracks
+      VITE_PLUGIN_API: http://localhost:8080/v1/plugins
       VITE_CESIUM_ION_TOKEN: ${VITE_CESIUM_ION_TOKEN:-}
     ports:
       - "3000:3000"

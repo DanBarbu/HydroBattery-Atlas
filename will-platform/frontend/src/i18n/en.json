@@ -14,5 +14,8 @@
   "globe.classification.banner": "UNCLASSIFIED",
   "globe.connection.connected": "Connected",
   "globe.connection.disconnected": "Disconnected",
-  "globe.tracks.count": "Active tracks: {count}"
+  "globe.tracks.count": "Active tracks: {count}",
+  "plugins.heading": "Plugins",
+  "plugins.empty": "No plugins registered yet.",
+  "plugins.error": "Cannot reach plugin loader"
 }

@@ -7,7 +7,10 @@ import mqtt from "mqtt";
 import { WebSocketServer } from "ws";
 
 const MQTT_URL = process.env.MQTT_URL ?? "mqtt://emqx:1883";
-const MQTT_TOPIC = process.env.MQTT_TOPIC ?? "telemetry/gps/+";
+// Sprint 1: widen subscription beyond GPS-only to catch any plugin's telemetry
+// (telemetry/<source>/<id>). The dedup key ensures sources do not duplicate
+// each other on the wire.
+const MQTT_TOPIC = process.env.MQTT_TOPIC ?? "telemetry/#";
 const WS_PORT = Number.parseInt(process.env.WS_PORT ?? "7000", 10);
 
 const dedupWindow = new Map(); // key: `${source}|${observed_at}` -> timestamp

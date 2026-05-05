@@ -14,5 +14,8 @@
   "globe.classification.banner": "NESECRET",
   "globe.connection.connected": "Conectat",
   "globe.connection.disconnected": "Deconectat",
-  "globe.tracks.count": "Track-uri active: {count}"
+  "globe.tracks.count": "Track-uri active: {count}",
+  "plugins.heading": "Plugin-uri",
+  "plugins.empty": "Niciun plugin înregistrat încă.",
+  "plugins.error": "Loader-ul de plugin-uri nu este accesibil"
 }
