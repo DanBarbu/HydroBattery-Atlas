@@ -1,0 +1,146 @@
+:root {
+  --will-bg: #0d1117;
+  --will-fg: #e6edf3;
+  --will-accent: #3273dc;
+  --will-banner-bg: #1f7a1f;
+  --will-banner-fg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--will-bg);
+  color: var(--will-fg);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.app-header h1 {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.language-toggle button {
+  background: transparent;
+  color: var(--will-fg);
+  border: 1px solid #30363d;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+}
+
+.language-toggle button.active {
+  background: var(--will-accent);
+  border-color: var(--will-accent);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.login-form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(360px, 90vw);
+  padding: 1.5rem;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #161b22;
+}
+
+.login-form h2 {
+  margin: 0 0 0.25rem;
+}
+
+.login-form .hint {
+  font-size: 0.85rem;
+  color: #8b949e;
+  margin: 0 0 0.75rem;
+}
+
+.login-form label {
+  font-size: 0.85rem;
+}
+
+.login-form input {
+  background: #0d1117;
+  color: var(--will-fg);
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.login-form input:focus-visible {
+  outline: 2px solid var(--will-accent);
+  outline-offset: 1px;
+}
+
+.login-form button[type="submit"] {
+  margin-top: 0.5rem;
+  background: var(--will-accent);
+  color: white;
+  border: 0;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.login-error {
+  color: #ff7b72;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.globe-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.globe-banner {
+  background: var(--will-banner-bg);
+  color: var(--will-banner-fg);
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.35rem;
+}
+
+.globe-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+
+.globe-canvas {
+  flex: 1;
+  min-height: 0;
+}

@@ -1,0 +1,18 @@
+{
+  "app.title": "WILL Romania — Sprint 0",
+  "login.heading": "WILL Sign In",
+  "login.username": "Username",
+  "login.password": "Password",
+  "login.submit": "Sign in",
+  "login.error.required": "All fields are required.",
+  "login.error.invalid": "Invalid credentials.",
+  "login.placeholder.note": "Sprint 0 accepts any non-empty username and the password \"will-dev\".",
+  "language.toggle": "Language",
+  "language.ro": "Română",
+  "language.en": "English",
+  "globe.heading": "Common Operating Picture (Sprint 0 — simulated track)",
+  "globe.classification.banner": "UNCLASSIFIED",
+  "globe.connection.connected": "Connected",
+  "globe.connection.disconnected": "Disconnected",
+  "globe.tracks.count": "Active tracks: {count}"
+}

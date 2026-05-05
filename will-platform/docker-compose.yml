@@ -1,0 +1,145 @@
+version: "3.9"
+
+# WILL Romania Platform — Sprint 0 development environment.
+# Brings up: will-core stub, EMQX, PostgreSQL+PostGIS, Flyway migrator,
+# simulated GPS plugin, WebSocket bridge, React+CesiumJS dashboard.
+# A full Mythic-derived C2 core lands in Sprint 1+; this sprint ships a
+# protocol-compatible stub so the rest of the stack is exercised end-to-end.
+
+name: will-platform-dev
+
+services:
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: will-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-will}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-will-dev}
+      POSTGRES_DB: ${POSTGRES_DB:-will}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-will} -d ${POSTGRES_DB:-will}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  flyway:
+    image: flyway/flyway:10
+    container_name: will-flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-will}
+      - -user=${POSTGRES_USER:-will}
+      - -password=${POSTGRES_PASSWORD:-will-dev}
+      - -locations=filesystem:/flyway/sql
+      - -connectRetries=10
+      - migrate
+    volumes:
+      - ./db/migrations:/flyway/sql:ro
+    networks:
+      - will-net
+
+  emqx:
+    image: emqx/emqx:5.4
+    container_name: will-emqx
+    environment:
+      EMQX_NAME: will-emqx
+      EMQX_HOST: 127.0.0.1
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_ADMIN_PASSWORD:-will-dev}
+    ports:
+      - "1883:1883"
+      - "18083:18083"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - will-net
+
+  will-core-stub:
+    build:
+      context: ./docker/will-core-stub
+    container_name: will-core-stub
+    environment:
+      WILL_CORE_PORT: 7443
+    ports:
+      - "7443:7443"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7443/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  sim-gps-puck:
+    build:
+      context: ./plugins/sim-gps-puck
+    container_name: will-sim-gps-puck
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MQTT_HOST: emqx
+      MQTT_PORT: 1883
+      MQTT_TOPIC: telemetry/gps/sim01
+      PUBLISH_HZ: 1
+      CENTER_LAT: 45.8696
+      CENTER_LON: 24.7753
+      RADIUS_M: 1500
+      CLASSIFICATION: NESECRET
+    networks:
+      - will-net
+
+  websocket-bridge:
+    build:
+      context: ./services/websocket-bridge
+    container_name: will-ws-bridge
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MQTT_URL: mqtt://emqx:1883
+      MQTT_TOPIC: telemetry/gps/+
+      WS_PORT: 7000
+    ports:
+      - "7000:7000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7000/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: will-frontend
+    depends_on:
+      websocket-bridge:
+        condition: service_healthy
+    environment:
+      VITE_WS_URL: ws://localhost:7000/tracks
+      VITE_CESIUM_ION_TOKEN: ${VITE_CESIUM_ION_TOKEN:-}
+    ports:
+      - "3000:3000"
+    networks:
+      - will-net
+
+volumes:
+  pgdata:
+
+networks:
+  will-net:
+    driver: bridge

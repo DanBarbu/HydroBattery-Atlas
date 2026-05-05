@@ -1,0 +1,18 @@
+{
+  "app.title": "WILL România — Sprint 0",
+  "login.heading": "Autentificare WILL",
+  "login.username": "Utilizator",
+  "login.password": "Parolă",
+  "login.submit": "Autentificare",
+  "login.error.required": "Toate câmpurile sunt obligatorii.",
+  "login.error.invalid": "Date de autentificare incorecte.",
+  "login.placeholder.note": "Sprint 0 acceptă orice utilizator nevid și parola \"will-dev\".",
+  "language.toggle": "Limbă",
+  "language.ro": "Română",
+  "language.en": "English",
+  "globe.heading": "Imagine Tactică Comună (sprint 0 — track simulat)",
+  "globe.classification.banner": "NESECRET",
+  "globe.connection.connected": "Conectat",
+  "globe.connection.disconnected": "Deconectat",
+  "globe.tracks.count": "Track-uri active: {count}"
+}

@@ -1,0 +1,86 @@
+# WILL Romania Platform — Sprint 0 CI scaffolding (S0-08).
+# Pipeline order: lint → unit → build → image scan (Trivy) → image scan (Grype).
+# Critical CVE → fail. High → warn. Canary job pulls a deliberately vulnerable
+# image to verify the policy itself; that job is REQUIRED to fail.
+
+stages:
+  - lint
+  - test
+  - build
+  - scan
+  - canary
+
+variables:
+  TRIVY_VERSION: "0.55.2"
+  GRYPE_VERSION: "0.83.0"
+  IMAGE_FAIL_SEVERITY: "CRITICAL"
+
+.python-base:
+  image: python:3.12-alpine
+  before_script:
+    - pip install --quiet ruff==0.7.1
+
+ruff:
+  extends: .python-base
+  stage: lint
+  script:
+    - ruff check will-platform/plugins will-platform/docker/will-core-stub
+
+eslint:
+  image: node:20-alpine
+  stage: lint
+  script:
+    - cd will-platform/frontend
+    - npm install --no-audit --no-fund
+    - npx eslint --max-warnings 0 src
+
+frontend-tsc:
+  image: node:20-alpine
+  stage: test
+  script:
+    - cd will-platform/frontend
+    - npm install --no-audit --no-fund
+    - npx tsc -b --noEmit
+
+frontend-build:
+  image: node:20-alpine
+  stage: build
+  script:
+    - cd will-platform/frontend
+    - npm install --no-audit --no-fund
+    - npm run build
+  artifacts:
+    paths:
+      - will-platform/frontend/dist/
+
+trivy-scan:
+  image:
+    name: aquasec/trivy:${TRIVY_VERSION}
+    entrypoint: [""]
+  stage: scan
+  script:
+    - trivy fs --severity HIGH,CRITICAL --exit-code 0 will-platform/
+    - trivy fs --severity ${IMAGE_FAIL_SEVERITY} --exit-code 1 will-platform/
+
+grype-scan:
+  image: anchore/grype:v${GRYPE_VERSION}
+  stage: scan
+  script:
+    - grype dir:will-platform --fail-on critical
+
+vulnerability-canary:
+  image:
+    name: aquasec/trivy:${TRIVY_VERSION}
+    entrypoint: [""]
+  stage: canary
+  script:
+    - |
+      set +e
+      trivy image --severity ${IMAGE_FAIL_SEVERITY} --exit-code 1 vulnerables/web-dvwa
+      RC=$?
+      if [ $RC -eq 0 ]; then
+        echo "POLICY REGRESSION — canary did not flag a known-vulnerable image" >&2
+        exit 1
+      fi
+      echo "Canary correctly flagged a known-vulnerable image; pipeline policy is healthy."
+  allow_failure: false
