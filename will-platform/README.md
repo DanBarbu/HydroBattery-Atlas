@@ -20,7 +20,9 @@ will-platform/
 │   ├── atak-mil/                  # Sprint 1 ATAK-MIL CoT adapter (Go)
 │   ├── cot-replay/                # Sprint 1 synthetic CoT generator (demo aid)
 │   ├── mavlink/                   # Sprint 2 MAVLink UAV plugin (Python)
-│   └── mavlink-sim/               # Sprint 2 synthetic MAVLink generator
+│   ├── mavlink-sim/               # Sprint 2 synthetic MAVLink generator
+│   ├── gmti/                      # Sprint 3 STANAG 4607 GMTI adapter (Go)
+│   └── gmti-replay/               # Sprint 3 synthetic STANAG 4607 generator
 ├── policy/                        # Sprint 2 OPA Gatekeeper policy skeletons
 ├── services/
 │   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup

@@ -11,6 +11,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-003](ADR-003-postgresql-postgis-as-system-of-record.md) | PostgreSQL + PostGIS as the system of record | Accepted |
 | [ADR-004](ADR-004-helm-terraform-as-deployment-toolchain.md) | Helm + Terraform as the deployment toolchain | Accepted |
 | [ADR-005](ADR-005-stanag-4774-as-canonical-classification.md) | STANAG 4774 as the canonical classification metadata | Accepted |
+| [ADR-006](ADR-006-per-tenant-db-compartments.md) | Per-tenant DB compartments for high-classification deployments | Accepted |
 
 ## Authoring
 

@@ -175,6 +175,38 @@ services:
     networks:
       - will-net
 
+  gmti:
+    build:
+      context: ./plugins/gmti
+    container_name: will-gmti
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      LISTEN_ADDR: "0.0.0.0:8190"
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_PREFIX: telemetry/gmti
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    ports:
+      - "8190:8190/udp"
+    networks:
+      - will-net
+
+  gmti-replay:
+    build:
+      context: ./plugins
+      dockerfile: gmti-replay/Dockerfile
+    container_name: will-gmti-replay
+    depends_on:
+      gmti:
+        condition: service_started
+    environment:
+      GMTI_TARGET: gmti:8190
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
   plugin-loader:
     build:
       context: ./services/plugin-loader

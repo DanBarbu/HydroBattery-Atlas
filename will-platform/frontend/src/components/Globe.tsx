@@ -21,6 +21,9 @@ interface Track {
   classification?: string;
   app6d_sidc?: string;
   observed_at: string;
+  track_kind?: string;
+  velocity_radial_mps?: number;
+  snr_db?: number;
 }
 
 interface ThemeOverride {
@@ -55,6 +58,24 @@ function affiliationColour(sidc: string | undefined, theme: ThemeOverride): Colo
   return Color.fromCssColorString(css);
 }
 
+interface LayerToggles {
+  point: boolean;
+  cot: boolean;
+  mavlink: boolean;
+  gmti: boolean;
+}
+
+const DEFAULT_LAYERS: LayerToggles = { point: true, cot: true, mavlink: true, gmti: true };
+
+function trackKind(t: Track): keyof LayerToggles {
+  const k = (t.track_kind ?? "").toLowerCase();
+  if (k === "gmti" || k === "cot" || k === "mavlink") return k;
+  if (t.source.startsWith("gmti/")) return "gmti";
+  if (t.source.startsWith("atak-mil/")) return "cot";
+  if (t.source.startsWith("mavlink/")) return "mavlink";
+  return "point";
+}
+
 export function Globe() {
   const { t } = useI18n();
   const viewerRef = useRef<Viewer | null>(null);
@@ -66,9 +87,8 @@ export function Globe() {
   const [connected, setConnected] = useState(false);
   const [tracks, setTracks] = useState<Map<string, Track>>(new Map());
   const [theme, setTheme] = useState<ThemeOverride>({});
+  const [layers, setLayers] = useState<LayerToggles>(DEFAULT_LAYERS);
 
-  // Pull the active tenant's theme on mount; refresh every 60 s so admin edits
-  // surface without a page reload.
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -78,7 +98,7 @@ export function Globe() {
         const data = (await res.json()) as { theme?: ThemeOverride };
         if (!cancelled && data.theme) setTheme(data.theme);
       } catch {
-        // Theme overrides are optional; fall back to defaults silently.
+        // silent fallback
       }
     };
     load();
@@ -153,10 +173,6 @@ export function Globe() {
     };
   }, [viewerReady]);
 
-  // Sprint 1 retro action #2: collision-aware labels.
-  // Strategy: hide labels when camera is far (eye altitude > 30 km), and
-  // shrink labels with distance. Beyond 250 km no labels are drawn. This
-  // makes a dense COP readable without per-entity collision detection.
   const labelDistanceCondition = useMemo(
     () => new DistanceDisplayCondition(0, 250_000),
     [],
@@ -170,25 +186,30 @@ export function Globe() {
     const viewer = viewerRef.current;
     if (!viewer) return;
     for (const [source, track] of tracks) {
+      const kind = trackKind(track);
+      const visible = layers[kind];
       const [lon, lat] = track.geometry.coordinates;
       const position = Cartesian3.fromDegrees(lon, lat, track.altitude_m ?? 0);
       const colour = affiliationColour(track.app6d_sidc, theme);
+      const isGmti = kind === "gmti";
       const existing = entityBySource.current.get(source);
       if (existing) {
         existing.position = position as never;
         if (existing.point) existing.point.color = colour as never;
+        existing.show = visible as never;
       } else {
         const entity = viewer.entities.add({
           position,
+          show: visible,
           point: {
-            pixelSize: 14,
+            pixelSize: isGmti ? 10 : 14,
             color: colour,
-            outlineColor: Color.WHITE,
-            outlineWidth: 2,
+            outlineColor: isGmti ? Color.BLACK : Color.WHITE,
+            outlineWidth: isGmti ? 3 : 2,
           },
           label: {
-            text: source,
-            font: "12px sans-serif",
+            text: gmtiLabel(track) ?? source,
+            font: isGmti ? "11px sans-serif" : "12px sans-serif",
             fillColor: Color.WHITE,
             outlineColor: Color.BLACK,
             outlineWidth: 2,
@@ -203,7 +224,7 @@ export function Globe() {
         entityBySource.current.set(source, entity);
       }
     }
-  }, [tracks, theme, labelDistanceCondition, labelScaleByDistance]);
+  }, [tracks, theme, layers, labelDistanceCondition, labelScaleByDistance]);
 
   const trackCount = tracks.size;
   const status = useMemo(
@@ -225,7 +246,27 @@ export function Globe() {
         <span aria-live="polite">{status}</span>
         <span>{t("globe.tracks.count", { count: trackCount })}</span>
       </div>
+      <div className="layer-toggles" role="group" aria-label={t("layers.label")}>
+        {(["point", "cot", "mavlink", "gmti"] as const).map((k) => (
+          <label key={k} className={`layer-toggle layer-${k}`}>
+            <input
+              type="checkbox"
+              checked={layers[k]}
+              onChange={(e) => setLayers({ ...layers, [k]: e.target.checked })}
+            />
+            <span>{t(`layers.${k}`)}</span>
+          </label>
+        ))}
+      </div>
       <div ref={containerRef} className="globe-canvas" />
     </div>
   );
+}
+
+function gmtiLabel(t: Track): string | null {
+  if (trackKind(t) !== "gmti") return null;
+  const v = t.velocity_radial_mps;
+  if (v === undefined) return t.source;
+  const arrow = v >= 0 ? "→" : "←";
+  return `${t.source} ${arrow} ${Math.abs(v).toFixed(1)} m/s`;
 }
