@@ -122,6 +122,59 @@ services:
     networks:
       - will-net
 
+  tenant-admin:
+    build:
+      context: ./services/tenant-admin
+    container_name: will-tenant-admin
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+    environment:
+      HTTP_ADDR: ":8081"
+      DATABASE_URL: postgres://${POSTGRES_USER:-will}:${POSTGRES_PASSWORD:-will-dev}@postgres:5432/${POSTGRES_DB:-will}?sslmode=disable
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  mavlink:
+    build:
+      context: ./plugins/mavlink
+    container_name: will-mavlink
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MAVLINK_URL: udpin:0.0.0.0:14550
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_PREFIX: telemetry/mavlink
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      AFFILIATION: F
+    ports:
+      - "14550:14550/udp"
+    networks:
+      - will-net
+
+  mavlink-sim:
+    build:
+      context: ./plugins/mavlink-sim
+    container_name: will-mavlink-sim
+    depends_on:
+      mavlink:
+        condition: service_started
+    environment:
+      MAVLINK_TARGET: udpout:mavlink:14550
+      SYSID: "1"
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
   plugin-loader:
     build:
       context: ./services/plugin-loader
@@ -193,9 +246,12 @@ services:
         condition: service_healthy
       plugin-loader:
         condition: service_healthy
+      tenant-admin:
+        condition: service_healthy
     environment:
       VITE_WS_URL: ws://localhost:7000/tracks
       VITE_PLUGIN_API: http://localhost:8080/v1/plugins
+      VITE_TENANT_API: http://localhost:8081/v1/tenants
       VITE_CESIUM_ION_TOKEN: ${VITE_CESIUM_ION_TOKEN:-}
     ports:
       - "3000:3000"

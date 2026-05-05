@@ -8,6 +8,7 @@ stages:
   - test
   - build
   - scan
+  - sign
   - canary
 
 variables:
@@ -67,6 +68,29 @@ grype-scan:
   stage: scan
   script:
     - grype dir:will-platform --fail-on critical
+
+cosign-sign:
+  image: gcr.io/projectsigstore/cosign:v2.4.0
+  stage: sign
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG'
+  variables:
+    COSIGN_YES: "true"
+  script:
+    # Sprint 2: keyless OIDC signing on protected runners. Falls back to a
+    # CI-managed keypair when COSIGN_PRIVATE_KEY is set (air-gap profile).
+    - |
+      IMAGES="will-plugin-loader will-tenant-admin will-atak-mil will-mavlink will-mavlink-sim will-cot-replay will-reference-echo will-sim-gps-puck will-websocket-bridge will-frontend"
+      for img in $IMAGES; do
+        TAG="$CI_REGISTRY_IMAGE/$img:$CI_COMMIT_SHORT_SHA"
+        echo "Signing $TAG"
+        if [ -n "$COSIGN_PRIVATE_KEY" ]; then
+          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          cosign sign --key /tmp/cosign.key "$TAG"
+        else
+          cosign sign "$TAG"
+        fi
+      done
 
 vulnerability-canary:
   image:

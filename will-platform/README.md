@@ -18,11 +18,16 @@ will-platform/
 │   ├── sim-gps-puck/              # Sprint 0 simulated GPS plugin
 │   ├── reference-echo/            # Sprint 1 reference plugin (tutorial target)
 │   ├── atak-mil/                  # Sprint 1 ATAK-MIL CoT adapter (Go)
-│   └── cot-replay/                # Sprint 1 synthetic CoT generator (demo aid)
+│   ├── cot-replay/                # Sprint 1 synthetic CoT generator (demo aid)
+│   ├── mavlink/                   # Sprint 2 MAVLink UAV plugin (Python)
+│   └── mavlink-sim/               # Sprint 2 synthetic MAVLink generator
+├── policy/                        # Sprint 2 OPA Gatekeeper policy skeletons
 ├── services/
 │   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup
-│   └── plugin-loader/             # Sprint 1 plugin loader + /v1/plugins API
+│   ├── plugin-loader/             # Sprint 1 plugin loader + /v1/plugins API
+│   └── tenant-admin/              # Sprint 2 tenant admin service + /v1/tenants
 └── frontend/                      # React + Vite + CesiumJS dashboard with RO/EN i18n
+                                   # Includes Ops + Admin views (Sprint 2)
 ```
 
 ## Quick start

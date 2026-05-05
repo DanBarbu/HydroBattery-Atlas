@@ -212,3 +212,143 @@ main {
   color: #ff7b72;
   font-size: 0.85rem;
 }
+
+.view-toggle {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.view-toggle button {
+  background: transparent;
+  color: var(--will-fg);
+  border: 1px solid #30363d;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background: var(--will-accent);
+  border-color: var(--will-accent);
+}
+
+.admin-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  width: 100%;
+  min-height: 0;
+}
+
+.admin-tenants {
+  border-right: 1px solid #30363d;
+  background: #161b22;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.admin-tenants h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b949e;
+}
+
+.admin-tenants ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.admin-tenants li {
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+  background: #0d1117;
+  cursor: pointer;
+}
+
+.admin-tenants li:focus-visible {
+  outline: 2px solid var(--will-accent);
+  outline-offset: 2px;
+}
+
+.admin-tenants li.selected {
+  border-color: var(--will-accent);
+}
+
+.admin-tenants .tenant-name {
+  font-weight: 600;
+}
+
+.admin-tenants .tenant-slug {
+  font-size: 0.78rem;
+  color: #8b949e;
+}
+
+.admin-editor {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+
+.admin-editor h3 {
+  margin: 0;
+}
+
+.admin-editor textarea {
+  background: #0d1117;
+  color: var(--will-fg);
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.admin-actions button {
+  background: var(--will-accent);
+  color: white;
+  border: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-saved {
+  font-size: 0.85rem;
+  color: #8b949e;
+}
+
+.admin-error {
+  color: #ff7b72;
+  font-size: 0.85rem;
+}
+
+.admin-hint {
+  font-size: 0.85rem;
+  color: #8b949e;
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
