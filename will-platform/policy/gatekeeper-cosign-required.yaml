@@ -1,0 +1,86 @@
+# Sprint 4 — OPA Gatekeeper admission webhook for the Cosign-required policy.
+#
+# Companion to policy/cosign-required.rego. Apply on a Gatekeeper-equipped
+# cluster to enforce that every Pod creates only with images that have a
+# verifiable Cosign signature against the trusted public key. The trusted
+# key is provided by the cluster's gatekeeper-system Secret (created out
+# of band by DevOps via Vault on the cloud profile, by HSM on on-prem).
+#
+# This file is intentionally a manifest skeleton — production rollout
+# parameters (key reference, exempt namespaces, dry-run vs enforce mode)
+# are layered via Helm values per deployment profile per ADR-004.
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: willcosignrequired
+  annotations:
+    description: |
+      Every container image in scope must carry a verified Cosign signature
+      from the trusted-allowlist external data provider.
+spec:
+  crd:
+    spec:
+      names:
+        kind: WillCosignRequired
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            exemptImages:
+              description: Image globs allowed without signature (e.g. control plane).
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package willcosignrequired
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          container := input.review.object.spec.containers[_]
+          not is_exempt(container.image)
+          not signed(container.image)
+          msg := sprintf("image %q is not signed by an approved Cosign key", [container.image])
+        }
+
+        is_exempt(image) {
+          some i
+          glob.match(input.parameters.exemptImages[i], [], image)
+        }
+
+        # `signed` is the Gatekeeper external data provider call that
+        # the cluster's image-signature-verifier (running in the
+        # gatekeeper-system namespace) backs with cosign verify.
+        signed(image) {
+          response := external_data({
+            "provider": "image-signature-verifier",
+            "keys": [image],
+          })
+          response.responses[_][1] == "verified"
+        }
+
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: WillCosignRequired
+metadata:
+  name: cosign-required-default
+  annotations:
+    description: Default cluster-wide enforcement; tighten via Helm overrides.
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+      - kube-system
+      - gatekeeper-system
+  parameters:
+    exemptImages:
+      # Sprint 4 introduces the policy in **dry-run** mode. Sprint 9 flips
+      # the cluster to enforce. The Helm values file `enforce-mode: warn`
+      # binds `dryrun` here at apply time on the cloud profile; the on-prem
+      # profile hard-codes `enforce` after the first quarterly drill.
+      - "registry.k8s.io/*"
+      - "gcr.io/projectsigstore/*"

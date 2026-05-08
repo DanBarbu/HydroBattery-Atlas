@@ -22,7 +22,13 @@ will-platform/
 │   ├── mavlink/                   # Sprint 2 MAVLink UAV plugin (Python)
 │   ├── mavlink-sim/               # Sprint 2 synthetic MAVLink generator
 │   ├── gmti/                      # Sprint 3 STANAG 4607 GMTI adapter (Go)
-│   └── gmti-replay/               # Sprint 3 synthetic STANAG 4607 generator
+│   ├── gmti-replay/               # Sprint 3 synthetic STANAG 4607 generator
+│   ├── lora-bridge/               # Sprint 4 LoRa MQTT bridge (Python)
+│   └── lora-sim/                  # Sprint 4 100-node LoRa generator (Python)
+├── services/
+│   ├── ...
+│   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC
+│   └── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
 ├── policy/                        # Sprint 2 OPA Gatekeeper policy skeletons
 ├── services/
 │   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup

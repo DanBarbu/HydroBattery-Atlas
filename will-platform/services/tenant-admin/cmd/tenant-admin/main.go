@@ -1,4 +1,4 @@
-// tenant-admin entrypoint. Sprint 2.
+// tenant-admin entrypoint. Sprint 4 wires Tenants + Sensors + RBAC.
 package main
 
 import (
@@ -13,6 +13,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/will-platform/tenant-admin/internal/api"
+	"github.com/will-platform/tenant-admin/internal/rbac"
+	"github.com/will-platform/tenant-admin/internal/sensors"
 	"github.com/will-platform/tenant-admin/internal/store"
 )
 
@@ -32,9 +34,22 @@ func main() {
 	}
 	defer pool.Close()
 
+	// Sprint 4: tenant-admin runs with the service-bypass GUC so its own
+	// reads can cross tenants. Application-layer enforcement still applies
+	// (RBAC middleware in api.New). ADR-006 documents this exception.
+	if _, err := pool.Exec(ctx, "SET app.service_bypass = 'on'"); err != nil {
+		log.Printf("[tenant-admin] could not set service_bypass GUC (RLS preview not yet applied): %v", err)
+	}
+
+	deps := api.Deps{
+		Tenants: store.New(pool),
+		Sensors: sensors.NewStore(pool),
+		RBAC:    rbac.NewStore(pool),
+	}
+
 	srv := &http.Server{
 		Addr:              addr,
-		Handler:           api.New(store.New(pool)),
+		Handler:           api.New(deps),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

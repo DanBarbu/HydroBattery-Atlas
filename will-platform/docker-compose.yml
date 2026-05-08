@@ -207,6 +207,55 @@ services:
     networks:
       - will-net
 
+  lora-bridge:
+    build:
+      context: ./plugins/lora-bridge
+    container_name: will-lora-bridge
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      UPSTREAM_MQTT_URL: tcp://emqx:1883
+      UPSTREAM_TOPIC: lorawan/+/uplink
+      DOWNSTREAM_MQTT_URL: tcp://emqx:1883
+      DOWNSTREAM_TOPIC_PREFIX: telemetry/lora
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    networks:
+      - will-net
+
+  lora-sim:
+    build:
+      context: ./plugins/lora-sim
+    container_name: will-lora-sim
+    depends_on:
+      lora-bridge:
+        condition: service_started
+    environment:
+      UPSTREAM_MQTT_URL: tcp://emqx:1883
+      TOPIC_PREFIX: lorawan
+      COUNT: "100"
+      PERIOD_S: "5"
+      SPREAD_KM: "8"
+    networks:
+      - will-net
+
+  kms-stub:
+    build:
+      context: ./services/kms-stub
+    container_name: will-kms-stub
+    environment:
+      HTTP_ADDR: ":8082"
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8082/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
   plugin-loader:
     build:
       context: ./services/plugin-loader
