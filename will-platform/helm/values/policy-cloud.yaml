@@ -1,0 +1,16 @@
+# Sprint 5 — OPA Gatekeeper exempt list for the EU Sovereign Cloud profile.
+# Values overlaid on policy/gatekeeper-cosign-required.yaml at apply time.
+#
+# Cloud profile is permissive by Sprint 5 design: dry-run mode, broad
+# exemptions for the OCI image registry and bridge tooling. Sprint 9 flips
+# `enforce` for this profile after a quarterly drill.
+
+policy:
+  enforceMode: dryrun
+  exemptImages:
+    - "registry.k8s.io/*"
+    - "gcr.io/projectsigstore/*"
+    - "iad.ocir.io/*"          # OCI image registry, Madrid + Frankfurt
+    - "frankfurt.ocir.io/*"
+    - "madrid.ocir.io/*"
+    - "ghcr.io/postgis/*"      # PostGIS images for the cloud profile

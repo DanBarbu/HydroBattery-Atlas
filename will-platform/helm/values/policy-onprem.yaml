@@ -1,0 +1,8 @@
+# Sprint 5 — OPA Gatekeeper exempt list for the on-premises air-gapped
+# profile. Most restrictive of the three: only the on-prem registry is
+# exempt, and the policy is enforced from day one.
+
+policy:
+  enforceMode: enforce
+  exemptImages:
+    - "registry.airgap.local/*"

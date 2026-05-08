@@ -27,8 +27,13 @@ will-platform/
 │   └── lora-sim/                  # Sprint 4 100-node LoRa generator (Python)
 ├── services/
 │   ├── ...
-│   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC
-│   └── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
+│   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
+│   ├── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
+│   └── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
+├── edge/
+│   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
+│   └── install/                   # Sprint 5 K3s install script for rugged hardware
+├── helm/values/                   # Sprint 5 OPA Gatekeeper exempt list per deployment profile
 ├── policy/                        # Sprint 2 OPA Gatekeeper policy skeletons
 ├── services/
 │   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup
