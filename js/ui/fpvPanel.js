@@ -500,6 +500,87 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
         document.getElementById('fpv-report-modal').classList.remove('hidden');
     },
 
+    _printReport() {
+        const fpvContent = document.getElementById('fpv-report-content');
+        if (!fpvContent) return;
+
+        // Capture site detail elements
+        const siteName    = (document.getElementById('site-name') || {}).textContent || 'Site';
+        const paramsTable = document.getElementById('site-params-table');
+        const pieCanvas   = document.getElementById('cost-pie-chart');
+        const costTable   = document.getElementById('cost-breakdown-table');
+        const costSummary = document.getElementById('cost-summary');
+        const keyMetrics  = document.getElementById('key-metrics');
+        const pieImg      = (pieCanvas && pieCanvas.width > 0)
+            ? `<img src="${pieCanvas.toDataURL('image/png')}" style="width:100%;max-width:460px;display:block;margin:6px auto;">`
+            : '';
+        const safeHtml    = el => (el ? el.outerHTML : '');
+        const today       = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'long', day:'numeric'});
+
+        // Build combined HTML (site detail + FPV report)
+        const bodyHtml = `
+<h1 style="font-size:20px;color:#1a3a5c;margin:0 0 4px;">💧 ${siteName}</h1>
+<p style="color:#666;font-size:11px;border-bottom:2px solid #1a3a5c;padding-bottom:6px;margin-bottom:14px;">
+  HydroBattery Atlas &mdash; Full Site Report &nbsp;|&nbsp; Generated ${today}
+</p>
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Site Parameters</h2>
+${safeHtml(paramsTable)}
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Cost Breakdown</h2>
+${pieImg}
+${safeHtml(costTable)}
+${safeHtml(costSummary)}
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Key Metrics</h2>
+${safeHtml(keyMetrics)}
+<div style="page-break-before:always;"></div>
+${fpvContent.innerHTML}`;
+
+        // Append a top-level print container (NOT inside the modal — no overflow clipping)
+        const root = document.createElement('div');
+        root.id = 'fpv-print-root';
+        root.style.cssText = 'display:none;font-family:system-ui,Arial,sans-serif;font-size:13px;color:#1a1a1a;';
+        root.innerHTML = bodyHtml;
+        document.body.appendChild(root);
+
+        // Inject @media print rules: show ONLY our root, hide everything else
+        const style = document.createElement('style');
+        style.id = 'fpv-print-style';
+        style.textContent = `
+@media print {
+  body > *:not(#fpv-print-root) { display: none !important; }
+  #fpv-print-root { display: block !important; margin: 0; padding: 0; }
+  #fpv-print-root table { width:100%; border-collapse:collapse; font-size:12px; page-break-inside:avoid; }
+  #fpv-print-root th, #fpv-print-root td { padding:4px 10px; }
+  #fpv-print-root th { background:#1a3a5c !important; color:#fff !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; text-align:left; }
+  #fpv-print-root td:last-child, #fpv-print-root th:last-child { text-align:right; }
+  #fpv-print-root tr:nth-child(even) td { background:#f0f4f8 !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #fpv-print-root .detail-table td:first-child { font-weight:600; width:50%; }
+  #fpv-print-root .cost-summary { font-size:12px; margin-top:4px; }
+  #fpv-print-root .metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  #fpv-print-root .metric-card { background:#f0f4f8 !important; border-radius:4px; padding:6px;
+    text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #fpv-print-root .metric-value { font-size:15px; font-weight:700; color:#1a3a5c; }
+  #fpv-print-root .metric-label { font-size:10px; color:#666; }
+  #fpv-print-root h2[style] { page-break-after:avoid; }
+  #fpv-print-root .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  #fpv-print-root .kpi { background:#f0f4f8 !important; border-radius:4px; padding:6px;
+    text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #fpv-print-root a { color:#2471a3; text-decoration:none; }
+  @page { margin:15mm 20mm; size:A4 portrait; }
+}`;
+        document.head.appendChild(style);
+
+        const cleanup = () => {
+            if (root.parentNode)  root.parentNode.removeChild(root);
+            if (style.parentNode) style.parentNode.removeChild(style);
+        };
+        window.addEventListener('afterprint', cleanup, { once: true });
+        setTimeout(cleanup, 30000); // safety fallback
+
+        window.print();
+    },
+
     // =========================================================================
     // HTML INJECTION HELPERS
     // =========================================================================
@@ -569,9 +650,9 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
     <button class="modal-close" id="fpv-report-close">&times;</button>
     <div id="fpv-report-content"></div>
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #ddd;">
-        <button onclick="window.print()"
+        <button id="fpv-report-print"
             style="flex:1;padding:9px;background:#1a3a5c;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;">
-            Print / Save PDF
+            🖨 Print / Save PDF
         </button>
         <button id="fpv-report-close2"
             style="flex:0 0 auto;padding:9px 18px;background:none;border:1px solid #ddd;border-radius:4px;font-size:12px;cursor:pointer;">
@@ -630,6 +711,7 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
                 e.target.innerHTML = hidden ? '&#8722;' : '+';
                 return;
             }
+            if (id === 'fpv-report-print') { this._printReport(); return; }
             if (id === 'fpv-report-close' || id === 'fpv-report-close2') {
                 document.getElementById('fpv-report-modal')?.classList.add('hidden');
             }

@@ -11,8 +11,14 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "puppeteer": "^24.43.0"
   },
-  "keywords": ["hydro", "pumped-storage", "energy", "atlas"],
+  "keywords": [
+    "hydro",
+    "pumped-storage",
+    "energy",
+    "atlas"
+  ],
   "license": "MIT"
 }
