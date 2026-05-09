@@ -529,6 +529,13 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
 ${isSatVis ? '<div id="fpv-print-sat-ph" style="width:100%;height:200px;overflow:hidden;border-radius:4px;position:relative;"></div>' : crossImg}
 <p style="font-size:10px;color:#999;margin:2px 0 10px;">Imagery © Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community</p>` : '';
 
+        // Scale-Up Scenarios — only include if the analysis has been run
+        const scaleUpWrap = document.getElementById('scale-up-table-wrap');
+        const hasScaleUp  = scaleUpWrap && scaleUpWrap.children.length > 0;
+        const scaleUpSection = hasScaleUp ? `
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Scale-Up Scenarios</h2>
+<div id="fpv-print-scaleup-ph"></div>` : '';
+
         const root = document.createElement('div');
         root.id = 'fpv-print-root';
         root.innerHTML = `
@@ -545,9 +552,22 @@ ${safeHtml(costTable)}
 ${safeHtml(costSummary)}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Key Metrics</h2>
 ${safeHtml(keyMetrics)}
+${scaleUpSection}
 <div style="page-break-before:always;"></div>
 ${fpvContent.innerHTML}`;
         document.body.appendChild(root);
+
+        // Clone the scale-up table into its placeholder, removing overflow clipping
+        if (hasScaleUp) {
+            const ph = root.querySelector('#fpv-print-scaleup-ph');
+            if (ph) {
+                const clone = scaleUpWrap.cloneNode(true);
+                // Remove horizontal scroll wrapper so full table prints
+                const scrollDiv = clone.querySelector('div[style*="overflow-x"]');
+                if (scrollDiv) scrollDiv.style.overflowX = 'visible';
+                ph.appendChild(clone);
+            }
+        }
 
         // Clone the live Leaflet satellite map into the placeholder.
         // Tile <img> elements are already loaded/cached so they render in print.
