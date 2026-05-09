@@ -62,9 +62,9 @@ HB.UI.fpvPanel = {
                 : 'https://globalsolaratlas.info/';
             const el = _q('#fpv-gsa-status');
             el.innerHTML = `Solar data: <a href="${gsaUrl}" target="_blank" style="color:var(--accent)">Global Solar Atlas</a>`
-                + ` — GHI <strong>${g.ghiYear}</strong> kWh/m\u00B2/yr \u00B7 PVOUT <strong>${g.pvoutYear}</strong> kWh/kWp/yr`
-                + ` \u00B7 ${peakH} peak sun h/day`
-                + (g.airTempC != null ? ` \u00B7 ${g.airTempC}\u00B0C avg` : '');
+                + ` — GHI <strong>${g.ghiYear}</strong> kWh/m²/yr · PVOUT <strong>${g.pvoutYear}</strong> kWh/kWp/yr`
+                + ` · ${peakH} peak sun h/day`
+                + (g.airTempC != null ? ` · ${g.airTempC}°C avg` : '');
             el.style.color = '#27ae60';
         } else if (site.lat != null && site.lng != null) {
             this._fetchGSA(site.lat, site.lng);
@@ -137,10 +137,10 @@ HB.UI.fpvPanel = {
 
         _q('#fpv-results').innerHTML = `
 
-<!-- ── Solar resource ──────────────────────────────────────── -->
+<!-- ── Solar resource ──────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Solar Resource
-        <span class="fpv-src">${sol.source === 'GlobalSolarAtlas' ? '● Global Solar Atlas' : '◌ Latitude estimate'}</span>
+        <span class="fpv-src">${sol.source === 'GlobalSolarAtlas' ? '● Global Solar Atlas' : '○ Latitude estimate'}</span>
     </div>
     <div class="fpv-kpis">
         <div class="fpv-kpi"><b>${fN(sol.ghiYear,0)}</b><span>GHI kWh/m²/yr</span></div>
@@ -150,7 +150,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Sizing ───────────────────────────────────────────────── -->
+<!-- ── Sizing ─────────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">FPV System Sizing</div>
     <table class="fpv-tbl">
@@ -162,7 +162,7 @@ HB.UI.fpvPanel = {
     </table>
 </div>
 
-<!-- ── Dispatch chart ───────────────────────────────────────── -->
+<!-- ── Dispatch chart ───────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">24-Hour Average Dispatch Profile</div>
     <canvas id="fpv-chart" width="346" height="140"></canvas>
@@ -173,7 +173,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Annual energy ────────────────────────────────────────── -->
+<!-- ── Annual energy ──────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Annual 24/7 Energy Dispatch</div>
     <div class="fpv-kpis">
@@ -184,7 +184,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Costs ────────────────────────────────────────────────── -->
+<!-- ── Costs ────────────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Capital Cost (${fN(c.specificWp,2)} $/Wp · regional index ${fN(c.regionIndex,2)}×)</div>
     <table class="fpv-tbl">
@@ -198,7 +198,7 @@ HB.UI.fpvPanel = {
     </table>
 </div>
 
-<!-- ── Economics ────────────────────────────────────────────── -->
+<!-- ── Economics ────────────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Financial Indicators (25 yr, 7% discount)</div>
     <div class="fpv-kpis">
@@ -209,7 +209,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Action buttons ───────────────────────────────────────── -->
+<!-- ── Action buttons ─────────────────────────────────────────────────── -->
 <div class="fpv-actions">
     <a class="fpv-btn-outline" href="${r.gsaUrl}" target="_blank">
         View on Global Solar Atlas ↗
@@ -256,21 +256,18 @@ HB.UI.fpvPanel = {
             const x  = pad.l + h2 * barW + 1;
             const bW = barW - 2;
 
-            // FPV generation (yellow-orange)
             const genH = (gen[h2] / maxV) * cH;
             if (genH > 0) {
                 ctx.fillStyle = '#f39c12';
                 ctx.fillRect(x, pad.t + cH - genH, bW, genH);
             }
 
-            // PHES charge overlay (blue, bottom of gen bar)
             const chgH = ((chg[h2] || 0) / maxV) * cH;
             if (chgH > 0) {
                 ctx.fillStyle = '#3498db';
                 ctx.fillRect(x, pad.t + cH - chgH, bW, chgH);
             }
 
-            // PHES discharge (green)
             const disH = ((dis[h2] || 0) / maxV) * cH;
             if (disH > 0) {
                 ctx.fillStyle = 'rgba(39,174,96,0.85)';
@@ -278,7 +275,6 @@ HB.UI.fpvPanel = {
             }
         }
 
-        // X-axis labels
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
         ctx.textAlign = 'center';
@@ -286,7 +282,6 @@ HB.UI.fpvPanel = {
             ctx.fillText(`${h2}:00`, pad.l + h2 * barW + barW / 2, H - 6);
         });
 
-        // Y-axis label
         ctx.textAlign = 'right';
         ctx.fillText(`${Math.round(maxV)} MW`, pad.l - 2, pad.t + 8);
         ctx.fillText('0', pad.l - 2, pad.t + cH);
@@ -310,7 +305,6 @@ HB.UI.fpvPanel = {
         const today = new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' });
         const energyPrice = HB.Cost.financials.energyPurchasePrice;
 
-        // Component share helper
         const share = (v) => fN(v / c.totalCapexM * 100, 1) + '%';
 
         const html = `
@@ -504,7 +498,6 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
         const fpvContent = document.getElementById('fpv-report-content');
         if (!fpvContent) return;
 
-        // Capture site detail elements
         const siteName    = (document.getElementById('site-name') || {}).textContent || 'Site';
         const paramsTable = document.getElementById('site-params-table');
         const pieCanvas   = document.getElementById('cost-pie-chart');
@@ -514,15 +507,30 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
         const pieImg      = (pieCanvas && pieCanvas.width > 0)
             ? `<img src="${pieCanvas.toDataURL('image/png')}" style="width:100%;max-width:460px;display:block;margin:6px auto;">`
             : '';
-        const safeHtml    = el => (el ? el.outerHTML : '');
-        const today       = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'long', day:'numeric'});
+        const safeHtml = el => (el ? el.outerHTML : '');
+        const today = new Date().toLocaleDateString('en-GB', {year:'numeric',month:'long',day:'numeric'});
 
-        // Build combined HTML (site detail + FPV report)
-        const bodyHtml = `
+        // Site view — satellite map clone or cross-section canvas image
+        const satMapDiv   = document.getElementById('site-satellite-map');
+        const crossCanvas = document.getElementById('cross-section-canvas');
+        const viewTitle   = document.getElementById('site-view-title')?.textContent || 'Site View';
+        const isSatVis    = satMapDiv && satMapDiv.style.display !== 'none';
+        const crossImg    = (!isSatVis && crossCanvas && crossCanvas.width > 0)
+            ? `<img src="${crossCanvas.toDataURL('image/png')}" style="width:100%;border-radius:4px;">`
+            : '';
+        const siteViewSection = (isSatVis || crossImg) ? `
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">${viewTitle}</h2>
+${isSatVis ? '<div id="fpv-print-sat-ph" style="width:100%;height:200px;overflow:hidden;border-radius:4px;position:relative;"></div>' : crossImg}
+<p style="font-size:10px;color:#999;margin:2px 0 10px;">Imagery © Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community</p>` : '';
+
+        const root = document.createElement('div');
+        root.id = 'fpv-print-root';
+        root.innerHTML = `
 <h1 style="font-size:20px;color:#1a3a5c;margin:0 0 4px;">💧 ${siteName}</h1>
 <p style="color:#666;font-size:11px;border-bottom:2px solid #1a3a5c;padding-bottom:6px;margin-bottom:14px;">
   HydroBattery Atlas &mdash; Full Site Report &nbsp;|&nbsp; Generated ${today}
 </p>
+${siteViewSection}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Site Parameters</h2>
 ${safeHtml(paramsTable)}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Cost Breakdown</h2>
@@ -533,51 +541,22 @@ ${safeHtml(costSummary)}
 ${safeHtml(keyMetrics)}
 <div style="page-break-before:always;"></div>
 ${fpvContent.innerHTML}`;
-
-        // Append a top-level print container (NOT inside the modal — no overflow clipping)
-        const root = document.createElement('div');
-        root.id = 'fpv-print-root';
-        root.style.cssText = 'display:none;font-family:system-ui,Arial,sans-serif;font-size:13px;color:#1a1a1a;';
-        root.innerHTML = bodyHtml;
         document.body.appendChild(root);
 
-        // Inject @media print rules: show ONLY our root, hide everything else
-        const style = document.createElement('style');
-        style.id = 'fpv-print-style';
-        style.textContent = `
-@media print {
-  body > *:not(#fpv-print-root) { display: none !important; }
-  #fpv-print-root { display: block !important; margin: 0; padding: 0; }
-  #fpv-print-root table { width:100%; border-collapse:collapse; font-size:12px; page-break-inside:avoid; }
-  #fpv-print-root th, #fpv-print-root td { padding:4px 10px; }
-  #fpv-print-root th { background:#1a3a5c !important; color:#fff !important;
-    -webkit-print-color-adjust:exact; print-color-adjust:exact; text-align:left; }
-  #fpv-print-root td:last-child, #fpv-print-root th:last-child { text-align:right; }
-  #fpv-print-root tr:nth-child(even) td { background:#f0f4f8 !important;
-    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  #fpv-print-root .detail-table td:first-child { font-weight:600; width:50%; }
-  #fpv-print-root .cost-summary { font-size:12px; margin-top:4px; }
-  #fpv-print-root .metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
-  #fpv-print-root .metric-card { background:#f0f4f8 !important; border-radius:4px; padding:6px;
-    text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  #fpv-print-root .metric-value { font-size:15px; font-weight:700; color:#1a3a5c; }
-  #fpv-print-root .metric-label { font-size:10px; color:#666; }
-  #fpv-print-root h2[style] { page-break-after:avoid; }
-  #fpv-print-root .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
-  #fpv-print-root .kpi { background:#f0f4f8 !important; border-radius:4px; padding:6px;
-    text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  #fpv-print-root a { color:#2471a3; text-decoration:none; }
-  @page { margin:15mm 20mm; size:A4 portrait; }
-}`;
-        document.head.appendChild(style);
+        // Clone the live Leaflet satellite map into the placeholder.
+        // Tile <img> elements are already loaded/cached so they render in print.
+        if (isSatVis) {
+            const ph = root.querySelector('#fpv-print-sat-ph');
+            if (ph) {
+                const clone = satMapDiv.cloneNode(true);
+                clone.style.cssText = 'width:100%;height:200px;overflow:hidden;border-radius:4px;display:block;pointer-events:none;';
+                ph.appendChild(clone);
+            }
+        }
 
-        const cleanup = () => {
-            if (root.parentNode)  root.parentNode.removeChild(root);
-            if (style.parentNode) style.parentNode.removeChild(style);
-        };
+        const cleanup = () => { if (root.parentNode) root.parentNode.removeChild(root); };
         window.addEventListener('afterprint', cleanup, { once: true });
-        setTimeout(cleanup, 30000); // safety fallback
-
+        setTimeout(cleanup, 30000);
         window.print();
     },
 
@@ -652,7 +631,7 @@ ${fpvContent.innerHTML}`;
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #ddd;">
         <button id="fpv-report-print"
             style="flex:1;padding:9px;background:#1a3a5c;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;">
-            🖨 Print / Save PDF
+            🖸 Print / Save PDF
         </button>
         <button id="fpv-report-close2"
             style="flex:0 0 auto;padding:9px 18px;background:none;border:1px solid #ddd;border-radius:4px;font-size:12px;cursor:pointer;">
@@ -689,11 +668,7 @@ ${fpvContent.innerHTML}`;
 .fpv-actions { display:flex; gap:6px; margin-top:10px; }
 .fpv-btn-primary { flex:1; height:32px; background:var(--accent,#3498db); color:#fff; border:none; border-radius:4px; font-size:12px; font-weight:600; cursor:pointer; }
 .fpv-btn-outline { flex:1; height:32px; border:1px solid var(--accent,#3498db); color:var(--accent,#3498db); background:none; border-radius:4px; font-size:12px; cursor:pointer; text-align:center; line-height:30px; text-decoration:none; }
-.fpv-toggle-btn { background:none; border:1px solid var(--border); border-radius:4px; width:24px; height:24px; cursor:pointer; font-size:16px; line-height:1; color:var(--text-secondary); }
-@media print {
-    #fpv-report-modal .modal-content { max-height:none !important; overflow:visible !important; }
-    button { display:none !important; }
-}`;
+.fpv-toggle-btn { background:none; border:1px solid var(--border); border-radius:4px; width:24px; height:24px; cursor:pointer; font-size:16px; line-height:1; color:var(--text-secondary); }`;
         document.head.appendChild(s);
     },
 
@@ -719,7 +694,7 @@ ${fpvContent.innerHTML}`;
     },
 };
 
-// ─── tiny helpers ────────────────────────────────────────────────────────────
+// ─── tiny helpers ────────────────────────────────────────────────────────────────────────────
 function _q(sel)    { return document.querySelector(sel); }
 function _set(id,v) { const el=document.getElementById(id); if(el) el.value=v; }
 function _num(id)   { return parseFloat(document.getElementById(id)?.value)||0; }
