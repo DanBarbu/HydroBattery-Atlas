@@ -860,6 +860,7 @@
 #fpv-print-root { display: none; }
 
 @media print {
+    html, body { height: auto !important; overflow: visible !important; }
     body > *:not(#fpv-print-root) { display: none !important; }
     #fpv-print-root {
         display: block !important;
