@@ -900,5 +900,11 @@
     }
     #fpv-print-root a { color: #2471a3; text-decoration: none; }
     #fpv-print-root h2 { page-break-after: avoid; }
+    /* Cloned Leaflet satellite map */
+    #fpv-print-root .leaflet-container { background: #b8d4e8 !important; }
+    #fpv-print-root .leaflet-tile,
+    #fpv-print-root .leaflet-tile-container img {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
     @page { margin: 15mm 20mm; size: A4 portrait; }
 }

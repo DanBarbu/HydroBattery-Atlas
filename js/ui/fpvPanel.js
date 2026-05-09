@@ -516,8 +516,19 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
         const safeHtml = el => (el ? el.outerHTML : '');
         const today = new Date().toLocaleDateString('en-GB', {year:'numeric',month:'long',day:'numeric'});
 
-        // Build combined content: site detail first, then FPV report on new page.
-        // Appended directly to <body> so panels.css @media print rules can isolate it.
+        // Site view — satellite map clone or cross-section canvas image
+        const satMapDiv   = document.getElementById('site-satellite-map');
+        const crossCanvas = document.getElementById('cross-section-canvas');
+        const viewTitle   = document.getElementById('site-view-title')?.textContent || 'Site View';
+        const isSatVis    = satMapDiv && satMapDiv.style.display !== 'none';
+        const crossImg    = (!isSatVis && crossCanvas && crossCanvas.width > 0)
+            ? `<img src="${crossCanvas.toDataURL('image/png')}" style="width:100%;border-radius:4px;">`
+            : '';
+        const siteViewSection = (isSatVis || crossImg) ? `
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">${viewTitle}</h2>
+${isSatVis ? '<div id="fpv-print-sat-ph" style="width:100%;height:200px;overflow:hidden;border-radius:4px;position:relative;"></div>' : crossImg}
+<p style="font-size:10px;color:#999;margin:2px 0 10px;">Imagery © Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community</p>` : '';
+
         const root = document.createElement('div');
         root.id = 'fpv-print-root';
         root.innerHTML = `
@@ -525,6 +536,7 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
 <p style="color:#666;font-size:11px;border-bottom:2px solid #1a3a5c;padding-bottom:6px;margin-bottom:14px;">
   HydroBattery Atlas &mdash; Full Site Report &nbsp;|&nbsp; Generated ${today}
 </p>
+${siteViewSection}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Site Parameters</h2>
 ${safeHtml(paramsTable)}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Cost Breakdown</h2>
@@ -536,6 +548,17 @@ ${safeHtml(keyMetrics)}
 <div style="page-break-before:always;"></div>
 ${fpvContent.innerHTML}`;
         document.body.appendChild(root);
+
+        // Clone the live Leaflet satellite map into the placeholder.
+        // Tile <img> elements are already loaded/cached so they render in print.
+        if (isSatVis) {
+            const ph = root.querySelector('#fpv-print-sat-ph');
+            if (ph) {
+                const clone = satMapDiv.cloneNode(true);
+                clone.style.cssText = 'width:100%;height:200px;overflow:hidden;border-radius:4px;display:block;pointer-events:none;';
+                ph.appendChild(clone);
+            }
+        }
 
         const cleanup = () => { if (root.parentNode) root.parentNode.removeChild(root); };
         window.addEventListener('afterprint', cleanup, { once: true });
