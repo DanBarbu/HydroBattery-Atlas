@@ -501,42 +501,89 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
     },
 
     _printReport() {
-        const content = document.getElementById('fpv-report-content');
-        if (!content) return;
+        const fpvContent = document.getElementById('fpv-report-content');
+        if (!fpvContent) return;
+
+        // --- Capture site detail panel elements ---
+        const siteName    = (document.getElementById('site-name') || {}).textContent || '';
+        const paramsTable = document.getElementById('site-params-table');
+        const pieCanvas   = document.getElementById('cost-pie-chart');
+        const costTable   = document.getElementById('cost-breakdown-table');
+        const costSummary = document.getElementById('cost-summary');
+        const keyMetrics  = document.getElementById('key-metrics');
+
+        const pieImg = (pieCanvas && pieCanvas.width > 0)
+            ? `<img src="${pieCanvas.toDataURL('image/png')}" style="width:100%;max-width:480px;display:block;margin:8px auto;">`
+            : '';
+
+        const safeHtml = el => (el ? el.outerHTML : '');
+
         const css = `
   *, *::before, *::after { box-sizing: border-box; }
-  body { font-family: system-ui, Arial, sans-serif; margin: 24px 32px; color: #1a1a1a; font-size: 13px; }
-  h1 { font-size: 18px; color: #1a3a5c; margin: 0 0 4px; }
-  h2 { font-size: 14px; color: #2471a3; margin: 20px 0 6px; page-break-after: avoid; }
+  body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 0; color: #1a1a1a; font-size: 13px; }
+  h1 { font-size: 20px; color: #1a3a5c; margin: 0 0 6px; }
+  h2 { font-size: 15px; color: #1a3a5c; margin: 18px 0 8px; border-bottom: 2px solid #1a3a5c; padding-bottom: 4px; page-break-after: avoid; }
+  h3 { font-size: 13px; color: #2471a3; margin: 14px 0 6px; page-break-after: avoid; }
   p  { margin: 6px 0; line-height: 1.5; }
   ul, ol { padding-left: 20px; line-height: 1.8; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 6px; page-break-inside: avoid; }
-  th, td { padding: 4px 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 8px; page-break-inside: avoid; }
+  th, td { padding: 5px 10px; }
   th { background: #1a3a5c; color: #fff; text-align: left; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  td:last-child { text-align: right; }
+  td:last-child, th:last-child { text-align: right; }
   tr:nth-child(even) td { background: #f0f4f8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .detail-table td:first-child { font-weight: 600; width: 50%; }
+  .cost-summary { margin-top: 6px; font-size: 12px; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0; }
+  .metric-card { background: #f0f4f8; border-radius: 6px; padding: 8px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .metric-value { font-size: 16px; font-weight: 700; color: #1a3a5c; }
+  .metric-label { font-size: 10px; color: #666; margin-top: 2px; }
   a { color: #2471a3; }
   .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
   .kpi { background: #f0f4f8; border-radius: 6px; padding: 8px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .kpi b { display: block; font-size: 15px; }
   .kpi span { font-size: 10px; color: #666; }
-  @media print {
-    body { margin: 0; }
-    a { color: #2471a3; text-decoration: none; }
-    @page { margin: 15mm 20mm; size: A4 portrait; }
-  }`;
+  .page-break { page-break-before: always; }
+  @page { margin: 15mm 20mm; size: A4 portrait; }
+  @media print { a { color: #2471a3; text-decoration: none; } }`;
+
         const fullHtml = `<!DOCTYPE html><html><head>
 <meta charset="utf-8">
-<title>Floating Solar PV Integration — Feasibility Report</title>
+<title>${siteName} — HydroBattery Atlas Full Report</title>
 <style>${css}</style>
-</head><body>${content.innerHTML}</body></html>`;
-        const blob = new Blob([fullHtml], { type: 'text/html; charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const pw = window.open(url, '_blank');
-        if (!pw) { window.print(); return; }
-        pw.addEventListener('load', () => {
-            setTimeout(() => { pw.print(); URL.revokeObjectURL(url); }, 300);
-        });
+</head><body>
+
+<h1>💧 ${siteName}</h1>
+<p style="color:#666;font-size:11px;margin-bottom:16px;border-bottom:1px solid #ddd;padding-bottom:8px;">
+  HydroBattery Atlas — Site Details &amp; Cost Estimate &nbsp;|&nbsp;
+  Generated ${new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'})}
+</p>
+
+<h2>Site Parameters</h2>
+${safeHtml(paramsTable)}
+
+<h2>Cost Breakdown</h2>
+${pieImg}
+${safeHtml(costTable)}
+${safeHtml(costSummary)}
+
+<h2>Key Metrics</h2>
+${safeHtml(keyMetrics)}
+
+<div class="page-break"></div>
+${fpvContent.innerHTML}
+
+</body></html>`;
+
+        // Hidden iframe — cannot be blocked by popup blockers unlike window.open()
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:0;visibility:hidden;';
+        document.body.appendChild(iframe);
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open(); doc.write(fullHtml); doc.close();
+        iframe.contentWindow.onafterprint = () => {
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        };
+        setTimeout(() => iframe.contentWindow.print(), 600);
     },
 
     // =========================================================================
