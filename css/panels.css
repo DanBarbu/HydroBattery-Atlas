@@ -906,5 +906,15 @@
     #fpv-print-root .leaflet-tile-container img {
         -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
+    /* Scale-Up Scenarios table */
+    #fpv-print-scaleup-ph {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    #fpv-print-scaleup-ph > div { overflow: visible !important; }
+    #fpv-print-scaleup-ph > div > div { overflow: visible !important; }
+    #fpv-print-scaleup-ph table { font-size: 9px; width: 100%; }
+    #fpv-print-scaleup-ph td,
+    #fpv-print-scaleup-ph th { padding: 3px 5px !important; }
+    #fpv-print-root #fpv-print-scaleup-ph th { font-size: 9px; }
     @page { margin: 15mm 20mm; size: A4 portrait; }
 }
