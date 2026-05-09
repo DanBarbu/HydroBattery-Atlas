@@ -500,6 +500,46 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
         document.getElementById('fpv-report-modal').classList.remove('hidden');
     },
 
+    _printReport() {
+        const content = document.getElementById('fpv-report-content');
+        if (!content) return;
+        const pw = window.open('', '_blank', 'width=860,height=700');
+        if (!pw) { window.print(); return; }   // fallback if popup blocked
+        pw.document.write(`<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<title>Floating Solar PV Integration — Feasibility Report</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: system-ui, Arial, sans-serif; margin: 24px 32px; color: #1a1a1a; font-size: 13px; }
+  h1 { font-size: 18px; color: #1a3a5c; margin: 0 0 4px; }
+  h2 { font-size: 14px; color: #2471a3; margin: 20px 0 6px; }
+  p  { margin: 6px 0; line-height: 1.5; }
+  ul, ol { padding-left: 20px; line-height: 1.8; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 6px; }
+  th, td { padding: 4px 10px; }
+  th { background: #1a3a5c; color: #fff; text-align: left; }
+  td:last-child { text-align: right; }
+  tr:nth-child(even) td { background: #f0f4f8; }
+  tr:last-child td { font-weight: 700; border-top: 2px solid #1a3a5c; }
+  a { color: #2471a3; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+  .kpi { background: #f0f4f8; border-radius: 6px; padding: 8px; text-align: center; }
+  .kpi b { display: block; font-size: 15px; }
+  .kpi span { font-size: 10px; color: #666; }
+  @media print {
+    body { margin: 12px 20px; }
+    a { color: #2471a3; text-decoration: none; }
+    @page { margin: 15mm 20mm; size: A4 portrait; }
+  }
+</style>
+</head><body>
+${content.innerHTML}
+</body></html>`);
+        pw.document.close();
+        pw.focus();
+        setTimeout(() => { pw.print(); }, 400);
+    },
+
     // =========================================================================
     // HTML INJECTION HELPERS
     // =========================================================================
@@ -569,9 +609,9 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
     <button class="modal-close" id="fpv-report-close">&times;</button>
     <div id="fpv-report-content"></div>
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #ddd;">
-        <button onclick="window.print()"
+        <button id="fpv-report-print"
             style="flex:1;padding:9px;background:#1a3a5c;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;">
-            Print / Save PDF
+            🖨 Print / Save PDF
         </button>
         <button id="fpv-report-close2"
             style="flex:0 0 auto;padding:9px 18px;background:none;border:1px solid #ddd;border-radius:4px;font-size:12px;cursor:pointer;">
@@ -630,6 +670,7 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
                 e.target.innerHTML = hidden ? '&#8722;' : '+';
                 return;
             }
+            if (id === 'fpv-report-print') { this._printReport(); return; }
             if (id === 'fpv-report-close' || id === 'fpv-report-close2') {
                 document.getElementById('fpv-report-modal')?.classList.add('hidden');
             }
