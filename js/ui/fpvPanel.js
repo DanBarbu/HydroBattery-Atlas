@@ -137,10 +137,10 @@ HB.UI.fpvPanel = {
 
         _q('#fpv-results').innerHTML = `
 
-<!-- ── Solar resource ──────────────────────────────────────────── -->
+<!-- ── Solar resource ──────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Solar Resource
-        <span class="fpv-src">${sol.source === 'GlobalSolarAtlas' ? '● Global Solar Atlas' : '○ Latitude estimate'}</span>
+        <span class="fpv-src">${sol.source === 'GlobalSolarAtlas' ? '● Global Solar Atlas' : '◌ Latitude estimate'}</span>
     </div>
     <div class="fpv-kpis">
         <div class="fpv-kpi"><b>${fN(sol.ghiYear,0)}</b><span>GHI kWh/m²/yr</span></div>
@@ -150,7 +150,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Sizing ─────────────────────────────────────────────────── -->
+<!-- ── Sizing ───────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">FPV System Sizing</div>
     <table class="fpv-tbl">
@@ -162,7 +162,7 @@ HB.UI.fpvPanel = {
     </table>
 </div>
 
-<!-- ── Dispatch chart ───────────────────────────────────────────── -->
+<!-- ── Dispatch chart ───────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">24-Hour Average Dispatch Profile</div>
     <canvas id="fpv-chart" width="346" height="140"></canvas>
@@ -173,7 +173,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Annual energy ──────────────────────────────────────────────── -->
+<!-- ── Annual energy ────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Annual 24/7 Energy Dispatch</div>
     <div class="fpv-kpis">
@@ -184,7 +184,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Costs ────────────────────────────────────────────────────── -->
+<!-- ── Costs ────────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Capital Cost (${fN(c.specificWp,2)} $/Wp · regional index ${fN(c.regionIndex,2)}×)</div>
     <table class="fpv-tbl">
@@ -198,7 +198,7 @@ HB.UI.fpvPanel = {
     </table>
 </div>
 
-<!-- ── Economics ────────────────────────────────────────────────────── -->
+<!-- ── Economics ────────────────────────────────────────────── -->
 <div class="fpv-section">
     <div class="fpv-stitle">Financial Indicators (25 yr, 7% discount)</div>
     <div class="fpv-kpis">
@@ -209,7 +209,7 @@ HB.UI.fpvPanel = {
     </div>
 </div>
 
-<!-- ── Action buttons ─────────────────────────────────────────────────── -->
+<!-- ── Action buttons ───────────────────────────────────────── -->
 <div class="fpv-actions">
     <a class="fpv-btn-outline" href="${r.gsaUrl}" target="_blank">
         View on Global Solar Atlas ↗
@@ -256,18 +256,21 @@ HB.UI.fpvPanel = {
             const x  = pad.l + h2 * barW + 1;
             const bW = barW - 2;
 
+            // FPV generation (yellow-orange)
             const genH = (gen[h2] / maxV) * cH;
             if (genH > 0) {
                 ctx.fillStyle = '#f39c12';
                 ctx.fillRect(x, pad.t + cH - genH, bW, genH);
             }
 
+            // PHES charge overlay (blue, bottom of gen bar)
             const chgH = ((chg[h2] || 0) / maxV) * cH;
             if (chgH > 0) {
                 ctx.fillStyle = '#3498db';
                 ctx.fillRect(x, pad.t + cH - chgH, bW, chgH);
             }
 
+            // PHES discharge (green)
             const disH = ((dis[h2] || 0) / maxV) * cH;
             if (disH > 0) {
                 ctx.fillStyle = 'rgba(39,174,96,0.85)';
@@ -275,6 +278,7 @@ HB.UI.fpvPanel = {
             }
         }
 
+        // X-axis labels
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
         ctx.textAlign = 'center';
@@ -282,6 +286,7 @@ HB.UI.fpvPanel = {
             ctx.fillText(`${h2}:00`, pad.l + h2 * barW + barW / 2, H - 6);
         });
 
+        // Y-axis label
         ctx.textAlign = 'right';
         ctx.fillText(`${Math.round(maxV)} MW`, pad.l - 2, pad.t + 8);
         ctx.fillText('0', pad.l - 2, pad.t + cH);
@@ -305,6 +310,7 @@ HB.UI.fpvPanel = {
         const today = new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' });
         const energyPrice = HB.Cost.financials.energyPurchasePrice;
 
+        // Component share helper
         const share = (v) => fN(v / c.totalCapexM * 100, 1) + '%';
 
         const html = `
@@ -523,6 +529,13 @@ Sources: World Bank ESMAP 2023; NREL/TP-7A40-80695 scaled +10% to 2024 USD.</p>
 ${isSatVis ? '<div id="fpv-print-sat-ph" style="width:100%;height:200px;overflow:hidden;border-radius:4px;position:relative;"></div>' : crossImg}
 <p style="font-size:10px;color:#999;margin:2px 0 10px;">Imagery © Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community</p>` : '';
 
+        // Scale-Up Scenarios — only include if the analysis has been run
+        const scaleUpWrap = document.getElementById('scale-up-table-wrap');
+        const hasScaleUp  = scaleUpWrap && scaleUpWrap.children.length > 0;
+        const scaleUpSection = hasScaleUp ? `
+<h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Scale-Up Scenarios</h2>
+<div id="fpv-print-scaleup-ph"></div>` : '';
+
         const root = document.createElement('div');
         root.id = 'fpv-print-root';
         root.innerHTML = `
@@ -539,9 +552,22 @@ ${safeHtml(costTable)}
 ${safeHtml(costSummary)}
 <h2 style="font-size:14px;color:#1a3a5c;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;">Key Metrics</h2>
 ${safeHtml(keyMetrics)}
+${scaleUpSection}
 <div style="page-break-before:always;"></div>
 ${fpvContent.innerHTML}`;
         document.body.appendChild(root);
+
+        // Clone the scale-up table into its placeholder, removing overflow clipping
+        if (hasScaleUp) {
+            const ph = root.querySelector('#fpv-print-scaleup-ph');
+            if (ph) {
+                const clone = scaleUpWrap.cloneNode(true);
+                // Remove horizontal scroll wrapper so full table prints
+                const scrollDiv = clone.querySelector('div[style*="overflow-x"]');
+                if (scrollDiv) scrollDiv.style.overflowX = 'visible';
+                ph.appendChild(clone);
+            }
+        }
 
         // Clone the live Leaflet satellite map into the placeholder.
         // Tile <img> elements are already loaded/cached so they render in print.
@@ -631,7 +657,7 @@ ${fpvContent.innerHTML}`;
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #ddd;">
         <button id="fpv-report-print"
             style="flex:1;padding:9px;background:#1a3a5c;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;">
-            🖸 Print / Save PDF
+            🖨 Print / Save PDF
         </button>
         <button id="fpv-report-close2"
             style="flex:0 0 auto;padding:9px 18px;background:none;border:1px solid #ddd;border-radius:4px;font-size:12px;cursor:pointer;">
@@ -694,7 +720,7 @@ ${fpvContent.innerHTML}`;
     },
 };
 
-// ─── tiny helpers ────────────────────────────────────────────────────────────────────────────
+// ─── tiny helpers ────────────────────────────────────────────────────────────
 function _q(sel)    { return document.querySelector(sel); }
 function _set(id,v) { const el=document.getElementById(id); if(el) el.value=v; }
 function _num(id)   { return parseFloat(document.getElementById(id)?.value)||0; }
