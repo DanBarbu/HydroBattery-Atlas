@@ -851,3 +851,53 @@
     flex: 1;
     margin: 0;
 }
+
+/* ================================================================
+   PRINT STYLES — FPV Full Report
+   #fpv-print-root is appended to body by _printReport() before
+   window.print() is called, then removed via afterprint event.
+   ================================================================ */
+#fpv-print-root { display: none; }
+
+@media print {
+    body > *:not(#fpv-print-root) { display: none !important; }
+    #fpv-print-root {
+        display: block !important;
+        font-family: system-ui, Arial, sans-serif;
+        font-size: 13px;
+        color: #1a1a1a;
+        margin: 0; padding: 0;
+    }
+    #fpv-print-root table {
+        width: 100%; border-collapse: collapse; font-size: 12px;
+        margin-bottom: 8px; page-break-inside: avoid;
+    }
+    #fpv-print-root th, #fpv-print-root td { padding: 4px 10px; }
+    #fpv-print-root th {
+        background: #1a3a5c !important; color: #fff !important;
+        text-align: left;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    #fpv-print-root td:last-child, #fpv-print-root th:last-child { text-align: right; }
+    #fpv-print-root tr:nth-child(even) td {
+        background: #f0f4f8 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    #fpv-print-root .detail-table td:first-child { font-weight: 600; width: 50%; }
+    #fpv-print-root .cost-summary { font-size: 12px; margin-top: 4px; }
+    #fpv-print-root .metrics-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+    #fpv-print-root .metric-card {
+        background: #f0f4f8 !important; border-radius: 4px; padding: 6px; text-align: center;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    #fpv-print-root .metric-value { font-size: 15px; font-weight: 700; color: #1a3a5c; }
+    #fpv-print-root .metric-label { font-size: 10px; color: #666; }
+    #fpv-print-root .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+    #fpv-print-root .kpi {
+        background: #f0f4f8 !important; border-radius: 4px; padding: 6px; text-align: center;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    #fpv-print-root a { color: #2471a3; text-decoration: none; }
+    #fpv-print-root h2 { page-break-after: avoid; }
+    @page { margin: 15mm 20mm; size: A4 portrait; }
+}
