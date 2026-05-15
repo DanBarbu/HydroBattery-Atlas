@@ -14,6 +14,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-006](ADR-006-per-tenant-db-compartments.md) | Per-tenant DB compartments for high-classification deployments | Accepted |
 | [ADR-007](ADR-007-sso-shim.md) | SSO shim (OIDC) ahead of NPKI | Accepted |
 | [ADR-008](ADR-008-bms-module.md) | Battle Management Solution (BMS) module | Accepted |
+| [ADR-009](ADR-009-predictive-analysis.md) | Predictive battlefield analysis as a BMS sub-module | Accepted |
 
 ## Authoring
 

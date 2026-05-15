@@ -233,3 +233,88 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
   .bms-grid { grid-template-columns: 1fr; }
   .bms-engagements { grid-column: auto; }
 }
+
+/* ---------- BMS extensions ---------- */
+
+.overlay-toggles {
+  display: flex; gap: 0.9rem; flex-wrap: wrap;
+  padding: 0.4rem 1rem; background: var(--panel); border-bottom: 1px solid var(--line); font-size: 0.78rem;
+}
+
+.tst-badge {
+  background: #e63946; color: #fff; padding: 0 0.45rem; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em;
+}
+
+.pnt-badge {
+  padding: 0 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; border: 1px solid;
+}
+.pnt-degraded { color: #f4d35e; border-color: #f4d35e; }
+.pnt-denied   { color: #e63946; border-color: #e63946; }
+.pnt-spoofed_suspected { color: #b388ff; border-color: #b388ff; }
+
+.threat-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.threat-actions .tst { background: #e63946; }
+
+.timeline-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin: 0.25rem 0;
+}
+.tl-cell {
+  height: 14px;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 800; color: #fff;
+}
+.tl-on  { background: #3ddc97; color: #000; }
+.tl-off { background: #30363d; color: var(--muted); }
+.tl-label { line-height: 1; }
+
+.badge-predictive {
+  background: #b388ff; color: #fff; border-color: #b388ff;
+}
+
+.coa-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; max-height: 50vh; overflow-y: auto; }
+.coa-list li {
+  display: grid; grid-template-columns: 1.5rem 1.2fr auto 1.2fr 4rem 1fr;
+  gap: 0.4rem; align-items: center;
+  background: var(--inset); border: 1px solid var(--line); border-left-width: 3px; border-radius: 4px; padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+}
+.coa-list li.coa-ok { border-left-color: #3ddc97; }
+.coa-list li.coa-bad { border-left-color: #e63946; opacity: 0.85; }
+.coa-rank { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+.coa-pk { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.coa-rationale { font-size: 0.74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- AAR drawer ---------- */
+
+.aar-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.aar-panel {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  padding: 1rem 1.25rem; max-width: min(720px, 95vw); max-height: 90vh; overflow: auto;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.aar-panel header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.aar-panel header h3 { margin: 0; }
+.aar-panel header button {
+  background: transparent; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 4px; padding: 0.2rem 0.55rem; cursor: pointer;
+}
+.aar-grid {
+  display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.75rem;
+  margin: 0.5rem 0;
+}
+.aar-grid dt { color: var(--muted); }
+.aar-grid dd { margin: 0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.85rem; }
+.aar-stamps {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.2rem 0.75rem;
+  font-size: 0.82rem;
+}

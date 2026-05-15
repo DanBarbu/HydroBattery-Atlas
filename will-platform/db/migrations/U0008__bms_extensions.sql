@@ -1,0 +1,13 @@
+DROP POLICY IF EXISTS zones_service_bypass ON engagement_zones;
+DROP POLICY IF EXISTS zones_tenant_isolation ON engagement_zones;
+DROP POLICY IF EXISTS dal_service_bypass ON defended_assets;
+DROP POLICY IF EXISTS dal_tenant_isolation ON defended_assets;
+DROP INDEX IF EXISTS tracks_pnt_status;
+ALTER TABLE effectors DROP COLUMN IF EXISTS rf_environment, DROP COLUMN IF EXISTS pnt_status;
+ALTER TABLE tracks    DROP COLUMN IF EXISTS rf_environment, DROP COLUMN IF EXISTS pnt_status;
+DROP INDEX IF EXISTS engagements_tst;
+ALTER TABLE engagements DROP COLUMN IF EXISTS timeline, DROP COLUMN IF EXISTS is_tst;
+DROP INDEX IF EXISTS engagement_zones_tenant;
+DROP TABLE IF EXISTS engagement_zones;
+DROP INDEX IF EXISTS defended_assets_tenant;
+DROP TABLE IF EXISTS defended_assets;

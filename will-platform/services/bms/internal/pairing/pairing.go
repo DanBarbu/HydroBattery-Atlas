@@ -49,6 +49,13 @@ type Target struct {
 	ThreatClass string // matches scoring.ThreatClass values
 }
 
+// KindCompatible reports whether an effector kind may engage a threat class.
+// Exposed so other BMS packages (e.g. prediction) can pre-filter without
+// reimplementing the rule table.
+func KindCompatible(k EffectorKind, threatClass string) bool {
+	return kindCompatibility[k][threatClass]
+}
+
 // Compatibility table: which kinds may engage which threat classes.
 var kindCompatibility = map[EffectorKind]map[string]bool{
 	KindSamArea:    {"cruise": true, "aircraft": true, "uav_one_way": true, "swarm": true},
