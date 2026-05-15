@@ -13,6 +13,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-005](ADR-005-stanag-4774-as-canonical-classification.md) | STANAG 4774 as the canonical classification metadata | Accepted |
 | [ADR-006](ADR-006-per-tenant-db-compartments.md) | Per-tenant DB compartments for high-classification deployments | Accepted |
 | [ADR-007](ADR-007-sso-shim.md) | SSO shim (OIDC) ahead of NPKI | Accepted |
+| [ADR-008](ADR-008-bms-module.md) | Battle Management Solution (BMS) module | Accepted |
 
 ## Authoring
 

@@ -256,6 +256,35 @@ services:
     networks:
       - will-net
 
+  bms:
+    build:
+      context: ./services/bms
+    container_name: will-bms
+    environment:
+      HTTP_ADDR: ":8084"
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8084/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  sam-battery-mock:
+    build:
+      context: ./plugins/sam-battery-mock
+    container_name: will-sam-battery-mock
+    environment:
+      NAME: "Patriot Bn 1"
+      LAT: "45.87"
+      LON: "24.78"
+      ROUNDS: "8"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
   core-sync:
     build:
       context: ./services/core-sync

@@ -1,0 +1,13 @@
+DROP POLICY IF EXISTS engagements_service_bypass ON engagements;
+DROP POLICY IF EXISTS engagements_tenant_isolation ON engagements;
+DROP POLICY IF EXISTS threats_service_bypass ON threats;
+DROP POLICY IF EXISTS threats_tenant_isolation ON threats;
+DROP POLICY IF EXISTS effectors_service_bypass ON effectors;
+DROP POLICY IF EXISTS effectors_tenant_isolation ON effectors;
+DROP INDEX IF EXISTS engagements_tenant_status;
+DROP TABLE IF EXISTS engagements;
+DROP INDEX IF EXISTS threats_tenant_track;
+DROP INDEX IF EXISTS threats_tenant_priority;
+DROP TABLE IF EXISTS threats;
+DROP INDEX IF EXISTS effectors_tenant_kind;
+DROP TABLE IF EXISTS effectors;

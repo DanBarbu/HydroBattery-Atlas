@@ -24,16 +24,19 @@ will-platform/
 │   ├── gmti/                      # Sprint 3 STANAG 4607 GMTI adapter (Go)
 │   ├── gmti-replay/               # Sprint 3 synthetic STANAG 4607 generator
 │   ├── lora-bridge/               # Sprint 4 LoRa MQTT bridge (Python)
-│   └── lora-sim/                  # Sprint 4 100-node LoRa generator (Python)
+│   ├── lora-sim/                  # Sprint 4 100-node LoRa generator (Python)
+│   └── sam-battery-mock/          # BMS reference effector (Python; will.effector.v1)
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
 │   ├── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
-│   └── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
+│   ├── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
+│   └── bms/                       # Battle Management module (ADR-008): threats + effectors + engagements
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware
 ├── helm/values/                   # Sprint 5 OPA Gatekeeper exempt list per deployment profile
+└── demo-ux/                       # Standalone UX demo (no backend; npm run dev)
 ├── policy/                        # Sprint 2 OPA Gatekeeper policy skeletons
 ├── services/
 │   ├── websocket-bridge/          # MQTT → WebSocket relay with dedup

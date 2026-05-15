@@ -1,0 +1,140 @@
+// WILL Effector Plugin SDK — v1 contract. ADR-002 + ADR-008.
+//
+// Complements will.sensor.v1: same versioning policy, same Cosign signing.
+// Effectors are platforms that *act* on the world (SAM batteries, jammers,
+// coastal launchers). The contract surface is:
+//   Describe — static identity
+//   Health   — liveness / readiness
+//   Configure— per-tenant configuration
+//   Status   — server-streaming current state (rounds remaining, mode, target)
+//   Engage   — issue an engagement request; returns the effector's assessment
+//              (would-engage / probability-of-kill / time-to-intercept) and a
+//              completion stream of EngagementEvent messages.
+//
+// WILL is a coordinator, not a fire-control system. The Engage RPC returns
+// the effector's *intent* and progress; the actual fire decision sits on the
+// effector platform itself. ADR-008 documents this boundary.
+
+syntax = "proto3";
+
+package will.effector.v1;
+
+option go_package = "git.will-platform.ro/contracts/will/effector/v1;effectorv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+service EffectorPlugin {
+  rpc Describe(DescribeRequest) returns (DescribeResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+  rpc Configure(ConfigureRequest) returns (ConfigureResponse);
+  rpc Status(StatusRequest) returns (stream StatusReport);
+  rpc Engage(EngageRequest) returns (stream EngagementEvent);
+}
+
+message DescribeRequest {}
+message DescribeResponse {
+  string name = 1;
+  string version = 2;
+  string vendor = 3;
+  string contract_version = 4;     // "v1.0"
+  repeated string capabilities = 5; // e.g. ["effector.sam.area", "effector.sam.point"]
+  string description = 6;
+
+  // Kinematic envelope hint. Real engagements consult the effector's own
+  // fire-control; this is for WILL's pairing heuristic only.
+  KinematicEnvelope envelope = 7;
+
+  // Effector kind. Drives icon and the pairing-rule table.
+  EffectorKind kind = 8;
+}
+
+enum EffectorKind {
+  EFFECTOR_KIND_UNSPECIFIED = 0;
+  EFFECTOR_KIND_SAM_AREA    = 1;  // e.g. Patriot
+  EFFECTOR_KIND_SAM_POINT   = 2;  // e.g. C-RAM
+  EFFECTOR_KIND_NSM_COASTAL = 3;  // e.g. Kongsberg NSM coastal
+  EFFECTOR_KIND_JAMMER_RF   = 4;
+  EFFECTOR_KIND_C_UAS       = 5;  // counter-UAS, kinetic or RF
+}
+
+message KinematicEnvelope {
+  double min_range_m = 1;
+  double max_range_m = 2;
+  double min_altitude_m = 3;
+  double max_altitude_m = 4;
+  double max_target_speed_mps = 5;
+}
+
+message HealthRequest {}
+message HealthResponse {
+  enum Status {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    DEGRADED = 3;
+    MAINTENANCE = 4;
+  }
+  Status status = 1;
+  string message = 2;
+  google.protobuf.Timestamp checked_at = 3;
+}
+
+message ConfigureRequest {
+  string tenant_id = 1;
+  google.protobuf.Struct settings = 2;
+}
+message ConfigureResponse {
+  bool accepted = 1;
+  repeated string rejected_keys = 2;
+  string message = 3;
+}
+
+message StatusRequest {
+  string tenant_id = 1;
+}
+
+message StatusReport {
+  string effector_id = 1;
+  EffectorKind kind = 2;
+  string mode = 3;                   // "READY" | "ENGAGING" | "RELOADING" | "MAINTENANCE"
+  uint32 rounds_remaining = 4;
+  string current_target_track_id = 5; // empty when not engaged
+  double lat = 6;
+  double lon = 7;
+  string classification = 8;          // STANAG 4774; ADR-005
+  google.protobuf.Timestamp observed_at = 9;
+  google.protobuf.Struct metadata = 10;
+}
+
+message EngageRequest {
+  string tenant_id = 1;
+  string engagement_id = 2;   // WILL-assigned; effector echoes in events
+  string track_id = 3;        // the threat
+  double target_lat = 4;
+  double target_lon = 5;
+  double target_alt_m = 6;
+  double target_speed_mps = 7;
+  string classification = 8;
+  // Authorisation evidence (operator id, role, time, signature).
+  // Sprint 10 NPKI extends this; Sprint 4 RBAC populates the basic fields.
+  google.protobuf.Struct authorisation = 9;
+}
+
+message EngagementEvent {
+  string engagement_id = 1;
+  enum Phase {
+    PHASE_UNSPECIFIED = 0;
+    PHASE_ACCEPTED   = 1;  // effector accepted the request
+    PHASE_REJECTED   = 2;  // outside envelope / no authority / safety abort
+    PHASE_EXECUTING  = 3;  // round in flight
+    PHASE_COMPLETED  = 4;  // result reported
+    PHASE_ABORTED    = 5;  // operator-commanded abort
+  }
+  Phase phase = 2;
+  double probability_of_kill = 3;   // 0..1; intentional best-estimate
+  double time_to_intercept_s = 4;
+  string message = 5;
+  google.protobuf.Timestamp observed_at = 6;
+  google.protobuf.Struct metadata = 7;
+}
