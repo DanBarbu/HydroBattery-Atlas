@@ -14,6 +14,7 @@
   "nav.label": "Vizualizare",
   "nav.ops": "Operațional",
   "nav.forces": "Forțe proprii",
+  "nav.naval": "Naval",
   "nav.bms": "Battle Management",
   "nav.admin": "Administrare",
   "nav.signout": "Deconectare",
@@ -31,6 +32,7 @@
   "layers.zones": "Zone de angajare",
   "layers.prediction": "Trasee predictive",
   "layers.bft": "Forțe proprii",
+  "layers.naval": "Naval / navă proprie",
   "plugins.heading": "Plugin-uri",
   "plugins.empty": "Niciun plugin înregistrat încă.",
   "tenant.activeLabel": "Chiriaș activ",
@@ -122,5 +124,14 @@
   "forces.echelon.company": "Companie",
   "forces.echelon.battalion": "Batalion",
   "forces.echelon.brigade": "Brigadă",
-  "forces.echelon.unknown": "Eșalon n/a"
+  "forces.echelon.unknown": "Eșalon n/a",
+  "naval.heading": "Naval / Navă proprie",
+  "naval.hint": "Nave ca noduri mobile (ADR-011). WILL integrează nava în imaginea federată; sistemul propriu de management al luptei al navei rămâne autoritatea pentru lupta navei.",
+  "naval.platforms": "Platforme",
+  "naval.commsDegraded": "Comunicații degradate",
+  "naval.seacom": "Suita Rafael SEA-COM",
+  "naval.payloads": "Sarcini utile montate",
+  "naval.kind.sensor": "senzor",
+  "naval.kind.effector": "efector",
+  "naval.boundary": "WILL coordonează între platforme — nu rulează sistemul de management al luptei al navei, nu comandă sarcinile utile și nu conduce lupta navei. Efectorii navei se înregistrează în BMS împreună cu platforma, astfel încât asocierea știe că se deplasează cu nava."
 }

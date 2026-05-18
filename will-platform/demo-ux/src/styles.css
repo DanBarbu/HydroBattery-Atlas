@@ -346,3 +346,36 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
 .status-pill.status-bingo, .status-pill.status-winchester { color: #ff8a3d; border-color: #ff8a3d; margin-left: auto; }
 .status-pill.status-degraded { color: #f4d35e; border-color: #f4d35e; margin-left: auto; }
 .status-pill.status-maintenance { color: var(--muted); margin-left: auto; }
+
+/* ---------- Naval / Own-Ship ---------- */
+
+.naval-shell { width: 100%; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.naval-header h2 { margin: 0; }
+.naval-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 0.75rem; }
+.naval-card { background: var(--panel); border: 1px solid var(--line); border-left-width: 4px; border-radius: 6px; padding: 0.7rem; }
+.naval-card.emcon-full { border-left-color: #3273dc; }
+.naval-card.emcon-restricted { border-left-color: #f4d35e; }
+.naval-card.emcon-silent { border-left-color: #ff8a3d; }
+.naval-line { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
+.naval-hull { font-size: 0.78rem; color: var(--muted); }
+.naval-meta { display: flex; gap: 0.7rem; font-size: 0.76rem; color: var(--muted); margin: 0.25rem 0; flex-wrap: wrap; }
+.naval-card h4 { margin: 0.5rem 0 0.25rem; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.emcon-pill { padding: 0.05rem 0.5rem; border-radius: 999px; border: 1px solid; font-size: 0.7rem; font-weight: 700; }
+.emcon-pill.emcon-full { color: #3273dc; border-color: #3273dc; }
+.emcon-pill.emcon-restricted { color: #f4d35e; border-color: #f4d35e; }
+.emcon-pill.emcon-silent { color: #ff8a3d; border-color: #ff8a3d; }
+
+.comms-bar { display: flex; gap: 3px; flex-wrap: wrap; }
+.comms-cell { padding: 0.1rem 0.45rem; border-radius: 3px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; }
+.comms-cell.comms-up { background: #1f7a3f; color: #fff; }
+.comms-cell.comms-degraded { background: #b9892b; color: #000; }
+.comms-cell.comms-down { background: #b3261e; color: #fff; }
+
+.payload-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.payload-list li { display: flex; gap: 0.5rem; align-items: center; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.55rem; font-size: 0.82rem; }
+.payload-list li.payload-sensor { border-left: 3px solid #3ddc97; }
+.payload-list li.payload-effector { border-left: 3px solid #e63946; }
+.payload-name { font-weight: 600; }
+.payload-kind { font-size: 0.72rem; color: var(--muted); }
+.payload-list .status-pill { margin-left: auto; }
+.naval-boundary { border-top: 1px solid var(--line); padding-top: 0.5rem; }

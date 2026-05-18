@@ -302,6 +302,36 @@ services:
     networks:
       - will-net
 
+  ownship:
+    build:
+      context: ./services/ownship
+    container_name: will-ownship
+    environment:
+      HTTP_ADDR: ":8086"
+    ports:
+      - "8086:8086"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8086/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  ownship-sim:
+    build:
+      context: ./plugins/ownship-sim
+    container_name: will-ownship-sim
+    depends_on:
+      ownship:
+        condition: service_healthy
+    environment:
+      OWNSHIP_URL: http://ownship:8086
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock

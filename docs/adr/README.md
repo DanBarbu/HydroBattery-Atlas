@@ -16,6 +16,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-008](ADR-008-bms-module.md) | Battle Management Solution (BMS) module | Accepted |
 | [ADR-009](ADR-009-predictive-analysis.md) | Predictive battlefield analysis as a BMS sub-module | Accepted |
 | [ADR-010](ADR-010-bft-module.md) | Blue / Friendly Force Tracking (BFT) module | Accepted |
+| [ADR-011](ADR-011-ownship-module.md) | Naval / Own-Ship integration as a mobile node | Accepted |
 
 ## Authoring
 

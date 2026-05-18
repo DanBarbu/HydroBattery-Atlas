@@ -14,6 +14,7 @@
   "nav.label": "View",
   "nav.ops": "Operations",
   "nav.forces": "Friendly Forces",
+  "nav.naval": "Naval",
   "nav.bms": "Battle Management",
   "nav.admin": "Admin",
   "nav.signout": "Sign out",
@@ -31,6 +32,7 @@
   "layers.zones": "Engagement zones",
   "layers.prediction": "Predictive paths",
   "layers.bft": "Friendly forces",
+  "layers.naval": "Naval / own-ship",
   "plugins.heading": "Plugins",
   "plugins.empty": "No plugins registered yet.",
   "tenant.activeLabel": "Active tenant",
@@ -122,5 +124,14 @@
   "forces.echelon.company": "Company",
   "forces.echelon.battalion": "Battalion",
   "forces.echelon.brigade": "Brigade",
-  "forces.echelon.unknown": "Echelon n/a"
+  "forces.echelon.unknown": "Echelon n/a",
+  "naval.heading": "Naval / Own-Ship",
+  "naval.hint": "Vessels as mobile nodes (ADR-011). WILL integrates the ship into the federated picture; the vessel's own combat-management system stays authoritative for the vessel's fight.",
+  "naval.platforms": "Platforms",
+  "naval.commsDegraded": "Comms degraded",
+  "naval.seacom": "Rafael SEA-COM suite",
+  "naval.payloads": "Mounted payloads",
+  "naval.kind.sensor": "sensor",
+  "naval.kind.effector": "effector",
+  "naval.boundary": "WILL coordinates across platforms — it does not run the vessel's combat-management system, task its payloads, or fight the ship. Own-ship effectors register into BMS with the platform so pairing knows they move with the hull."
 }

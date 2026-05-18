@@ -28,14 +28,16 @@ will-platform/
 │   ├── sam-battery-mock/          # BMS reference effector — Patriot PAC-3 MSE (will.effector.v1)
 │   ├── skynex-mock/               # BMS reference effector — Skynex/GDF-103 gun_shorad
 │   ├── cap-fighter-mock/          # BMS reference effector — F-16 CAP air_intercept
-│   └── bft-sim/                   # BFT Romanian order-of-battle simulator
+│   ├── bft-sim/                   # BFT Romanian order-of-battle simulator
+│   └── ownship-sim/               # Naval Black Sea picture (corvette + OPV)
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
 │   ├── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
 │   ├── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
 │   ├── bms/                       # Battle Management module (ADR-008/009): threats + effectors + engagements + prediction
-│   └── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
+│   ├── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
+│   └── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware

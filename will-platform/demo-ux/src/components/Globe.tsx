@@ -19,6 +19,7 @@ import { tracksAt, CINCU } from "../mock/tracks";
 import { tenantStore } from "../mock/tenants";
 import { bms } from "../mock/bms";
 import { friendlyAssets } from "../mock/bft";
+import { platforms as navalPlatforms } from "../mock/ownship";
 import { LayerToggles, type LayerState } from "./LayerToggles";
 import type { Affiliation, Track, TrackKind } from "../types";
 
@@ -51,6 +52,7 @@ const overlayFlag = {
   zones: "__will_zones__",
   prediction: "__will_pred__",
   bft: "__will_bft__",
+  naval: "__will_naval__",
 };
 
 export function Globe() {
@@ -65,6 +67,7 @@ export function Globe() {
   const [showZones, setShowZones] = useState(true);
   const [showPrediction, setShowPrediction] = useState(true);
   const [showBFT, setShowBFT] = useState(true);
+  const [showNaval, setShowNaval] = useState(true);
   const [count, setCount] = useState(0);
   const startRef = useRef<number>(Date.now());
 
@@ -285,6 +288,53 @@ export function Globe() {
     return () => window.clearInterval(id);
   }, [ready, showBFT]);
 
+  // Naval / own-ship layer (ADR-011): vessels off Constanța. A vessel in
+  // EMCON SILENT (any comms link not UP) is drawn amber with a "COMMS" tag.
+  useEffect(() => {
+    if (!ready) return;
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    const refresh = () => {
+      for (const [key, ent] of overlayEntities.current) {
+        if (key.startsWith(overlayFlag.naval)) {
+          viewer.entities.remove(ent);
+          overlayEntities.current.delete(key);
+        }
+      }
+      for (const p of navalPlatforms()) {
+        const degraded = p.comms.some((c) => c.status !== "UP");
+        const colour = Color.fromCssColorString(degraded ? "#ff8a3d" : "#3273dc");
+        const ent = viewer.entities.add({
+          show: showNaval,
+          position: Cartesian3.fromDegrees(p.lon, p.lat, 0),
+          point: {
+            pixelSize: 13,
+            color: colour,
+            outlineColor: Color.WHITE,
+            outlineWidth: 2,
+          },
+          label: {
+            text: `⚓ ${p.name}${degraded ? " · COMMS" : ""}`,
+            font: "11px sans-serif",
+            fillColor: Color.fromCssColorString("#cfe3ff"),
+            outlineColor: Color.BLACK,
+            outlineWidth: 2,
+            style: LabelStyle.FILL_AND_OUTLINE,
+            horizontalOrigin: HorizontalOrigin.LEFT,
+            verticalOrigin: VerticalOrigin.CENTER,
+            pixelOffset: new Cartesian3(12, 0, 0),
+            distanceDisplayCondition: new DistanceDisplayCondition(0, 500_000),
+            scaleByDistance: new NearFarScalar(2_000, 1.0, 120_000, 0.55),
+          },
+        });
+        overlayEntities.current.set(`${overlayFlag.naval}/${p.id}`, ent);
+      }
+    };
+    refresh();
+    const id = window.setInterval(refresh, 1_500);
+    return () => window.clearInterval(id);
+  }, [ready, showNaval]);
+
   // Prediction overlay: projected paths for active threats + intercept geometry for EXECUTING engagements.
   useEffect(() => {
     if (!ready) return;
@@ -404,6 +454,9 @@ export function Globe() {
         </label>
         <label className="layer-toggle">
           <input type="checkbox" checked={showBFT} onChange={(e) => setShowBFT(e.target.checked)} /> {t("layers.bft")}
+        </label>
+        <label className="layer-toggle">
+          <input type="checkbox" checked={showNaval} onChange={(e) => setShowNaval(e.target.checked)} /> {t("layers.naval")}
         </label>
       </div>
       <div ref={containerRef} className="globe-canvas" />

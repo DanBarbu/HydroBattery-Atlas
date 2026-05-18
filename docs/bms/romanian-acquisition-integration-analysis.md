@@ -79,7 +79,10 @@ Engineer before any code.
   `docs/bms/air-defence-expansion.md`) — `air_intercept` + `gun_shorad`
   kinds, Patriot/NSM envelope refresh, Patriot ballistic-intercept
   compatibility.
-- **C — Naval / Own-Ship integration:** pending (needs ADR).
+- **C — Naval / Own-Ship integration:** delivered (ADR-011,
+  `services/ownship`, `docs/ownship/architecture.md`) — vessel as a
+  mobile node: own-ship state + EMCON, Rafael SEA-COM link health,
+  hull-mounted payload registry.
 - **D — Fires Coordination awareness:** pending (needs ADR).
 
 ## Recommended build order

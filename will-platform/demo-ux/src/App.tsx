@@ -7,10 +7,11 @@ import { PluginInfo } from "./components/PluginInfo";
 import { Admin } from "./components/Admin";
 import { BMS } from "./components/BMS";
 import { Forces } from "./components/Forces";
+import { Naval } from "./components/Naval";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { ClassificationBanner } from "./components/ClassificationBanner";
 
-type View = "ops" | "forces" | "bms" | "admin";
+type View = "ops" | "forces" | "naval" | "bms" | "admin";
 
 export function App() {
   const { t } = useI18n();
@@ -29,7 +30,7 @@ export function App() {
           <span className="app-subtitle">{t("app.subtitle")}</span>
         </div>
         <nav className="view-toggle" aria-label={t("nav.label")}>
-          {(["ops", "forces", "bms", "admin"] as View[]).map((v) => (
+          {(["ops", "forces", "naval", "bms", "admin"] as View[]).map((v) => (
             <button key={v} type="button" onClick={() => setView(v)} aria-pressed={view === v} className={view === v ? "active" : ""}>
               {t(`nav.${v}`)}
             </button>
@@ -54,6 +55,7 @@ export function App() {
           </div>
         )}
         {view === "forces" && <Forces />}
+        {view === "naval" && <Naval />}
         {view === "bms" && <BMS />}
         {view === "admin" && <Admin onTenantChanged={() => setBump((b) => b + 1)} />}
       </main>
