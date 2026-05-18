@@ -20,11 +20,13 @@ import (
 type EffectorKind string
 
 const (
-	KindSamArea    EffectorKind = "sam_area"
-	KindSamPoint   EffectorKind = "sam_point"
-	KindNSMCoastal EffectorKind = "nsm_coastal"
-	KindJammerRF   EffectorKind = "jammer_rf"
-	KindCUAS       EffectorKind = "c_uas"
+	KindSamArea      EffectorKind = "sam_area"
+	KindSamPoint     EffectorKind = "sam_point"
+	KindNSMCoastal   EffectorKind = "nsm_coastal"
+	KindJammerRF     EffectorKind = "jammer_rf"
+	KindCUAS         EffectorKind = "c_uas"
+	KindAirIntercept EffectorKind = "air_intercept" // CAP fighter + AAM
+	KindGunSHORAD    EffectorKind = "gun_shorad"    // Skynex / GDF-103
 )
 
 type Effector struct {
@@ -58,11 +60,18 @@ func KindCompatible(k EffectorKind, threatClass string) bool {
 
 // Compatibility table: which kinds may engage which threat classes.
 var kindCompatibility = map[EffectorKind]map[string]bool{
-	KindSamArea:    {"cruise": true, "aircraft": true, "uav_one_way": true, "swarm": true},
-	KindSamPoint:   {"cruise": true, "uav_one_way": true, "swarm": true},
-	KindNSMCoastal: {"surface": true},
-	KindJammerRF:   {"uav_one_way": true, "swarm": true},
-	KindCUAS:       {"uav_one_way": true, "swarm": true},
+	// Patriot (PAC-3 MSE) is the ballistic-missile interceptor — added here
+	// as part of the air-defence expansion refresh.
+	KindSamArea:      {"ballistic": true, "cruise": true, "aircraft": true, "uav_one_way": true, "swarm": true},
+	KindSamPoint:     {"cruise": true, "uav_one_way": true, "swarm": true},
+	KindNSMCoastal:   {"surface": true},
+	KindJammerRF:     {"uav_one_way": true, "swarm": true},
+	KindCUAS:         {"uav_one_way": true, "swarm": true},
+	// CAP fighter with AIM-120 / AIM-9X — air-breathing threats only; it
+	// does not do ballistic-missile defence.
+	KindAirIntercept: {"cruise": true, "aircraft": true, "uav_one_way": true},
+	// Skynex / Oerlikon GDF-103 35 mm AHEAD — close-in C-RAM / C-UAS gun.
+	KindGunSHORAD:    {"cruise": true, "aircraft": true, "uav_one_way": true, "swarm": true},
 }
 
 // Best returns the chosen effector and a score (higher = better fit) plus

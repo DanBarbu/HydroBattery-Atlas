@@ -22,20 +22,39 @@ func main() {
 	dalStore := dal.NewMemoryStore()
 	ctx := context.Background()
 
-	// Demo seeds.
+	// Demo seeds (illustrative public-domain envelope figures).
+	// Patriot refreshed: PAC-3 MSE / Config 3+ — BMD-capable, deeper
+	// envelope than the original placeholder.
 	_, _ = store.CreateEffector(ctx, api.Effector{
 		TenantID: "00000000-0000-0000-0000-000000000001",
-		PluginID: "sam-battery-mock", Kind: "sam_area", DisplayName: "Patriot Bn 1",
+		PluginID: "sam-battery-mock", Kind: "sam_area", DisplayName: "Patriot Bn 1 (PAC-3 MSE)",
 		Lat: 45.87, Lon: 24.78,
-		MinRangeM: 3_000, MaxRangeM: 80_000, MinAltitudeM: 50, MaxAltitudeM: 25_000,
-		MaxTargetSpeed: 2_400, RoundsRemaining: 8, Status: "READY",
+		MinRangeM: 3_000, MaxRangeM: 100_000, MinAltitudeM: 50, MaxAltitudeM: 36_000,
+		MaxTargetSpeed: 2_400, RoundsRemaining: 16, Status: "READY",
 	})
+	// NSM coastal refreshed: ~185 km, sea-skimming, surface targets.
 	_, _ = store.CreateEffector(ctx, api.Effector{
 		TenantID: "00000000-0000-0000-0000-000000000001",
 		PluginID: "nsm-coastal-mock", Kind: "nsm_coastal", DisplayName: "NSM Coastal Bty",
 		Lat: 44.20, Lon: 28.65,
-		MinRangeM: 3_000, MaxRangeM: 200_000, MinAltitudeM: -10, MaxAltitudeM: 5_000,
-		MaxTargetSpeed: 700, RoundsRemaining: 4, Status: "READY",
+		MinRangeM: 3_000, MaxRangeM: 185_000, MinAltitudeM: -10, MaxAltitudeM: 1_000,
+		MaxTargetSpeed: 40, RoundsRemaining: 8, Status: "READY",
+	})
+	// Skynex / Oerlikon GDF-103 — close-in C-RAM / C-UAS gun.
+	_, _ = store.CreateEffector(ctx, api.Effector{
+		TenantID: "00000000-0000-0000-0000-000000000001",
+		PluginID: "skynex-mock", Kind: "gun_shorad", DisplayName: "Skynex Bty (GDF-103)",
+		Lat: 45.872, Lon: 24.776,
+		MinRangeM: 100, MaxRangeM: 4_000, MinAltitudeM: 0, MaxAltitudeM: 3_500,
+		MaxTargetSpeed: 1_000, RoundsRemaining: 1_200, Status: "READY",
+	})
+	// F-16 combat air patrol on station — AIM-120 AMRAAM / AIM-9X loadout.
+	_, _ = store.CreateEffector(ctx, api.Effector{
+		TenantID: "00000000-0000-0000-0000-000000000001",
+		PluginID: "cap-fighter-mock", Kind: "air_intercept", DisplayName: "F-16 CAP SOIM-01",
+		Lat: 45.80, Lon: 24.55,
+		MinRangeM: 2_000, MaxRangeM: 100_000, MinAltitudeM: 30, MaxAltitudeM: 18_000,
+		MaxTargetSpeed: 900, RoundsRemaining: 8, Status: "READY",
 	})
 	_, _ = dalStore.UpsertAsset(ctx, dal.DefendedAsset{
 		TenantID: "00000000-0000-0000-0000-000000000001",

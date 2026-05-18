@@ -25,7 +25,10 @@ will-platform/
 │   ├── gmti-replay/               # Sprint 3 synthetic STANAG 4607 generator
 │   ├── lora-bridge/               # Sprint 4 LoRa MQTT bridge (Python)
 │   ├── lora-sim/                  # Sprint 4 100-node LoRa generator (Python)
-│   └── sam-battery-mock/          # BMS reference effector (Python; will.effector.v1)
+│   ├── sam-battery-mock/          # BMS reference effector — Patriot PAC-3 MSE (will.effector.v1)
+│   ├── skynex-mock/               # BMS reference effector — Skynex/GDF-103 gun_shorad
+│   ├── cap-fighter-mock/          # BMS reference effector — F-16 CAP air_intercept
+│   └── bft-sim/                   # BFT Romanian order-of-battle simulator
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim

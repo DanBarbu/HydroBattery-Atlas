@@ -50,12 +50,14 @@ message DescribeResponse {
 }
 
 enum EffectorKind {
-  EFFECTOR_KIND_UNSPECIFIED = 0;
-  EFFECTOR_KIND_SAM_AREA    = 1;  // e.g. Patriot
-  EFFECTOR_KIND_SAM_POINT   = 2;  // e.g. C-RAM
-  EFFECTOR_KIND_NSM_COASTAL = 3;  // e.g. Kongsberg NSM coastal
-  EFFECTOR_KIND_JAMMER_RF   = 4;
-  EFFECTOR_KIND_C_UAS       = 5;  // counter-UAS, kinetic or RF
+  EFFECTOR_KIND_UNSPECIFIED   = 0;
+  EFFECTOR_KIND_SAM_AREA      = 1;  // e.g. Patriot (PAC-3 MSE / GEM-T)
+  EFFECTOR_KIND_SAM_POINT     = 2;  // e.g. C-RAM
+  EFFECTOR_KIND_NSM_COASTAL   = 3;  // e.g. Kongsberg NSM coastal
+  EFFECTOR_KIND_JAMMER_RF     = 4;
+  EFFECTOR_KIND_C_UAS         = 5;  // counter-UAS, kinetic or RF
+  EFFECTOR_KIND_AIR_INTERCEPT = 6;  // CAP fighter (F-16/F-35) with AAM loadout
+  EFFECTOR_KIND_GUN_SHORAD    = 7;  // e.g. Skynex / Oerlikon GDF-103 35 mm
 }
 
 message KinematicEnvelope {

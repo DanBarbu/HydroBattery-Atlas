@@ -71,6 +71,17 @@ mission status** ingested read-only — never tasking or fire control.
 Requires a new ADR co-signed by Tech Lead + Compliance Officer + Security
 Engineer before any code.
 
+## Delivery status
+
+- **A — Blue/Friendly Force Tracking:** delivered (ADR-010,
+  `services/bft`, `docs/bft/architecture.md`).
+- **B — Air-Defence effector expansion:** delivered (extends ADR-008,
+  `docs/bms/air-defence-expansion.md`) — `air_intercept` + `gun_shorad`
+  kinds, Patriot/NSM envelope refresh, Patriot ballistic-intercept
+  compatibility.
+- **C — Naval / Own-Ship integration:** pending (needs ADR).
+- **D — Fires Coordination awareness:** pending (needs ADR).
+
 ## Recommended build order
 
 1. **A — Blue/Friendly Force Tracking module.** Most assets, genuine gap,

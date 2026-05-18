@@ -307,10 +307,36 @@ services:
       context: ./plugins/sam-battery-mock
     container_name: will-sam-battery-mock
     environment:
-      NAME: "Patriot Bn 1"
+      NAME: "Patriot Bn 1 (PAC-3 MSE)"
       LAT: "45.87"
       LON: "24.78"
-      ROUNDS: "8"
+      ROUNDS: "16"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
+  skynex-mock:
+    build:
+      context: ./plugins/skynex-mock
+    container_name: will-skynex-mock
+    environment:
+      NAME: "Skynex Bty (GDF-103)"
+      LAT: "45.872"
+      LON: "24.776"
+      ROUNDS: "1200"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
+  cap-fighter-mock:
+    build:
+      context: ./plugins/cap-fighter-mock
+    container_name: will-cap-fighter-mock
+    environment:
+      NAME: "F-16 CAP SOIM-01"
+      CAP_LAT: "45.80"
+      CAP_LON: "24.55"
+      LOADOUT: "8"
       PERIOD_S: "5"
     networks:
       - will-net

@@ -97,3 +97,57 @@ func TestRoundsRemainingZeroExcludes(t *testing.T) {
 		t.Fatal("expected no match with zero rounds")
 	}
 }
+
+func capFighter() Effector {
+	return Effector{
+		ID: "soim-01", Kind: KindAirIntercept, Status: "READY",
+		Lat: 45.80, Lon: 24.70,
+		MinRangeM: 2_000, MaxRangeM: 100_000,
+		MinAltitudeM: 30, MaxAltitudeM: 18_000,
+		MaxTargetSpeedMps: 900, RoundsRemaining: 8,
+	}
+}
+
+func skynex() Effector {
+	return Effector{
+		ID: "skynex-1", Kind: KindGunSHORAD, Status: "READY",
+		Lat: 45.87, Lon: 24.78,
+		MinRangeM: 100, MaxRangeM: 4_000,
+		MinAltitudeM: 0, MaxAltitudeM: 3_500,
+		MaxTargetSpeedMps: 1_000, RoundsRemaining: 1_200,
+	}
+}
+
+func TestPatriotEngagesBallistic(t *testing.T) {
+	// Ballistic threat 40 km out, 10 km altitude, fast.
+	target := Target{Lat: 46.2, Lon: 24.78, AltitudeM: 10_000, SpeedMps: 1_800, ThreatClass: "ballistic"}
+	m, ok := Best(target, []Effector{patriot(), capFighter(), skynex()})
+	if !ok || m.Effector.ID != "pat-1" {
+		t.Fatalf("expected Patriot to take the ballistic, got ok=%v id=%s", ok, m.Effector.ID)
+	}
+}
+
+func TestCapFighterDoesNotDoBallistic(t *testing.T) {
+	target := Target{Lat: 45.85, Lon: 24.75, AltitudeM: 10_000, SpeedMps: 1_800, ThreatClass: "ballistic"}
+	if _, ok := Best(target, []Effector{capFighter()}); ok {
+		t.Fatal("CAP fighter must not be paired against a ballistic threat")
+	}
+}
+
+func TestCapFighterEngagesAircraft(t *testing.T) {
+	target := Target{Lat: 45.95, Lon: 24.85, AltitudeM: 8_000, SpeedMps: 250, ThreatClass: "aircraft"}
+	m, ok := Best(target, []Effector{capFighter()})
+	if !ok || m.Effector.ID != "soim-01" {
+		t.Fatalf("expected CAP fighter to engage aircraft, got ok=%v id=%s", ok, m.Effector.ID)
+	}
+}
+
+func TestSkynexTakesCloseInSwarm(t *testing.T) {
+	// Low slow swarm 2 km from the gun; Patriot is min-range 3 km so it
+	// cannot, and the CAP fighter min-altitude excludes a 100 m threat.
+	target := Target{Lat: 45.882, Lon: 24.78, AltitudeM: 100, SpeedMps: 40, ThreatClass: "swarm"}
+	m, ok := Best(target, []Effector{patriot(), capFighter(), skynex()})
+	if !ok || m.Effector.ID != "skynex-1" {
+		t.Fatalf("expected Skynex for the close-in swarm, got ok=%v id=%s", ok, m.Effector.ID)
+	}
+}

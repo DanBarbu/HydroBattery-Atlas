@@ -35,7 +35,7 @@ export interface EngagementZone {
 
 export interface Effector {
   id: string;
-  kind: "sam_area" | "sam_point" | "nsm_coastal" | "jammer_rf" | "c_uas";
+  kind: "sam_area" | "sam_point" | "nsm_coastal" | "jammer_rf" | "c_uas" | "air_intercept" | "gun_shorad";
   displayName: string;
   lat: number;
   lon: number;
@@ -136,11 +136,16 @@ const ZONES: EngagementZone[] = [
   },
 ];
 
+// Public-domain illustrative envelopes. Patriot refreshed to PAC-3 MSE /
+// Config 3+ (BMD-capable); NSM to ~185 km surface; plus a Skynex gun and
+// an F-16 CAP — the air-defence expansion (analysis option B).
 const effectors: Effector[] = [
-  { id: "eff-1", kind: "sam_area", displayName: "Patriot Bn 1", lat: 45.87, lon: 24.78, minRangeM: 3000, maxRangeM: 80_000, minAltitudeM: 50, maxAltitudeM: 25_000, maxTargetSpeedMps: 2400, roundsRemaining: 8, status: "READY", pntStatus: "NOMINAL" },
+  { id: "eff-1", kind: "sam_area", displayName: "Patriot Bn 1 (PAC-3 MSE)", lat: 45.87, lon: 24.78, minRangeM: 3000, maxRangeM: 100_000, minAltitudeM: 50, maxAltitudeM: 36_000, maxTargetSpeedMps: 2400, roundsRemaining: 16, status: "READY", pntStatus: "NOMINAL" },
   { id: "eff-2", kind: "sam_point", displayName: "C-RAM Section", lat: 45.87, lon: 24.78, minRangeM: 50, maxRangeM: 4_000, minAltitudeM: 0, maxAltitudeM: 1_500, maxTargetSpeedMps: 700, roundsRemaining: 2000, status: "READY", pntStatus: "NOMINAL" },
-  { id: "eff-3", kind: "nsm_coastal", displayName: "NSM Coastal Bty", lat: 44.20, lon: 28.65, minRangeM: 3_000, maxRangeM: 200_000, minAltitudeM: -10, maxAltitudeM: 5_000, maxTargetSpeedMps: 700, roundsRemaining: 4, status: "READY", pntStatus: "NOMINAL" },
+  { id: "eff-3", kind: "nsm_coastal", displayName: "NSM Coastal Bty", lat: 44.20, lon: 28.65, minRangeM: 3_000, maxRangeM: 185_000, minAltitudeM: -10, maxAltitudeM: 1_000, maxTargetSpeedMps: 40, roundsRemaining: 8, status: "READY", pntStatus: "NOMINAL" },
   { id: "eff-4", kind: "c_uas", displayName: "C-UAS RF Mast", lat: 45.873, lon: 24.776, minRangeM: 50, maxRangeM: 2_500, minAltitudeM: 0, maxAltitudeM: 600, maxTargetSpeedMps: 60, roundsRemaining: 200, status: "READY", pntStatus: "NOMINAL" },
+  { id: "eff-5", kind: "gun_shorad", displayName: "Skynex Bty (GDF-103)", lat: 45.872, lon: 24.776, minRangeM: 100, maxRangeM: 4_000, minAltitudeM: 0, maxAltitudeM: 3_500, maxTargetSpeedMps: 1_000, roundsRemaining: 1_200, status: "READY", pntStatus: "NOMINAL" },
+  { id: "eff-6", kind: "air_intercept", displayName: "F-16 CAP SOIM-01", lat: 45.80, lon: 24.55, minRangeM: 2_000, maxRangeM: 100_000, minAltitudeM: 30, maxAltitudeM: 18_000, maxTargetSpeedMps: 900, roundsRemaining: 8, status: "READY", pntStatus: "NOMINAL" },
 ];
 
 let threats: Threat[] = [];
@@ -257,16 +262,20 @@ threats = [
   makeThreat({ trackId: "track-uav-1", threatClass: "uav_one_way", affiliation: "H", lat: 45.876, lon: 24.781, altitudeM: 90, speedMps: 28, headingDeg: 195 }),
   makeThreat({ trackId: "track-aircraft-1", threatClass: "aircraft", affiliation: "U", lat: 45.95, lon: 24.65, altitudeM: 6000, speedMps: 200, headingDeg: 120 }),
   makeThreat({ trackId: "track-surface-1", threatClass: "surface", affiliation: "H", lat: 44.25, lon: 28.70, altitudeM: 0, speedMps: 28, headingDeg: 270 }),
+  makeThreat({ trackId: "track-ballistic-1", threatClass: "ballistic", affiliation: "H", lat: 46.30, lon: 24.78, altitudeM: 18_000, speedMps: 1_800, headingDeg: 180 }),
+  makeThreat({ trackId: "track-aircraft-2", threatClass: "aircraft", affiliation: "H", lat: 45.60, lon: 24.40, altitudeM: 8_000, speedMps: 280, headingDeg: 70 }),
 ];
 
 // ---------------- pairing (mirrors internal/pairing) ----------------
 
 const KIND_COMPAT: Record<Effector["kind"], Partial<Record<ThreatClass, boolean>>> = {
-  sam_area: { cruise: true, aircraft: true, uav_one_way: true, swarm: true },
+  sam_area: { ballistic: true, cruise: true, aircraft: true, uav_one_way: true, swarm: true },
   sam_point: { cruise: true, uav_one_way: true, swarm: true },
   nsm_coastal: { surface: true },
   jammer_rf: { uav_one_way: true, swarm: true },
   c_uas: { uav_one_way: true, swarm: true },
+  air_intercept: { cruise: true, aircraft: true, uav_one_way: true },
+  gun_shorad: { cruise: true, aircraft: true, uav_one_way: true, swarm: true },
 };
 
 export function bestEffector(t: Threat): { effector: Effector; rangeMarginM: number; slantRangeM: number } | null {
