@@ -20,6 +20,7 @@ import { tenantStore } from "../mock/tenants";
 import { bms } from "../mock/bms";
 import { friendlyAssets } from "../mock/bft";
 import { platforms as navalPlatforms } from "../mock/ownship";
+import { fscm as firesFscm, MEASURE_COLOUR } from "../mock/fires";
 import { LayerToggles, type LayerState } from "./LayerToggles";
 import type { Affiliation, Track, TrackKind } from "../types";
 
@@ -53,6 +54,7 @@ const overlayFlag = {
   prediction: "__will_pred__",
   bft: "__will_bft__",
   naval: "__will_naval__",
+  fires: "__will_fires__",
 };
 
 export function Globe() {
@@ -68,6 +70,7 @@ export function Globe() {
   const [showPrediction, setShowPrediction] = useState(true);
   const [showBFT, setShowBFT] = useState(true);
   const [showNaval, setShowNaval] = useState(true);
+  const [showFires, setShowFires] = useState(true);
   const [count, setCount] = useState(0);
   const startRef = useRef<number>(Date.now());
 
@@ -335,6 +338,46 @@ export function Globe() {
     return () => window.clearInterval(id);
   }, [ready, showNaval]);
 
+  // Fires Coordination overlay (ADR-012, advisory): active FSCM polygons.
+  // Display only — these never gate or task anything.
+  useEffect(() => {
+    if (!ready) return;
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    const refresh = () => {
+      for (const [key, ent] of overlayEntities.current) {
+        if (key.startsWith(overlayFlag.fires)) {
+          viewer.entities.remove(ent);
+          overlayEntities.current.delete(key);
+        }
+      }
+      for (const m of firesFscm()) {
+        if (!m.active) continue;
+        const colour = Color.fromCssColorString(MEASURE_COLOUR[m.measureType] ?? "#8b949e");
+        const positions = m.polygon.map(([lon, lat]) => Cartesian3.fromDegrees(lon, lat));
+        const isLine = m.polygon.length < 4;
+        const ent = isLine
+          ? viewer.entities.add({
+              show: showFires,
+              polyline: { positions, width: 2.5, material: colour.withAlpha(0.9) },
+            })
+          : viewer.entities.add({
+              show: showFires,
+              polygon: {
+                hierarchy: new PolygonHierarchy(positions),
+                material: colour.withAlpha(0.16),
+                outline: true,
+                outlineColor: colour,
+              },
+            });
+        overlayEntities.current.set(`${overlayFlag.fires}/${m.externalId}`, ent);
+      }
+    };
+    refresh();
+    const id = window.setInterval(refresh, 2_000);
+    return () => window.clearInterval(id);
+  }, [ready, showFires]);
+
   // Prediction overlay: projected paths for active threats + intercept geometry for EXECUTING engagements.
   useEffect(() => {
     if (!ready) return;
@@ -457,6 +500,9 @@ export function Globe() {
         </label>
         <label className="layer-toggle">
           <input type="checkbox" checked={showNaval} onChange={(e) => setShowNaval(e.target.checked)} /> {t("layers.naval")}
+        </label>
+        <label className="layer-toggle">
+          <input type="checkbox" checked={showFires} onChange={(e) => setShowFires(e.target.checked)} /> {t("layers.fires")}
         </label>
       </div>
       <div ref={containerRef} className="globe-canvas" />

@@ -332,6 +332,36 @@ services:
     networks:
       - will-net
 
+  fires:
+    build:
+      context: ./services/fires
+    container_name: will-fires
+    environment:
+      HTTP_ADDR: ":8087"
+    ports:
+      - "8087:8087"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8087/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  fires-sim:
+    build:
+      context: ./plugins/fires-sim
+    container_name: will-fires-sim
+    depends_on:
+      fires:
+        condition: service_healthy
+    environment:
+      FIRES_URL: http://fires:8087
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock

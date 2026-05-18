@@ -379,3 +379,45 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
 .payload-kind { font-size: 0.72rem; color: var(--muted); }
 .payload-list .status-pill { margin-left: auto; }
 .naval-boundary { border-top: 1px solid var(--line); padding-top: 0.5rem; }
+
+/* ---------- Fires Coordination (read-only / advisory) ---------- */
+
+.fires-shell { width: 100%; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.fires-banner {
+  background: #5a1b1b; color: #ffd9d6; border: 1px solid #b3261e;
+  border-radius: 6px; padding: 0.6rem 0.85rem; font-weight: 700; letter-spacing: 0.02em;
+}
+.fires-header h2 { margin: 0; }
+.fires-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.75rem; }
+
+.fscm-list, .fms-list, .flag-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; max-height: 48vh; overflow-y: auto; }
+.fscm-list li, .fms-list li { background: var(--inset); border: 1px solid var(--line); border-left-width: 4px; border-radius: 4px; padding: 0.4rem 0.6rem; }
+.fscm-list li.fscm-active { border-left-color: #e63946; }
+.fscm-list li.fscm-inactive { border-left-color: var(--muted); opacity: 0.65; }
+.fscm-line, .fms-line { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
+.fscm-meta, .fms-meta { display: flex; gap: 0.6rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.2rem; flex-wrap: wrap; }
+.fms-unit { font-size: 0.74rem; color: var(--muted); }
+
+.measure-pill { padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 800; color: #000; }
+.m-nfa { background: #e63946; color: #fff; }
+.m-rfa, .m-rfl { background: #ff8a3d; }
+.m-aca { background: #3273dc; color: #fff; }
+.m-fscl, .m-cfl { background: #b388ff; color: #fff; }
+.m-ffa { background: #3ddc97; }
+.m-mfp { background: #8b949e; color: #fff; }
+
+.fms-list li.fm-active { border-left-color: #ff8a3d; }
+.fms-list li.fm-splash { border-left-color: #e63946; }
+.fms-list li.fm-complete { border-left-color: #3ddc97; }
+.fms-list li.fm-planned { border-left-color: #3273dc; }
+.fms-list li.fm-cancelled { border-left-color: var(--muted); opacity: 0.7; }
+
+.deconflict-form { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.deconflict-form label { display: flex; flex-direction: column; font-size: 0.78rem; gap: 0.2rem; }
+.deconflict-form input { width: 7rem; background: var(--inset); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.45rem; }
+.flag-list li { display: flex; gap: 0.5rem; align-items: baseline; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; padding: 0.35rem 0.55rem; font-size: 0.82rem; }
+.flag-list li.flag-caution { border-left: 4px solid #e63946; }
+.flag-list li.flag-info { border-left: 4px solid #3273dc; }
+.flag-list li.flag-clear { color: var(--muted); font-style: italic; }
+.flag-sev { font-size: 0.68rem; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 3px; background: #30363d; }
+.flag-caution .flag-sev { background: #b3261e; color: #fff; }

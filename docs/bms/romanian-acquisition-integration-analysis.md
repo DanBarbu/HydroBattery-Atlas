@@ -83,7 +83,11 @@ Engineer before any code.
   `services/ownship`, `docs/ownship/architecture.md`) — vessel as a
   mobile node: own-ship state + EMCON, Rafael SEA-COM link health,
   hull-mounted payload registry.
-- **D — Fires Coordination awareness:** pending (needs ADR).
+- **D — Fires Coordination awareness:** delivered (ADR-012, co-signed
+  Tech Lead · Compliance · Security; `services/fires`,
+  `docs/fires/architecture.md`) — READ-ONLY FSCM + fire-mission-status
+  ingest + advisory deconfliction. HIMARS is deliberately never a BMS
+  effector. **All four candidate modules now delivered.**
 
 ## Recommended build order
 

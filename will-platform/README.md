@@ -29,7 +29,8 @@ will-platform/
 │   ├── skynex-mock/               # BMS reference effector — Skynex/GDF-103 gun_shorad
 │   ├── cap-fighter-mock/          # BMS reference effector — F-16 CAP air_intercept
 │   ├── bft-sim/                   # BFT Romanian order-of-battle simulator
-│   └── ownship-sim/               # Naval Black Sea picture (corvette + OPV)
+│   ├── ownship-sim/               # Naval Black Sea picture (corvette + OPV)
+│   └── fires-sim/                 # AFATDS-style read-only FSCM + fire-mission-status feed
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
@@ -37,7 +38,8 @@ will-platform/
 │   ├── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
 │   ├── bms/                       # Battle Management module (ADR-008/009): threats + effectors + engagements + prediction
 │   ├── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
-│   └── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
+│   ├── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
+│   └── fires/                     # Fires Coordination awareness (ADR-012): READ-ONLY FSCM + status
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware
