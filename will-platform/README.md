@@ -31,7 +31,8 @@ will-platform/
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
 │   ├── kms-stub/                  # Sprint 4 per-tenant KMS stub (Vault drop-in Sprint 10)
 │   ├── core-sync/                 # Sprint 5 edge upload endpoint (POST /v1/sync/upload)
-│   └── bms/                       # Battle Management module (ADR-008): threats + effectors + engagements
+│   ├── bms/                       # Battle Management module (ADR-008/009): threats + effectors + engagements + prediction
+│   └── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware

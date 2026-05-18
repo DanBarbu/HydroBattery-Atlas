@@ -15,6 +15,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-007](ADR-007-sso-shim.md) | SSO shim (OIDC) ahead of NPKI | Accepted |
 | [ADR-008](ADR-008-bms-module.md) | Battle Management Solution (BMS) module | Accepted |
 | [ADR-009](ADR-009-predictive-analysis.md) | Predictive battlefield analysis as a BMS sub-module | Accepted |
+| [ADR-010](ADR-010-bft-module.md) | Blue / Friendly Force Tracking (BFT) module | Accepted |
 
 ## Authoring
 

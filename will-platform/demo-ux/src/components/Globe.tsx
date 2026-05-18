@@ -18,6 +18,7 @@ import { useI18n } from "../i18n";
 import { tracksAt, CINCU } from "../mock/tracks";
 import { tenantStore } from "../mock/tenants";
 import { bms } from "../mock/bms";
+import { friendlyAssets } from "../mock/bft";
 import { LayerToggles, type LayerState } from "./LayerToggles";
 import type { Affiliation, Track, TrackKind } from "../types";
 
@@ -49,6 +50,7 @@ const overlayFlag = {
   dal: "__will_dal__",
   zones: "__will_zones__",
   prediction: "__will_pred__",
+  bft: "__will_bft__",
 };
 
 export function Globe() {
@@ -62,6 +64,7 @@ export function Globe() {
   const [showDAL, setShowDAL] = useState(true);
   const [showZones, setShowZones] = useState(true);
   const [showPrediction, setShowPrediction] = useState(true);
+  const [showBFT, setShowBFT] = useState(true);
   const [count, setCount] = useState(0);
   const startRef = useRef<number>(Date.now());
 
@@ -235,6 +238,53 @@ export function Globe() {
     return () => window.clearInterval(id);
   }, [ready, layers]);
 
+  // Friendly-force layer (ADR-010): blue assets, NO_COMMS dimmed. Refreshed
+  // on a timer; entities recreated each tick (small fleet, simple + safe).
+  useEffect(() => {
+    if (!ready) return;
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    const refresh = () => {
+      for (const [key, ent] of overlayEntities.current) {
+        if (key.startsWith(overlayFlag.bft)) {
+          viewer.entities.remove(ent);
+          overlayEntities.current.delete(key);
+        }
+      }
+      for (const a of friendlyAssets()) {
+        const noComms = a.status === "NO_COMMS";
+        const colour = Color.fromCssColorString("#3273dc").withAlpha(noComms ? 0.4 : 1);
+        const ent = viewer.entities.add({
+          show: showBFT,
+          position: Cartesian3.fromDegrees(a.lon, a.lat, 0),
+          point: {
+            pixelSize: a.branch === "air" ? 11 : 9,
+            color: colour,
+            outlineColor: noComms ? Color.fromCssColorString("#e63946") : Color.WHITE,
+            outlineWidth: 2,
+          },
+          label: {
+            text: noComms ? `${a.callsign} ⚠ NO COMMS` : a.callsign,
+            font: "11px sans-serif",
+            fillColor: Color.fromCssColorString("#cfe3ff"),
+            outlineColor: Color.BLACK,
+            outlineWidth: 2,
+            style: LabelStyle.FILL_AND_OUTLINE,
+            horizontalOrigin: HorizontalOrigin.LEFT,
+            verticalOrigin: VerticalOrigin.CENTER,
+            pixelOffset: new Cartesian3(12, 0, 0),
+            distanceDisplayCondition: new DistanceDisplayCondition(0, 250_000),
+            scaleByDistance: new NearFarScalar(2_000, 1.0, 60_000, 0.55),
+          },
+        });
+        overlayEntities.current.set(`${overlayFlag.bft}/${a.id}`, ent);
+      }
+    };
+    refresh();
+    const id = window.setInterval(refresh, 1_500);
+    return () => window.clearInterval(id);
+  }, [ready, showBFT]);
+
   // Prediction overlay: projected paths for active threats + intercept geometry for EXECUTING engagements.
   useEffect(() => {
     if (!ready) return;
@@ -351,6 +401,9 @@ export function Globe() {
         </label>
         <label className="layer-toggle">
           <input type="checkbox" checked={showPrediction} onChange={(e) => setShowPrediction(e.target.checked)} /> {t("layers.prediction")}
+        </label>
+        <label className="layer-toggle">
+          <input type="checkbox" checked={showBFT} onChange={(e) => setShowBFT(e.target.checked)} /> {t("layers.bft")}
         </label>
       </div>
       <div ref={containerRef} className="globe-canvas" />
