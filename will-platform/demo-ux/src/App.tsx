@@ -9,10 +9,12 @@ import { BMS } from "./components/BMS";
 import { Forces } from "./components/Forces";
 import { Naval } from "./components/Naval";
 import { Fires } from "./components/Fires";
+import { Training } from "./components/Training";
+import { trainer } from "./mock/trainer";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { ClassificationBanner } from "./components/ClassificationBanner";
 
-type View = "ops" | "forces" | "naval" | "fires" | "bms" | "admin";
+type View = "ops" | "forces" | "naval" | "fires" | "bms" | "training" | "admin";
 
 export function App() {
   const { t } = useI18n();
@@ -22,8 +24,16 @@ export function App() {
 
   if (!user) return <Login onAuthenticated={setUser} />;
 
+  const ex = trainer.activeRun();
+  const exerciseActive = !!ex && (ex.status === "RUNNING" || ex.status === "PAUSED");
+
   return (
     <div className="app-shell" key={bump}>
+      {exerciseActive && (
+        <div className="global-exercise-banner" role="alert">
+          {t("training.exerciseBanner")} — {ex!.exerciseId}
+        </div>
+      )}
       <ClassificationBanner />
       <header className="app-header">
         <div className="app-title">
@@ -31,7 +41,7 @@ export function App() {
           <span className="app-subtitle">{t("app.subtitle")}</span>
         </div>
         <nav className="view-toggle" aria-label={t("nav.label")}>
-          {(["ops", "forces", "naval", "fires", "bms", "admin"] as View[]).map((v) => (
+          {(["ops", "forces", "naval", "fires", "bms", "training", "admin"] as View[]).map((v) => (
             <button key={v} type="button" onClick={() => setView(v)} aria-pressed={view === v} className={view === v ? "active" : ""}>
               {t(`nav.${v}`)}
             </button>
@@ -59,6 +69,7 @@ export function App() {
         {view === "naval" && <Naval />}
         {view === "fires" && <Fires />}
         {view === "bms" && <BMS />}
+        {view === "training" && <Training />}
         {view === "admin" && <Admin onTenantChanged={() => setBump((b) => b + 1)} />}
       </main>
     </div>

@@ -39,7 +39,8 @@ will-platform/
 │   ├── bms/                       # Battle Management module (ADR-008/009): threats + effectors + engagements + prediction
 │   ├── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
 │   ├── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
-│   └── fires/                     # Fires Coordination awareness (ADR-012): READ-ONLY FSCM + status
+│   ├── fires/                     # Fires Coordination awareness (ADR-012): READ-ONLY FSCM + status
+│   └── trainer/                   # War-games Training (ADR-013): EXERCISE-isolated scenarios + scoring
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware

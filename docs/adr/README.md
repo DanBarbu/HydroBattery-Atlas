@@ -18,6 +18,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-010](ADR-010-bft-module.md) | Blue / Friendly Force Tracking (BFT) module | Accepted |
 | [ADR-011](ADR-011-ownship-module.md) | Naval / Own-Ship integration as a mobile node | Accepted |
 | [ADR-012](ADR-012-fires-coordination-awareness.md) | Fires Coordination Measure awareness (READ-ONLY) | Accepted (co-signed: Tech Lead · Compliance · Security) |
+| [ADR-013](ADR-013-training-module.md) | War-games Training module (EXERCISE-isolated) | Accepted (co-signed: Tech Lead · Compliance) |
 
 ## Authoring
 

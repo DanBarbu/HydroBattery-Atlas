@@ -421,3 +421,50 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
 .flag-list li.flag-clear { color: var(--muted); font-style: italic; }
 .flag-sev { font-size: 0.68rem; font-weight: 800; padding: 0.05rem 0.4rem; border-radius: 3px; background: #30363d; }
 .flag-caution .flag-sev { background: #b3261e; color: #fff; }
+
+/* ---------- War-games Training (EXERCISE-isolated) ---------- */
+
+.global-exercise-banner {
+  background: repeating-linear-gradient(45deg, #7a5b00, #7a5b00 12px, #5a4400 12px, #5a4400 24px);
+  color: #ffe9a8; text-align: center; font-weight: 800; letter-spacing: 0.05em;
+  padding: 0.3rem; border-bottom: 1px solid #b9892b;
+}
+.training-shell { width: 100%; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.training-header h2 { margin: 0; }
+.exercise-banner {
+  background: #5a4400; color: #ffe9a8; border: 1px solid #b9892b; border-radius: 6px;
+  padding: 0.5rem 0.75rem; font-weight: 700;
+}
+.badge-row { margin-top: 0.4rem; font-size: 0.85rem; color: var(--muted); }
+.award-badge { background: #2b3b2b; color: #c9f0c9; border: 1px solid #3ddc97; border-radius: 999px; padding: 0.05rem 0.5rem; margin-left: 0.4rem; font-size: 0.78rem; }
+
+.run-panel .run-line { display: flex; gap: 0.5rem; align-items: baseline; }
+.run-ex { font-size: 0.76rem; color: var(--muted); }
+.run-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.run-controls button { background: var(--accent); color: #fff; border: 0; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; }
+.run-controls button.danger { background: transparent; color: #e63946; border: 1px solid #e63946; }
+
+.result-panel .result-grade { font-weight: 800; }
+.result-panel.g-distinction { border-left: 4px solid #3ddc97; }
+.result-panel.g-merit { border-left: 4px solid #3273dc; }
+.result-panel.g-pass { border-left: 4px solid #f4d35e; }
+.result-panel.g-fail { border-left: 4px solid #e63946; }
+.assess-list { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.assess-list li { display: flex; justify-content: space-between; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.55rem; font-size: 0.82rem; }
+.assess-list li.obj-ok { border-left: 3px solid #3ddc97; }
+.assess-list li.obj-bad { border-left: 3px solid #e63946; }
+.obj-score { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+
+.training-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.75rem; }
+.scenario-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.scenario-list li { background: var(--inset); border: 1px solid var(--line); border-left-width: 4px; border-radius: 4px; padding: 0.5rem 0.6rem; }
+.scenario-list li.sc-open { border-left-color: #3ddc97; }
+.scenario-list li.sc-locked { border-left-color: var(--muted); opacity: 0.7; }
+.sc-line { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
+.sc-done { color: #3ddc97; font-size: 0.76rem; }
+.sc-lock { color: var(--muted); font-size: 0.76rem; }
+.sc-desc { font-size: 0.82rem; color: var(--fg); margin: 0.25rem 0; }
+.sc-meta { display: flex; gap: 0.6rem; font-size: 0.74rem; color: var(--muted); flex-wrap: wrap; }
+.sc-prereq { font-size: 0.74rem; color: #b9892b; margin-top: 0.2rem; }
+.scenario-list button { margin-top: 0.4rem; background: var(--accent); color: #fff; border: 0; padding: 0.35rem 0.8rem; border-radius: 4px; cursor: pointer; }
+.scenario-list button:disabled { background: #30363d; color: var(--muted); cursor: not-allowed; }
