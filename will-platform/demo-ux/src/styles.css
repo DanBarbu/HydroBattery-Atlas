@@ -468,3 +468,24 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
 .sc-prereq { font-size: 0.74rem; color: #b9892b; margin-top: 0.2rem; }
 .scenario-list button { margin-top: 0.4rem; background: var(--accent); color: #fff; border: 0; padding: 0.35rem 0.8rem; border-radius: 4px; cursor: pointer; }
 .scenario-list button:disabled { background: #30363d; color: var(--muted); cursor: not-allowed; }
+
+/* ---------- Legacy C2 Bridge ---------- */
+
+.legacy-shell { width: 100%; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.legacy-banner {
+  background: #1b3a5a; color: #cfe3ff; border: 1px solid #2f6db3; border-radius: 6px;
+  padding: 0.6rem 0.85rem; font-weight: 700;
+}
+.legacy-header h2 { margin: 0; }
+.legacy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 0.75rem; }
+.ingest-list, .legacy-track-list, .southbound-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; max-height: 56vh; overflow-y: auto; }
+.ingest-list li, .legacy-track-list li, .southbound-list li { background: var(--inset); border: 1px solid var(--line); border-left-width: 4px; border-radius: 4px; padding: 0.45rem 0.6rem; }
+.ingest-list li.fmt-jc3iedm { border-left-color: #3273dc; }
+.ingest-list li.fmt-adatp3 { border-left-color: #b388ff; }
+.ingest-line, .lt-line, .sb-line { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
+.fmt-pill { background: #2f6db3; color: #fff; padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.68rem; font-weight: 800; }
+.ingest-at, .sb-at, .lt-src, .lt-class { font-size: 0.74rem; color: var(--muted); }
+.ingest-raw { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lt-meta { display: flex; gap: 0.6rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.2rem; flex-wrap: wrap; }
+.sb-sidc { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.78rem; color: #cfe3ff; }
+.sb-adatp3 { background: #0d1117; border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-size: 0.72rem; color: #9fd0ff; margin: 0.3rem 0 0; white-space: pre-wrap; }

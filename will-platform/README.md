@@ -40,7 +40,8 @@ will-platform/
 │   ├── bft/                       # Blue/Friendly Force Tracking (ADR-010): friendly-asset registry
 │   ├── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
 │   ├── fires/                     # Fires Coordination awareness (ADR-012): READ-ONLY FSCM + status
-│   └── trainer/                   # War-games Training (ADR-013): EXERCISE-isolated scenarios + scoring
+│   ├── trainer/                   # War-games Training (ADR-013): EXERCISE-isolated scenarios + scoring
+│   └── legacy-c2/                 # Legacy C2 Bridge (ADR-014): BC2A®/ICIS JC3IEDM+AdatP-3 ⇄ 2525D
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware

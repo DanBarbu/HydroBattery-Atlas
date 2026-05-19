@@ -19,6 +19,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-011](ADR-011-ownship-module.md) | Naval / Own-Ship integration as a mobile node | Accepted |
 | [ADR-012](ADR-012-fires-coordination-awareness.md) | Fires Coordination Measure awareness (READ-ONLY) | Accepted (co-signed: Tech Lead · Compliance · Security) |
 | [ADR-013](ADR-013-training-module.md) | War-games Training module (EXERCISE-isolated) | Accepted (co-signed: Tech Lead · Compliance) |
+| [ADR-014](ADR-014-legacy-c2-bridge.md) | Legacy C2 Bridge — BC2A® / ICIS interoperability | Accepted (co-signed: Tech Lead · Compliance) |
 
 ## Authoring
 

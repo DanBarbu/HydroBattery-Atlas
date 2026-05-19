@@ -18,6 +18,7 @@
   "nav.fires": "Coord. focuri",
   "nav.bms": "Battle Management",
   "nav.training": "Antrenament",
+  "nav.legacy": "C2 moștenit",
   "nav.admin": "Administrare",
   "nav.signout": "Deconectare",
   "globe.heading": "Imagine Tactică Comună",
@@ -169,5 +170,15 @@
   "training.completed": "finalizat",
   "training.requires": "Necesită",
   "training.leaderboard": "Clasament",
-  "training.leaderboardNote": "Cel mai bun scor finalizat per cursant per scenariu (per chiriaș). Susținut de serviciul trainer în platforma completă."
+  "training.leaderboardNote": "Cel mai bun scor finalizat per cursant per scenariu (per chiriaș). Susținut de serviciul trainer în platforma completă.",
+  "legacy.boundary": "PUNTE BC2A® / ICIS — WILL încapsulează, nu rescrie. BC2A este o sursă de senzor; WILL nu scrie în baza sa de date și nu o comandă. Calea sudică este consultativă pentru compatibilitate; gateway-ul ICIS al clientului injectează, nu WILL (ADR-014). Doar standarde NATO publice.",
+  "legacy.heading": "Punte C2 moștenit (BC2A® / ICIS)",
+  "legacy.hint": "Strat adaptor de protocol (Faza 1): JC3IEDM + AdatP-3 la intrare, MIL-STD-2525D + AdatP-3 înapoi pentru compatibilitate.",
+  "legacy.northbound": "Ingestie nordică",
+  "legacy.northboundNote": "Înregistrări NATO structurate replicate din ICIS — tratate ca sursă de senzor.",
+  "legacy.normalised": "Track-uri derivate din BC2A",
+  "legacy.normalisedNote": "Normalizate la track-ul canonic WILL + SIDC APP-6 + marcaj STANAG-4774 (niciodată retrogradat).",
+  "legacy.southbound": "Cale sudică (compatibilitate)",
+  "legacy.southboundNote": "Randate pentru gateway-ul ICIS spre clienții BC2A. WILL randează; nu injectează.",
+  "legacy.waiting": "Se așteaptă replicarea ICIS…"
 }

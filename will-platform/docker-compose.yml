@@ -378,6 +378,36 @@ services:
     networks:
       - will-net
 
+  legacy-c2:
+    build:
+      context: ./services/legacy-c2
+    container_name: will-legacy-c2
+    environment:
+      HTTP_ADDR: ":8089"
+    ports:
+      - "8089:8089"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8089/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  bc2a-sim:
+    build:
+      context: ./plugins/bc2a-sim
+    container_name: will-bc2a-sim
+    depends_on:
+      legacy-c2:
+        condition: service_healthy
+    environment:
+      LEGACY_C2_URL: http://legacy-c2:8089
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock

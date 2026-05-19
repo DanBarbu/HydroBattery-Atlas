@@ -18,6 +18,7 @@
   "nav.fires": "Fires Coord",
   "nav.bms": "Battle Management",
   "nav.training": "Training",
+  "nav.legacy": "Legacy C2",
   "nav.admin": "Admin",
   "nav.signout": "Sign out",
   "globe.heading": "Common Operating Picture",
@@ -169,5 +170,15 @@
   "training.completed": "completed",
   "training.requires": "Requires",
   "training.leaderboard": "Leaderboard",
-  "training.leaderboardNote": "Best completed score per trainee per scenario (tenant-scoped). Backed by the trainer service in the full platform."
+  "training.leaderboardNote": "Best completed score per trainee per scenario (tenant-scoped). Backed by the trainer service in the full platform.",
+  "legacy.boundary": "BC2A® / ICIS BRIDGE — WILL wraps, it does not rewrite. BC2A is a sensor source; WILL never writes its DB or commands it. Southbound is advisory backwards-compat; the customer ICIS gateway injects, not WILL (ADR-014). Public NATO standards only.",
+  "legacy.heading": "Legacy C2 Bridge (BC2A® / ICIS)",
+  "legacy.hint": "Phase-1 Protocol Adapter Layer: JC3IEDM + AdatP-3 in, MIL-STD-2525D + AdatP-3 back out for backwards compatibility.",
+  "legacy.northbound": "Northbound ingest",
+  "legacy.northboundNote": "Structured NATO records replicated from ICIS — treated as a sensor source.",
+  "legacy.normalised": "Tracks WILL derives from BC2A",
+  "legacy.normalisedNote": "Normalised to the WILL canonical track + APP-6 SIDC + STANAG-4774 marking (never downgraded).",
+  "legacy.southbound": "Southbound (backwards-compat)",
+  "legacy.southboundNote": "Rendered for the ICIS gateway to loop into BC2A clients. WILL renders; it does not inject.",
+  "legacy.waiting": "Waiting for ICIS replication…"
 }
