@@ -489,3 +489,36 @@ h4 { margin: 0.25rem 0; font-size: 0.85rem; color: var(--muted); }
 .lt-meta { display: flex; gap: 0.6rem; font-size: 0.74rem; color: var(--muted); margin-top: 0.2rem; flex-wrap: wrap; }
 .sb-sidc { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.78rem; color: #cfe3ff; }
 .sb-adatp3 { background: #0d1117; border: 1px solid var(--line); border-radius: 4px; padding: 0.4rem 0.55rem; font-size: 0.72rem; color: #9fd0ff; margin: 0.3rem 0 0; white-space: pre-wrap; }
+
+/* METOC (weather + Lagrangian drift) — ADR-015, advisory only */
+.metoc-shell { width: 100%; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.metoc-banner {
+  background: #14324a; color: #cfe8ff; border: 1px solid #2f6db3;
+  border-radius: 6px; padding: 0.6rem 0.85rem; font-weight: 700; letter-spacing: 0.02em;
+}
+.metoc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.75rem; }
+.metoc-conditions { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.metoc-phase { font-weight: 800; }
+.metoc-metar { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.74rem; color: #9fd0ff; background: #0d1117; border: 1px solid var(--line); border-radius: 4px; padding: 0.15rem 0.4rem; }
+.metoc-cond-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 0.6rem; }
+.metoc-cond-list li { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.82rem; border-bottom: 1px solid var(--line); padding-bottom: 0.15rem; }
+.metoc-cond-list span { color: var(--muted); }
+
+.metoc-matrix { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; max-height: 52vh; overflow-y: auto; }
+.metoc-matrix li { background: var(--inset); border: 1px solid var(--line); border-left-width: 4px; border-radius: 4px; padding: 0.35rem 0.6rem; }
+.metoc-matrix li.metoc-go { border-left-color: #3ddc97; }
+.metoc-matrix li.metoc-caution { border-left-color: #ff8a3d; }
+.metoc-matrix li.metoc-nogo { border-left-color: #e63946; }
+.metoc-asset-line { display: flex; gap: 0.5rem; align-items: baseline; justify-content: space-between; }
+.metoc-status-pill { padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 800; }
+.metoc-go .metoc-status-pill { background: #11512f; color: #8effc1; }
+.metoc-caution .metoc-status-pill { background: #5a3a14; color: #ffd9a8; }
+.metoc-nogo .metoc-status-pill { background: #5a1b1b; color: #ffd9d6; }
+.metoc-reasons { font-size: 0.74rem; color: var(--muted); margin-top: 0.15rem; }
+
+.metoc-drift-release { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; }
+.metoc-drift-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; max-height: 48vh; overflow-y: auto; }
+.metoc-drift-list li { display: flex; gap: 0.6rem; justify-content: space-between; font-size: 0.78rem; background: var(--inset); border: 1px solid var(--line); border-radius: 4px; padding: 0.25rem 0.5rem; }
+.metoc-drift-t { color: #9fd0ff; font-weight: 700; }
+.metoc-drift-pos { font-family: ui-monospace, Menlo, Consolas, monospace; }
+.metoc-drift-spread { color: var(--muted); }

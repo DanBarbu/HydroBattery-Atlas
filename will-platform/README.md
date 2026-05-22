@@ -30,7 +30,8 @@ will-platform/
 │   ├── cap-fighter-mock/          # BMS reference effector — F-16 CAP air_intercept
 │   ├── bft-sim/                   # BFT Romanian order-of-battle simulator
 │   ├── ownship-sim/               # Naval Black Sea picture (corvette + OPV)
-│   └── fires-sim/                 # AFATDS-style read-only FSCM + fire-mission-status feed
+│   ├── fires-sim/                 # AFATDS-style read-only FSCM + fire-mission-status feed
+│   └── metoc-sim/                 # METOC provider feed: Cincu METAR + Black-Sea flow field + drift query
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim
@@ -41,7 +42,8 @@ will-platform/
 │   ├── ownship/                   # Naval / Own-Ship integration (ADR-011): mobile-node platforms
 │   ├── fires/                     # Fires Coordination awareness (ADR-012): READ-ONLY FSCM + status
 │   ├── trainer/                   # War-games Training (ADR-013): EXERCISE-isolated scenarios + scoring
-│   └── legacy-c2/                 # Legacy C2 Bridge (ADR-014): BC2A®/ICIS JC3IEDM+AdatP-3 ⇄ 2525D
+│   ├── legacy-c2/                 # Legacy C2 Bridge (ADR-014): BC2A®/ICIS JC3IEDM+AdatP-3 ⇄ 2525D
+│   └── metoc/                     # METOC module (ADR-015): weather impact + Lagrangian drift (advisory)
 ├── edge/
 │   ├── agent/                     # Sprint 5 Go edge agent (SQLite cache + outbox + sync)
 │   └── install/                   # Sprint 5 K3s install script for rugged hardware

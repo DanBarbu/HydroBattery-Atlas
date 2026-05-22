@@ -408,6 +408,36 @@ services:
     networks:
       - will-net
 
+  metoc:
+    build:
+      context: ./services/metoc
+    container_name: will-metoc
+    environment:
+      HTTP_ADDR: ":8090"
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  metoc-sim:
+    build:
+      context: ./plugins/metoc-sim
+    container_name: will-metoc-sim
+    depends_on:
+      metoc:
+        condition: service_healthy
+    environment:
+      METOC_URL: http://metoc:8090
+      PERIOD_S: "6"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
