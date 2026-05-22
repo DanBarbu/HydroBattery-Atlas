@@ -35,7 +35,7 @@ HB.UI.financialParams = {
     _syncFromFinancials() {
         const fin = HB.Cost.financials;
         this._setVal('fp-cycles', fin.cyclesPerYear);
-        this._setVal('fp-energy-price', fin.energyPurchasePrice);
+        this._setVal('fp-energy-price', fin.energySellPrice || fin.energyPurchasePrice);
         this._setVal('fp-equity-return', (fin.equityReturn * 100).toFixed(1));
         this._setVal('fp-bank-rate', (fin.bankRate * 100).toFixed(1));
         this._setVal('fp-equity-frac', (fin.equityFraction * 100).toFixed(0));
@@ -62,8 +62,10 @@ HB.UI.financialParams = {
 
     _applyToFinancials() {
         const fin = HB.Cost.financials;
-        fin.cyclesPerYear = this._getNum('fp-cycles', fin.cyclesPerYear);
-        fin.energyPurchasePrice = this._getNum('fp-energy-price', fin.energyPurchasePrice);
+        fin.cyclesPerYear   = this._getNum('fp-cycles',       fin.cyclesPerYear);
+        fin.energySellPrice = this._getNum('fp-energy-price', fin.energySellPrice || fin.energyPurchasePrice);
+        // keep legacy alias in sync
+        // (energyPurchasePrice is a getter/setter that mirrors energySellPrice)
         fin.equityReturn = this._getNum('fp-equity-return', fin.equityReturn * 100) / 100;
         fin.bankRate = this._getNum('fp-bank-rate', fin.bankRate * 100) / 100;
         fin.equityFraction = this._getNum('fp-equity-frac', fin.equityFraction * 100) / 100;
@@ -81,9 +83,12 @@ HB.UI.financialParams = {
         fin.equityFraction = 0.3; fin.debtFraction = 0.7;
         fin.equityReturn = 0.10; fin.bankRate = 0.05;
         fin.inflationRate = 0.015; fin.systemLifetime = 60;
-        fin.cyclesPerYear = 240; fin.energyPurchasePrice = 47;
+        fin.cyclesPerYear = 300; fin.energySellPrice = 90; fin.energyBuyPrice = 42;
+        fin.capacityPaymentPerKW = 50; fin.ancillaryRevenuePremium = 0.40;
         fin.pumpEfficiency = 0.90; fin.genEfficiency = 0.90;
-        fin.damCostPerM3 = 168; fin.lithiumBatteryCostPerKWh = 447;
+        fin.damCostPerM3 = 195; fin.lithiumBatteryCostPerKWh = 447;
+        // Also reset revenue panel
+        if (HB.UI.revenueModel) HB.UI.revenueModel._loadPreset('eu_balanced');
         this._syncFromFinancials();
         this._recalculate();
     },

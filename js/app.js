@@ -297,6 +297,7 @@
     HB.UI.searchPanel.init();
     HB.UI.resultsPanel.init();
     HB.UI.siteDetail.init();
+    if (HB.UI.revenueModel)    HB.UI.revenueModel.init();
     if (HB.UI.financialParams) HB.UI.financialParams.init();
     if (HB.UI.scaleUp) HB.UI.scaleUp.init();
     if (HB.UI.SensitivityPanel) HB.UI.SensitivityPanel.init();

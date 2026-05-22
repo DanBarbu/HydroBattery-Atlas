@@ -853,6 +853,37 @@
 }
 
 /* ================================================================
+   REVENUE MODEL PANEL
+   ================================================================ */
+#rev-model-panel select {
+    appearance: auto;
+    -webkit-appearance: auto;
+    width: 100%;
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+#rev-model-panel select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(42, 100, 150, 0.1);
+}
+
+/* Revenue composition stacked bar */
+#rev-bar-energy,
+#rev-bar-ancillary,
+#rev-bar-capacity {
+    transition: width 0.35s ease;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* ================================================================
    PRINT STYLES — FPV Full Report
    #fpv-print-root is appended to body by _printReport() before
    window.print() is called, then removed via afterprint event.

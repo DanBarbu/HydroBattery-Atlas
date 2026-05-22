@@ -13,14 +13,52 @@ HB.Cost.financials = {
     bankRate: 0.05,
     inflationRate: 0.015,
     systemLifetime: 60,        // years
-    cyclesPerYear: 240,        // average pump+gen cycles
-    energyPurchasePrice: 47,   // $/MWh
+    cyclesPerYear: 300,        // average pump+gen cycles (raised from 240 — IRENA 2023 central for EU grids)
     pumpEfficiency: 0.90,
     genEfficiency: 0.90,
     useableFraction: 0.85,
     damCostPerM3: 195,         // $/m³ rock volume (2024 USD; calibrated +16% vs 2019 ANU basis)
     avgReservoirDepth: 15,     // m (for area calculation)
     lithiumBatteryCostPerKWh: 447, // $/kWh benchmark
+
+    // ---- Revenue model parameters ------------------------------------------
+    // Split into separate sell / buy prices for accurate arbitrage modelling.
+    // Legacy alias `energyPurchasePrice` mirrors energySellPrice for compatibility.
+    energySellPrice: 90,       // $/MWh  — peak dispatch (Romania/EU day-ahead avg 2023)
+    energyBuyPrice:  42,       // $/MWh  — off-peak pumping cost
+    get energyPurchasePrice()  { return this.energySellPrice; },
+    set energyPurchasePrice(v) { this.energySellPrice = v; },
+
+    /**
+     * Capacity payment received for being available, regardless of actual dispatch.
+     * Represents revenue from capacity markets / reliability options / strategic reserve.
+     * Unit: $/kW/year of installed power capacity.
+     *
+     * Benchmarks:
+     *   Romania (ANRE emerging capacity mechanism, 2024): ~$40–60/kW/yr
+     *   UK Capacity Market (2023/24 T-4 auction): ~$65/kW/yr
+     *   France (Mécanisme de Capacité): ~$55/kW/yr
+     *   EU average (ENTSO-E survey 2023): ~$45–75/kW/yr
+     *   Conservative / arbitrage-only: $0/kW/yr
+     */
+    capacityPaymentPerKW: 50,  // $/kW/year (Romania market default)
+
+    /**
+     * Ancillary services revenue premium — fraction of gross arbitrage revenue.
+     * Represents earnings from FCR (Primary Reserve), aFRR (Secondary Reserve),
+     * mFRR (Tertiary Reserve), black-start capability, and inertia services.
+     *
+     * PHES is uniquely positioned for ancillary services due to fast ramp rates
+     * (full power in <30 s) and bidirectional capability.
+     *
+     * Benchmarks:
+     *   NREL PSH revenue survey 2023:   35–60% premium over arbitrage
+     *   IRENA 2023 (EU grid-connected): 30–50% premium
+     *   Australia (FCAS, Kidston):      ~40–55% premium
+     *   Romania (balancing market):     ~30–40% premium
+     *   Conservative / arbitrage-only:  0%
+     */
+    ancillaryRevenuePremium: 0.40,  // fraction of gross energy revenue (40% = EU balanced)
 
     /**
      * Tunnel construction cost index per country (vs Australia = 1.0 baseline).
@@ -178,7 +216,7 @@ HB.Cost.engine = {
         const regionFactor  = fin.regionFactors[country]       || fin.regionFactors['default'];
         const overheadIndex = fin.countryOverheadIndex[country] || fin.countryOverheadIndex['default'];
         const cycles = p.cyclesPerYear || fin.cyclesPerYear;
-        const energyPrice = p.energyPrice || fin.energyPurchasePrice;
+        const energyPrice = p.energyPrice || fin.energyBuyPrice || fin.energySellPrice || 42;
         const r = fin.realDiscount;
         const lifetime = fin.systemLifetime;
 

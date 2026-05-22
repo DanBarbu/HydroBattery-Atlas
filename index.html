@@ -14,7 +14,7 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="css/main.css?v=4" />
     <link rel="stylesheet" href="css/map.css?v=2" />
-    <link rel="stylesheet" href="css/panels.css?v=7" />
+    <link rel="stylesheet" href="css/panels.css?v=8" />
     <link rel="stylesheet" href="css/components.css?v=5" />
 
     <!-- Favicon -->
@@ -433,6 +433,95 @@
                     </div>
                 </div>
 
+                <!-- ── Revenue Model Panel ─────────────────────────────── -->
+                <div class="detail-section" id="rev-model-panel">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <h3 style="margin-bottom:0;">Revenue Model</h3>
+                        <button id="toggle-rev-model" style="background:none;border:1px solid var(--border);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;color:var(--text-secondary);">&#8722;</button>
+                    </div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;margin-bottom:8px;">
+                        Arbitrage &middot; Ancillary Services &middot; Capacity Payments
+                    </div>
+
+                    <div id="rev-model-body">
+                        <!-- Market profile preset selector -->
+                        <div style="margin-bottom:8px;">
+                            <label style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;display:block;margin-bottom:4px;">Market Profile</label>
+                            <select id="rev-preset"
+                                    style="width:100%;height:30px;padding:0 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text-primary);cursor:pointer;">
+                            </select>
+                            <div id="rev-preset-desc"
+                                 style="font-size:10px;color:var(--text-muted);margin-top:3px;line-height:1.4;min-height:28px;"></div>
+                        </div>
+
+                        <!-- Revenue composition bar -->
+                        <div style="margin-bottom:10px;">
+                            <div style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;margin-bottom:4px;">Revenue Composition</div>
+                            <div style="height:18px;border-radius:3px;overflow:hidden;display:flex;background:#e8e8e8;">
+                                <div id="rev-bar-energy"
+                                     style="height:100%;background:#2196f3;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                                <div id="rev-bar-ancillary"
+                                     style="height:100%;background:#ff9800;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                                <div id="rev-bar-capacity"
+                                     style="height:100%;background:#4caf50;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                            </div>
+                            <!-- Legend -->
+                            <div style="display:flex;gap:10px;margin-top:5px;flex-wrap:wrap;">
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#2196f3;flex-shrink:0;"></div>
+                                    Energy <span id="rev-pct-energy" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#ff9800;flex-shrink:0;"></div>
+                                    Ancillary <span id="rev-pct-ancillary" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#4caf50;flex-shrink:0;"></div>
+                                    Capacity <span id="rev-pct-capacity" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                            </div>
+                            <div id="rev-spread-info" style="font-size:10px;color:var(--text-muted);margin-top:4px;"></div>
+                        </div>
+
+                        <!-- Parameter inputs (2-column grid) -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                            <div class="fp-field">
+                                <label>Sell $/MWh</label>
+                                <input id="rev-sell-price" type="number" step="5" min="0" value="90"
+                                       title="Peak dispatch price — revenue per MWh sold to the grid" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Buy $/MWh</label>
+                                <input id="rev-buy-price" type="number" step="5" min="0" value="42"
+                                       title="Off-peak pumping cost — energy cost per MWh pumped uphill" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Cycles / yr</label>
+                                <input id="rev-cycles" type="number" step="10" min="1" value="300"
+                                       title="Full pump+generate cycles per year (IRENA central: 300)" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Cap. $/kW/yr</label>
+                                <input id="rev-cap-payment" type="number" step="5" min="0" value="50"
+                                       title="Capacity payment for being available (set 0 for arbitrage-only)" />
+                            </div>
+                            <div class="fp-field" style="grid-column:span 2;">
+                                <label>Ancillary services premium %</label>
+                                <input id="rev-ancillary" type="number" step="5" min="0" max="100" value="40"
+                                       title="FCR/aFRR/FCAS premium as % of gross energy revenue (IRENA: 30–60%)" />
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div style="display:flex;gap:8px;">
+                            <button id="btn-rev-apply" class="btn-primary" style="flex:1;">Apply &amp; Recalculate</button>
+                            <button id="btn-rev-reset" class="btn-secondary" style="flex:0 0 auto;"
+                                    title="Reset to EU Grid Services (balanced) preset">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Cost / Engineering Parameters ──────────────────── -->
                 <div class="detail-section">
                     <div style="display:flex;align-items:center;justify-content:space-between;">
                         <h3 style="margin-bottom:0;">Adjust Parameters</h3>
@@ -452,8 +541,9 @@
                                 <input id="fp-cycles" type="number" step="10" min="1" />
                             </div>
                             <div class="fp-field">
-                                <label>Energy $/MWh</label>
-                                <input id="fp-energy-price" type="number" step="1" min="0" />
+                                <label>Sell $/MWh</label>
+                                <input id="fp-energy-price" type="number" step="1" min="0"
+                                       title="Peak dispatch sell price (mirrors Revenue Model panel)" />
                             </div>
                             <div class="fp-field">
                                 <label>Equity return %</label>
@@ -616,8 +706,8 @@
     <script src="js/cost/electricalCost.js?v=3"></script>
     <script src="js/cost/civilCost.js?v=3"></script>
     <script src="js/cost/environmentalCost.js?v=3"></script>
-    <script src="js/cost/costEngine.js?v=6"></script>
-    <script src="js/cost/scaleUpEngine.js?v=5"></script>
+    <script src="js/cost/costEngine.js?v=7"></script>
+    <script src="js/cost/scaleUpEngine.js?v=6"></script>
     <script src="js/cost/fpvEngine.js?v=1"></script>
     <script src="js/search/searchFilters.js?v=3"></script>
     <script src="js/search/siteSearchEngine.js?v=3"></script>
@@ -649,11 +739,12 @@
     <script src="js/ui/resultsPanel.js?v=3"></script>
     <script src="js/ui/costBreakdownPanel.js?v=4"></script>
     <script src="js/ui/siteDetailPanel.js?v=44"></script>
-    <script src="js/ui/financialParamsPanel.js?v=3"></script>
+    <script src="js/ui/financialParamsPanel.js?v=4"></script>
+    <script src="js/ui/revenueModelPanel.js?v=1"></script>
     <script src="js/ui/scaleUpPanel.js?v=4"></script>
     <script src="js/ui/sensitivityPanel.js?v=2"></script>
     <script src="js/ui/fpvPanel.js?v=9"></script>
     <script src="js/ui/chartRenderer.js?v=3"></script>
-    <script src="js/app.js?v=19"></script>
+    <script src="js/app.js?v=20"></script>
 </body>
 </html>
