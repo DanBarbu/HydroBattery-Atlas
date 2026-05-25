@@ -31,7 +31,8 @@ will-platform/
 │   ├── bft-sim/                   # BFT Romanian order-of-battle simulator
 │   ├── ownship-sim/               # Naval Black Sea picture (corvette + OPV)
 │   ├── fires-sim/                 # AFATDS-style read-only FSCM + fire-mission-status feed
-│   └── metoc-sim/                 # METOC provider feed: Cincu METAR + Black-Sea flow field + drift query
+│   ├── metoc-sim/                 # METOC provider feed: Cincu METAR + Black-Sea flow field + drift query
+│   └── adsb-osint/                # ADS-B OSINT plugin (ADR-016): civilian air picture, low-confidence
 ├── services/
 │   ├── ...
 │   ├── tenant-admin/              # Sprint 2 tenants; Sprint 4 Sensors + RBAC; Sprint 5 auth shim

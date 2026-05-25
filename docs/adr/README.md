@@ -21,6 +21,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-013](ADR-013-training-module.md) | War-games Training module (EXERCISE-isolated) | Accepted (co-signed: Tech Lead · Compliance) |
 | [ADR-014](ADR-014-legacy-c2-bridge.md) | Legacy C2 Bridge — BC2A® / ICIS interoperability | Accepted (co-signed: Tech Lead · Compliance) |
 | [ADR-015](ADR-015-metoc-module.md) | METOC module — weather impact + Lagrangian drift (advisory) | Accepted (co-signed: Tech Lead · Compliance) |
+| [ADR-016](ADR-016-osint-module.md) | OSINT module — ADS-B / AIS / TLE / hazards (advisory, low-confidence) | Accepted (co-signed: Tech Lead · Compliance · Security) |
 
 ## Authoring
 

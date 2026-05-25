@@ -438,6 +438,22 @@ services:
     networks:
       - will-net
 
+  adsb-osint:
+    build:
+      context: ./plugins/adsb-osint
+    container_name: will-adsb-osint
+    environment:
+      MODE: "sim"
+      MQTT_HOST: emqx
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: telemetry/osint/adsb
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: "NESECRET // OSINT"
+      PUBLISH_HZ: "1"
+      SIM_AIRCRAFT: "12"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
