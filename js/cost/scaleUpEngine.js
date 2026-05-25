@@ -31,19 +31,23 @@ HB.Cost.scaleUp = {
     /** Standard storage capacity tiers (GWh). */
     TIERS: [2, 5, 10, 20, 50, 150],
 
-    /** Default storage duration (hours at full power). ANU standard = 18 h. */
-    DEFAULT_STORAGE_HOURS: 18,
+    /**
+     * Default storage duration (hours at full power).
+     * Changed from 18 h (ANU academic standard for weekly balancing)
+     * to 8 h — the industry norm for daily arbitrage cycling.
+     */
+    DEFAULT_STORAGE_HOURS: 8,
 
     /**
      * OPEX as fraction of total CAPEX per year.
-     * Typical PHES range: 1–2%. Using 1.5% as midpoint.
+     * IRENA 2023 range: 0.8–1.4%. Using 1.2% as calibrated midpoint.
+     * (Previous 1.5% was at the high end of the range.)
      */
-    OPEX_FRACTION: 0.015,
+    OPEX_FRACTION: 0.012,
 
     /**
-     * Energy purchase price as fraction of selling price.
-     * Represents the arbitrage spread: buy cheap off-peak, sell peak.
-     * 0.4 → buy at 40% of sell price, consistent with 2–3× peak/off-peak ratio.
+     * @deprecated — replaced by HB.Cost.financials.energyBuyPrice / energySellPrice.
+     * Kept as fallback constant; the revenue model now reads directly from financials.
      */
     BUY_PRICE_FRACTION: 0.4,
 
@@ -201,7 +205,7 @@ HB.Cost.scaleUp = {
 
         // Revenue: sell solar at market, ~70 % utilisation (curtailment w/o storage)
         const annualGenMWh = solarMW * cf * 8760 * 0.70;
-        const sellPrice    = fin.energyPurchasePrice;
+        const sellPrice    = fin.energySellPrice || fin.energyPurchasePrice || 90;
         const grossRevM    = (annualGenMWh * sellPrice) / 1e6;
         const annualOpexM  = _r2(totalCapexM * 0.01);        // 1 % solar O&M
         const netRevM      = grossRevM - annualOpexM;
@@ -337,22 +341,26 @@ HB.Cost.scaleUp = {
             total_M:         turbineRetrofitM
         };
 
-        // ---- Revenue: storage arbitrage + excess solar ----
+        // ---- Revenue: storage arbitrage + ancillary + capacity + excess solar ----
         const annualSoldMWh      = annualSoldTWh * 1e6;
         const annualPurchasedMWh = annualPurchasedTWh * 1e6;
-        const sellPrice          = fin.energyPurchasePrice;
-        const buyPrice           = sellPrice * this.BUY_PRICE_FRACTION;
+        const sellPrice          = fin.energySellPrice        || fin.energyPurchasePrice || 90;
+        const buyPrice           = fin.energyBuyPrice         || (sellPrice * this.BUY_PRICE_FRACTION);
+        const ancillaryPrem      = fin.ancillaryRevenuePremium !== undefined ? fin.ancillaryRevenuePremium : 0.40;
+        const capPayPerKW        = fin.capacityPaymentPerKW   !== undefined ? fin.capacityPaymentPerKW     : 50;
 
         // Excess solar not consumed by pumping → sold at 70 % utilisation
-        // Note: lower pump efficiency → MORE energy needed per cycle → less excess solar
         const solarAnnualMWh = solarMW * cf * 8760;
         const excessSolarMWh = Math.max(0, solarAnnualMWh * 0.90 - annualPurchasedMWh);
         const solarRevM      = (excessSolarMWh * sellPrice * 0.70) / 1e6;
 
-        const grossRevM   = (annualSoldMWh * sellPrice) / 1e6 + solarRevM;
-        const energyCostM = (annualPurchasedMWh * buyPrice) / 1e6;
-        const annualOpexM = _r2(totalCapexM * this.OPEX_FRACTION);
-        const netRevM     = grossRevM - energyCostM - annualOpexM;
+        const arbitrageRevM  = (annualSoldMWh * sellPrice) / 1e6 + solarRevM;
+        const ancillaryRevM  = (annualSoldMWh * sellPrice / 1e6) * ancillaryPrem;
+        const capacityRevM   = (powerMW * 1000 * capPayPerKW) / 1e6;
+        const grossRevM      = arbitrageRevM + ancillaryRevM + capacityRevM;
+        const energyCostM    = (annualPurchasedMWh * buyPrice) / 1e6;
+        const annualOpexM    = _r2(totalCapexM * this.OPEX_FRACTION);
+        const netRevM        = grossRevM - energyCostM - annualOpexM;
 
         // Blended LCOE
         const totalAnnualMWh = annualSoldMWh + excessSolarMWh * 0.70;
@@ -602,12 +610,22 @@ HB.Cost.scaleUp = {
         const annualSoldMWh      = anu.financials.annualSoldTWh      * 1e6;
         const annualPurchasedMWh = anu.financials.annualPurchasedTWh * 1e6;
 
-        // ---- Revenue model ----
-        const sellPrice   = fin.energyPurchasePrice;          // $/MWh — selling price
-        const buyPrice    = sellPrice * this.BUY_PRICE_FRACTION; // $/MWh — pumping cost
-        const grossRevM   = (annualSoldMWh * sellPrice)      / 1e6;
-        const energyCostM = (annualPurchasedMWh * buyPrice)  / 1e6;
-        const netRevM     = grossRevM - energyCostM - annualOpexM;  // after opex
+        // ---- Revenue model (full multi-stream) ----
+        // Three revenue streams:
+        //   1. Energy arbitrage: sell dispatched MWh at peak price
+        //   2. Ancillary services (FCR/aFRR/FCAS): premium on top of energy revenue
+        //   3. Capacity payment: fixed $/kW/yr for being available on the grid
+        const sellPrice       = fin.energySellPrice        || fin.energyPurchasePrice || 90;
+        const buyPrice        = fin.energyBuyPrice         || (sellPrice * this.BUY_PRICE_FRACTION);
+        const ancillaryPrem   = fin.ancillaryRevenuePremium !== undefined ? fin.ancillaryRevenuePremium : 0.40;
+        const capPayPerKW     = fin.capacityPaymentPerKW   !== undefined ? fin.capacityPaymentPerKW     : 50;
+
+        const arbitrageRevM  = (annualSoldMWh * sellPrice)             / 1e6;
+        const ancillaryRevM  = arbitrageRevM * ancillaryPrem;
+        const capacityRevM   = (powerMW * 1000 * capPayPerKW)          / 1e6;
+        const grossRevM      = arbitrageRevM + ancillaryRevM + capacityRevM;
+        const energyCostM    = (annualPurchasedMWh * buyPrice)          / 1e6;
+        const netRevM        = grossRevM - energyCostM - annualOpexM;
 
         // ---- Recompute LCOS capital from actual marginal CAPEX ----
         // anu.lcosBreakdown uses the ANU model's own CAPEX (which may differ from
