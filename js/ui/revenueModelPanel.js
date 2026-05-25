@@ -171,9 +171,9 @@ HB.UI.revenueModel = {
         const ancPerMWh      = sellPrice * ancillary;
         const totalPerMWh    = Math.max(1, sellPrice + ancPerMWh + capPerMWh);
 
-        const energyPct   = Math.round(sellPrice  / totalPerMWh * 100);
-        const ancillaryPct= Math.round(ancPerMWh  / totalPerMWh * 100);
-        const capacityPct = 100 - energyPct - ancillaryPct;
+        const energyPct    = Math.round(sellPrice  / totalPerMWh * 100);
+        const ancillaryPct = Math.round(ancPerMWh  / totalPerMWh * 100);
+        const capacityPct  = 100 - energyPct - ancillaryPct;
 
         // Net spread highlight
         const spread = sellPrice - buyPrice;
@@ -200,16 +200,15 @@ HB.UI.revenueModel = {
     },
 
     // ---- Apply to cost engine and refresh ----------------------------------
-    _apply(/* unused */ _ ) {
+    _apply(/* unused */ _) {
         const fin = HB.Cost.financials;
-        const su  = HB.Cost.scaleUp;
 
         // Write new values into financials
-        fin.energySellPrice          = this._getNum('rev-sell-price',  fin.energySellPrice  || 90);
-        fin.energyBuyPrice           = this._getNum('rev-buy-price',   fin.energyBuyPrice   || 42);
-        fin.cyclesPerYear            = this._getNum('rev-cycles',       fin.cyclesPerYear    || 300);
-        fin.capacityPaymentPerKW     = this._getNum('rev-cap-payment',  fin.capacityPaymentPerKW || 50);
-        fin.ancillaryRevenuePremium  = this._getNum('rev-ancillary',    (fin.ancillaryRevenuePremium || 0.40) * 100) / 100;
+        fin.energySellPrice         = this._getNum('rev-sell-price',  fin.energySellPrice  || 90);
+        fin.energyBuyPrice          = this._getNum('rev-buy-price',   fin.energyBuyPrice   || 42);
+        fin.cyclesPerYear           = this._getNum('rev-cycles',       fin.cyclesPerYear    || 300);
+        fin.capacityPaymentPerKW    = this._getNum('rev-cap-payment',  fin.capacityPaymentPerKW !== undefined ? fin.capacityPaymentPerKW : 50);
+        fin.ancillaryRevenuePremium = this._getNum('rev-ancillary',    (fin.ancillaryRevenuePremium !== undefined ? fin.ancillaryRevenuePremium : 0.40) * 100) / 100;
 
         // Keep legacy alias in sync
         fin.energyPurchasePrice = fin.energySellPrice;
@@ -237,9 +236,9 @@ HB.UI.revenueModel = {
     // ---- Sync FROM financials (called when site changes) -------------------
     syncFromFinancials() {
         const fin = HB.Cost.financials;
-        if (fin.energySellPrice)         this._setVal('rev-sell-price',  fin.energySellPrice);
-        if (fin.energyBuyPrice)          this._setVal('rev-buy-price',   fin.energyBuyPrice);
-        if (fin.cyclesPerYear)           this._setVal('rev-cycles',      fin.cyclesPerYear);
+        if (fin.energySellPrice)                    this._setVal('rev-sell-price',  fin.energySellPrice);
+        if (fin.energyBuyPrice)                     this._setVal('rev-buy-price',   fin.energyBuyPrice);
+        if (fin.cyclesPerYear)                      this._setVal('rev-cycles',      fin.cyclesPerYear);
         if (fin.capacityPaymentPerKW !== undefined) this._setVal('rev-cap-payment', fin.capacityPaymentPerKW);
         if (fin.ancillaryRevenuePremium !== undefined) this._setVal('rev-ancillary', Math.round(fin.ancillaryRevenuePremium * 100));
         this._updateBar();
