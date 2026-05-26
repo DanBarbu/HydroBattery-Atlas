@@ -62,9 +62,9 @@ HB.UI.fpvPanel = {
                 : 'https://globalsolaratlas.info/';
             const el = _q('#fpv-gsa-status');
             el.innerHTML = `Solar data: <a href="${gsaUrl}" target="_blank" style="color:var(--accent)">Global Solar Atlas</a>`
-                + ` — GHI <strong>${g.ghiYear}</strong> kWh/m\u00B2/yr \u00B7 PVOUT <strong>${g.pvoutYear}</strong> kWh/kWp/yr`
-                + ` \u00B7 ${peakH} peak sun h/day`
-                + (g.airTempC != null ? ` \u00B7 ${g.airTempC}\u00B0C avg` : '');
+                + ` — GHI <strong>${g.ghiYear}</strong> kWh/m²/yr · PVOUT <strong>${g.pvoutYear}</strong> kWh/kWp/yr`
+                + ` · ${peakH} peak sun h/day`
+                + (g.airTempC != null ? ` · ${g.airTempC}°C avg` : '');
             el.style.color = '#27ae60';
         } else if (site.lat != null && site.lng != null) {
             this._fetchGSA(site.lat, site.lng);
