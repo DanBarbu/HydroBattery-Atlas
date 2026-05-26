@@ -1,1 +1,268 @@
-LyoqCiAqIFJldmVudWUgTW9kZWwgUGFuZWwKICoKICogVUkgY29udHJvbHMgZm9yIHRoZSBmdWxsIFBIRVMgcmV2ZW51ZSBtb2RlbDoKICogICDigKIgRW5lcmd5IGFyYml0cmFnZSAgKHNlbGwgcHJpY2UsIGJ1eSBwcmljZSwgY3ljbGVzL3llYXIpCiAqICAg4oCiIEFuY2lsbGFyeSBzZXJ2aWNlcyBwcmVtaXVtICAoRkNSIC8gYUZSUiAvIEZDQVMpCiAqICAg4oCiIENhcGFjaXR5IHBheW1lbnRzICAoJC9rVy95ZWFyIOKAlCBhdmFpbGFiaWxpdHkgZmVlKQogKgogKiBNYXJrZXQgcHJvZmlsZSBwcmVzZXRzIGxldCB1c2VycyBxdWlja2x5IHN3aXRjaCBiZXR3ZWVuIHdlbGwtY2FsaWJyYXRlZAogKiBzY2VuYXJpb3MgKENvbnNlcnZhdGl2ZSDihpIgRnVsbCBTZXJ2aWNlKSwgd2l0aCBhIEN1c3RvbSBtb2RlIGZvciBtYW51YWwgdHVuaW5nLgogKgogKiBPbiBhcHBseSwgdGhlIG1vZHVsZSB3cml0ZXMgdmFsdWVzIGludG8gSEIuQ29zdC5maW5hbmNpYWxzIGFuZAogKiBIQi5Db3N0LnNjYWxlVXAsIHRoZW4gdHJpZ2dlcnMgYSBmdWxsIHJlY2FsY3VsYXRlICsgc2NhbGUtdXAgcmVmcmVzaC4KICovCkhCLlVJID0gSEIuVUkgfHwge307CgpIQi5VSS5yZXZlbnVlTW9kZWwgPSB7CgogICAgLy8gLS0tLSBNYXJrZXQgcHJvZmlsZSBwcmVzZXRzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgIFBSRVNFVFM6IHsKICAgICAgICBjb25zZXJ2YXRpdmU6IHsKICAgICAgICAgICAgbGFiZWw6ICAgICAgICdDb25zZXJ2YXRpdmUgKEFyYml0cmFnZSBPbmx5KScsCiAgICAgICAgICAgIGRlc2NyaXB0aW9uOiAnUHVyZSBwcmljZS1zcHJlYWQgYXJiaXRyYWdlOyBubyBjYXBhY2l0eSBvciBhbmNpbGxhcnkgcmV2ZW51ZS4nLAogICAgICAgICAgICBzZWxsUHJpY2U6ICAgIDQ3LAogICAgICAgICAgICBidXlQcmljZTogICAgIDE5LAogICAgICAgICAgICBjeWNsZXM6ICAgICAgIDI0MCwKICAgICAgICAgICAgY2FwUGF5bWVudDogICAwLAogICAgICAgICAgICBhbmNpbGxhcnk6ICAgIDAsCiAgICAgICAgfSwKICAgICAgICBldV9iYWxhbmNlZDogewogICAgICAgICAgICBsYWJlbDogICAgICAgJ0VVIEdyaWQgU2VydmljZXMgKEJhbGFuY2VkKScsCiAgICAgICAgICAgIGRlc2NyaXB0aW9uOiAnSVJFTkEgMjAyMyAvIEVOVFNPLUUgY2VudHJhbCBjYXNlIGZvciBFVSBncmlkLWNvbm5lY3RlZCBQSEVTLicsCiAgICAgICAgICAgIHNlbGxQcmljZTogICAgOTAsCiAgICAgICAgICAgIGJ1eVByaWNlOiAgICAgNDIsCiAgICAgICAgICAgIGN5Y2xlczogICAgICAgMzAwLAogICAgICAgICAgICBjYXBQYXltZW50OiAgIDUwLAogICAgICAgICAgICBhbmNpbGxhcnk6ICAgIDQwLAogICAgICAgIH0sCiAgICAgICAgcm9tYW5pYTogewogICAgICAgICAgICBsYWJlbDogICAgICAgJ1JvbWFuaWEgTWFya2V0JywKICAgICAgICAgICAgZGVzY3JpcHRpb246ICdPUENPTSBkYXktYWhlYWQgKyBUcmFuc2VsZWN0cmljYSBiYWxhbmNpbmcgKyBlbWVyZ2luZyBjYXBhY2l0eSBtZWNoYW5pc20gKEFOUkUpLicsCiAgICAgICAgICAgIHNlbGxQcmljZTogICAgOTAsCiAgICAgICAgICAgIGJ1eVByaWNlOiAgICAgNDIsCiAgICAgICAgICAgIGN5Y2xlczogICAgICAgMzAwLAogICAgICAgICAgICBjYXBQYXltZW50OiAgIDUwLAogICAgICAgICAgICBhbmNpbGxhcnk6ICAgIDM1LAogICAgICAgIH0sCiAgICAgICAgb3B0aW1pc3RpYzogewogICAgICAgICAgICBsYWJlbDogICAgICAgJ0Z1bGwgU2VydmljZSAoT3B0aW1pc3RpYyknLAogICAgICAgICAgICBkZXNjcmlwdGlvbjogJ0Jlc3QtY2FzZTogaGlnaCBwZWFrIHByaWNlcywgZnVsbCBhbmNpbGxhcnkgc3RhY2ssIG1hdHVyZSBjYXBhY2l0eSBtYXJrZXQuJywKICAgICAgICAgICAgc2VsbFByaWNlOiAgIDEyMCwKICAgICAgICAgICAgYnV5UHJpY2U6ICAgICA0NSwKICAgICAgICAgICAgY3ljbGVzOiAgICAgICAzMzAsCiAgICAgICAgICAgIGNhcFBheW1lbnQ6ICAgODAsCiAgICAgICAgICAgIGFuY2lsbGFyeTogICAgNjAsCiAgICAgICAgfSwKICAgICAgICBjdXN0b206IHsKICAgICAgICAgICAgbGFiZWw6ICAgICAgICdDdXN0b20nLAogICAgICAgICAgICBkZXNjcmlwdGlvbjogJ01hbnVhbGx5IGNvbmZpZ3VyZSBhbGwgcmV2ZW51ZSBwYXJhbWV0ZXJzLicsCiAgICAgICAgICAgIHNlbGxQcmljZTogICAgOTAsCiAgICAgICAgICAgIGJ1eVByaWNlOiAgICAgNDIsCiAgICAgICAgICAgIGN5Y2xlczogICAgICAgMzAwLAogICAgICAgICAgICBjYXBQYXltZW50OiAgIDUwLAogICAgICAgICAgICBhbmNpbGxhcnk6ICAgIDQwLAogICAgICAgIH0sCiAgICB9LAoKICAgIC8vIC0tLS0gU3RhdGUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICAgX2FjdGl2ZVByZXNldDogJ2V1X2JhbGFuY2VkJywKCiAgICAvLyAtLS0tIEluaXQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgIGluaXQoKSB7CiAgICAgICAgLy8gQ29sbGFwc2UgLyBleHBhbmQgdG9nZ2xlCiAgICAgICAgY29uc3QgdG9nZ2xlID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3RvZ2dsZS1yZXYtbW9kZWwnKTsKICAgICAgICBpZiAodG9nZ2xlKSB0b2dnbGUuYWRkRXZlbnRMaXN0ZW5lcignY2xpY2snLCAoKSA9PiB7CiAgICAgICAgICAgIGNvbnN0IGJvZHkgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmV2LW1vZGVsLWJvZHknKTsKICAgICAgICAgICAgY29uc3QgY29sbGFwc2VkID0gYm9keS5jbGFzc0xpc3QudG9nZ2xlKCdoaWRkZW4nKTsKICAgICAgICAgICAgdG9nZ2xlLnRleHRDb250ZW50ID0gY29sbGFwc2VkID8gJysnIDogJ+KIkic7CiAgICAgICAgfSk7CgogICAgICAgIC8vIFBvcHVsYXRlIHByZXNldCBkcm9wZG93bgogICAgICAgIHRoaXMuX2J1aWxkUHJlc2V0T3B0aW9ucygpOwoKICAgICAgICAvLyBQcmVzZXQgc2VsZWN0b3IgY2hhbmdlCiAgICAgICAgY29uc3Qgc2VsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Jldi1wcmVzZXQnKTsKICAgICAgICBpZiAoc2VsKSBzZWwuYWRkRXZlbnRMaXN0ZW5lcignY2hhbmdlJywgKCkgPT4gdGhpcy5fb25QcmVzZXRDaGFuZ2Uoc2VsLnZhbHVlKSk7CgogICAgICAgIC8vIElucHV0IGNoYW5nZXMg4oaSIHVwZGF0ZSBiYXIgbGl2ZQogICAgICAgIFsncmV2LXNlbGwtcHJpY2UnLCAncmV2LWJ1eS1wcmljZScsICdyZXYtY3ljbGVzJywgJ3Jldi1jYXAtcGF5bWVudCcsICdyZXYtYW5jaWxsYXJ5J10uZm9yRWFjaChpZCA9PiB7CiAgICAgICAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoaWQpOwogICAgICAgICAgICBpZiAoZWwpIGVsLmFkZEV2ZW50TGlzdGVuZXIoJ2lucHV0JywgKCkgPT4gewogICAgICAgICAgICAgICAgdGhpcy5fbWFya0N1c3RvbSgpOwogICAgICAgICAgICAgICAgdGhpcy5fdXBkYXRlQmFyKCk7CiAgICAgICAgICAgIH0pOwogICAgICAgIH0pOwoKICAgICAgICAvLyBCdXR0b25zCiAgICAgICAgY29uc3QgYXBwbHlCdG4gID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2J0bi1yZXYtYXBwbHknKTsKICAgICAgICBjb25zdCByZXNldEJ0biAgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnRuLXJldi1yZXNldCcpOwogICAgICAgIGlmIChhcHBseUJ0bikgIGFwcGx5QnRuLmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJywgICgpID0+IHRoaXMuX2FwcGx5KCkpOwogICAgICAgIGlmIChyZXNldEJ0bikgIHJlc2V0QnRuLmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJywgICgpID0+IHRoaXMuX3Jlc2V0VG9QcmVzZXQoJ2V1X2JhbGFuY2VkJykpOwoKICAgICAgICAvLyBTZWVkIHdpdGggRVUgYmFsYW5jZWQgZGVmYXVsdAogICAgICAgIHRoaXMuX2xvYWRQcmVzZXQoJ2V1X2JhbGFuY2VkJyk7CiAgICB9LAoKICAgIC8vIC0tLS0gQnVpbGQgcHJlc2V0IDxvcHRpb24+IGVsZW1lbnRzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICAgX2J1aWxkUHJlc2V0T3B0aW9ucygpIHsKICAgICAgICBjb25zdCBzZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmV2LXByZXNldCcpOwogICAgICAgIGlmICghc2VsKSByZXR1cm47CiAgICAgICAgT2JqZWN0LmVudHJpZXModGhpcy5QUkVTRVRTKS5mb3JFYWNoKChba2V5LCBwXSkgPT4gewogICAgICAgICAgICBjb25zdCBvcHQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdvcHRpb24nKTsKICAgICAgICAgICAgb3B0LnZhbHVlID0ga2V5OwogICAgICAgICAgICBvcHQudGV4dENvbnRlbnQgPSBwLmxhYmVsOwogICAgICAgICAgICBzZWwuYXBwZW5kQ2hpbGQob3B0KTsKICAgICAgICB9KTsKICAgIH0sCgogICAgLy8gLS0tLSBQcmVzZXQgc2VsZWN0ZWQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICBfb25QcmVzZXRDaGFuZ2Uoa2V5KSB7CiAgICAgICAgaWYgKGtleSA9PT0gJ2N1c3RvbScpIHsKICAgICAgICAgICAgdGhpcy5fYWN0aXZlUHJlc2V0ID0gJ2N1c3RvbSc7CiAgICAgICAgICAgIHRoaXMuX3VwZGF0ZURlc2NyaXB0aW9uKCdNYW51YWxseSBjb25maWd1cmUgYWxsIHJldmVudWUgcGFyYW1ldGVycy4nKTsKICAgICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KICAgICAgICB0aGlzLl9sb2FkUHJlc2V0KGtleSk7CiAgICB9LAoKICAgIF9sb2FkUHJlc2V0KGtleSkgewogICAgICAgIGNvbnN0IHAgPSB0aGlzLlBSRVNFVFNba2V5XTsKICAgICAgICBpZiAoIXApIHJldHVybjsKICAgICAgICB0aGlzLl9hY3RpdmVQcmVzZXQgPSBrZXk7CgogICAgICAgIHRoaXMuX3NldFZhbCgncmV2LXNlbGwtcHJpY2UnLCBwLnNlbGxQcmljZSk7CiAgICAgICAgdGhpcy5fc2V0VmFsKCdyZXYtYnV5LXByaWNlJywgIHAuYnV5UHJpY2UpOwogICAgICAgIHRoaXMuX3NldFZhbCgncmV2LWN5Y2xlcycsICAgICBwLmN5Y2xlcyk7CiAgICAgICAgdGhpcy5fc2V0VmFsKCdyZXYtY2FwLXBheW1lbnQnLHAuY2FwUGF5bWVudCk7CiAgICAgICAgdGhpcy5fc2V0VmFsKCdyZXYtYW5jaWxsYXJ5JywgIHAuYW5jaWxsYXJ5KTsKCiAgICAgICAgY29uc3Qgc2VsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Jldi1wcmVzZXQnKTsKICAgICAgICBpZiAoc2VsKSBzZWwudmFsdWUgPSBrZXk7CgogICAgICAgIHRoaXMuX3VwZGF0ZURlc2NyaXB0aW9uKHAuZGVzY3JpcHRpb24pOwogICAgICAgIHRoaXMuX3VwZGF0ZUJhcigpOwogICAgfSwKCiAgICBfcmVzZXRUb1ByZXNldChrZXkpIHsKICAgICAgICB0aGlzLl9sb2FkUHJlc2V0KGtleSk7CiAgICAgICAgdGhpcy5fYXBwbHkoLyogc2lsZW50ICovIGZhbHNlKTsKICAgIH0sCgogICAgLy8gLS0tLSBNYXJrIGlucHV0cyBhcyAiY3VzdG9tIiB3aGVuIHVzZXIgZWRpdHMgbWFudWFsbHkgLS0tLS0tLS0tLS0tLS0tLS0KICAgIF9tYXJrQ3VzdG9tKCkgewogICAgICAgIGNvbnN0IHNlbCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyZXYtcHJlc2V0Jyk7CiAgICAgICAgaWYgKHNlbCkgc2VsLnZhbHVlID0gJ2N1c3RvbSc7CiAgICAgICAgdGhpcy5fYWN0aXZlUHJlc2V0ID0gJ2N1c3RvbSc7CiAgICAgICAgdGhpcy5fdXBkYXRlRGVzY3JpcHRpb24odGhpcy5QUkVTRVRTLmN1c3RvbS5kZXNjcmlwdGlvbik7CiAgICB9LAoKICAgIC8vIC0tLS0gUmV2ZW51ZSBjb21wb3NpdGlvbiBiYXIgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICBfdXBkYXRlQmFyKCkgewogICAgICAgIGNvbnN0IHNlbGxQcmljZSAgPSB0aGlzLl9nZXROdW0oJ3Jldi1zZWxsLXByaWNlJywgIDkwKTsKICAgICAgICBjb25zdCBidXlQcmljZSAgID0gdGhpcy5fZ2V0TnVtKCdyZXYtYnV5LXByaWNlJywgICA0Mik7CiAgICAgICAgY29uc3QgY3ljbGVzICAgICA9IHRoaXMuX2dldE51bSgncmV2LWN5Y2xlcycsICAgICAgMzAwKTsKICAgICAgICBjb25zdCBjYXBQYXltZW50ID0gdGhpcy5fZ2V0TnVtKCdyZXYtY2FwLXBheW1lbnQnLCA1MCk7CiAgICAgICAgY29uc3QgYW5jaWxsYXJ5ICA9IHRoaXMuX2dldE51bSgncmV2LWFuY2lsbGFyeScsICAgNDApIC8gMTAwOwoKICAgICAgICAvLyBFZmZlY3RpdmUgJC9NV2ggZnJvbSBlYWNoIHN0cmVhbSAoZ3Jvc3MsIGJlZm9yZSBwdW1waW5nIGNvc3QpCiAgICAgICAgY29uc3QgYW5udWFsTVdoUGVyTVcgPSA4ICogY3ljbGVzOyAgIC8vIDhoIHN0b3JhZ2Ugw5cgY3ljbGVzIOKAlCByZXByZXNlbnRhdGl2ZSBiYXNpcwogICAgICAgIGNvbnN0IGNhcFBlck1XaCAgICAgID0gY2FwUGF5bWVudCA+IDAgPyAoY2FwUGF5bWVudCAqIDEwMDAgLyBhbm51YWxNV2hQZXJNVykgOiAwOwogICAgICAgIGNvbnN0IGFuY1Blck1XaCAgICAgID0gc2VsbFByaWNlICogYW5jaWxsYXJ5OwogICAgICAgIGNvbnN0IHRvdGFsUGVyTVdoICAgID0gTWF0aC5tYXgoMSwgc2VsbFByaWNlICsgYW5jUGVyTVdoICsgY2FwUGVyTVdoKTsKCiAgICAgICAgY29uc3QgZW5lcmd5UGN0ICAgID0gTWF0aC5yb3VuZChzZWxsUHJpY2UgIC8gdG90YWxQZXJNV2ggKiAxMDApOwogICAgICAgIGNvbnN0IGFuY2lsbGFyeVBjdCA9IE1hdGgucm91bmQoYW5jUGVyTVdoICAvIHRvdGFsUGVyTVdoICogMTAwKTsKICAgICAgICBjb25zdCBjYXBhY2l0eVBjdCAgPSAxMDAgLSBlbmVyZ3lQY3QgLSBhbmNpbGxhcnlQY3Q7CgogICAgICAgIC8vIE5ldCBzcHJlYWQgaGlnaGxpZ2h0CiAgICAgICAgY29uc3Qgc3ByZWFkID0gc2VsbFByaWNlIC0gYnV5UHJpY2U7CgogICAgICAgIC8vIFVwZGF0ZSBiYXIgc2VnbWVudHMKICAgICAgICB0aGlzLl9zZXRCYXJXaWR0aCgncmV2LWJhci1lbmVyZ3knLCAgICBlbmVyZ3lQY3QpOwogICAgICAgIHRoaXMuX3NldEJhcldpZHRoKCdyZXYtYmFyLWFuY2lsbGFyeScsIGFuY2lsbGFyeVBjdCk7CiAgICAgICAgdGhpcy5fc2V0QmFyV2lkdGgoJ3Jldi1iYXItY2FwYWNpdHknLCAgY2FwYWNpdHlQY3QpOwoKICAgICAgICAvLyBVcGRhdGUgbGFiZWxzCiAgICAgICAgdGhpcy5fc2V0VGV4dCgncmV2LXBjdC1lbmVyZ3knLCAgICBgJHtlbmVyZ3lQY3R9JWApOwogICAgICAgIHRoaXMuX3NldFRleHQoJ3Jldi1wY3QtYW5jaWxsYXJ5JywgYCR7YW5jaWxsYXJ5UGN0fSVgKTsKICAgICAgICB0aGlzLl9zZXRUZXh0KCdyZXYtcGN0LWNhcGFjaXR5JywgIGAke2NhcGFjaXR5UGN0fSVgKTsKCiAgICAgICAgLy8gRWZmZWN0aXZlIHJldmVudWUgbGFiZWwKICAgICAgICBjb25zdCBlZmZlY3RpdmVQZXJNV2ggPSBNYXRoLnJvdW5kKHRvdGFsUGVyTVdoKTsKICAgICAgICBjb25zdCBzcHJlYWRUeHQgPSBgQXJiaXRyYWdlIHNwcmVhZDogJCR7c3ByZWFkfS9NV2ggwrcgRWZmZWN0aXZlOiAkJHtlZmZlY3RpdmVQZXJNV2h9L01XaCBncm9zc2A7CiAgICAgICAgdGhpcy5fc2V0VGV4dCgncmV2LXNwcmVhZC1pbmZvJywgc3ByZWFkVHh0KTsKICAgIH0sCgogICAgX3NldEJhcldpZHRoKGlkLCBwY3QpIHsKICAgICAgICBjb25zdCBlbCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGlkKTsKICAgICAgICBpZiAoZWwpIGVsLnN0eWxlLndpZHRoID0gTWF0aC5tYXgoMCwgcGN0KSArICclJzsKICAgIH0sCgogICAgLy8gLS0tLSBBcHBseSB0byBjb3N0IGVuZ2luZSBhbmQgcmVmcmVzaCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICBfYXBwbHkoLyogdW51c2VkICovIF8pIHsKICAgICAgICBjb25zdCBmaW4gPSBIQi5Db3N0LmZpbmFuY2lhbHM7CgogICAgICAgIC8vIFdyaXRlIG5ldyB2YWx1ZXMgaW50byBmaW5hbmNpYWxzCiAgICAgICAgZmluLmVuZXJneVNlbGxQcmljZSAgICAgICAgID0gdGhpcy5fZ2V0TnVtKCdyZXYtc2VsbC1wcmljZScsICBmaW4uZW5lcmd5U2VsbFByaWNlICB8fCA5MCk7CiAgICAgICAgZmluLmVuZXJneUJ1eVByaWNlICAgICAgICAgID0gdGhpcy5fZ2V0TnVtKCdyZXYtYnV5LXByaWNlJywgICBmaW4uZW5lcmd5QnV5UHJpY2UgICB8fCA0Mik7CiAgICAgICAgZmluLmN5Y2xlc1BlclllYXIgICAgICAgICAgID0gdGhpcy5fZ2V0TnVtKCdyZXYtY3ljbGVzJywgICAgICAgZmluLmN5Y2xlc1BlclllYXIgICAgfHwgMzAwKTsKICAgICAgICBmaW4uY2FwYWNpdHlQYXltZW50UGVyS1cgICAgPSB0aGlzLl9nZXROdW0oJ3Jldi1jYXAtcGF5bWVudCcsICBmaW4uY2FwYWNpdHlQYXltZW50UGVyS1cgIT09IHVuZGVmaW5lZCA/IGZpbi5jYXBhY2l0eVBheW1lbnRQZXJLVyA6IDUwKTsKICAgICAgICBmaW4uYW5jaWxsYXJ5UmV2ZW51ZVByZW1pdW0gPSB0aGlzLl9nZXROdW0oJ3Jldi1hbmNpbGxhcnknLCAgICAoZmluLmFuY2lsbGFyeVJldmVudWVQcmVtaXVtICE9PSB1bmRlZmluZWQgPyBmaW4uYW5jaWxsYXJ5UmV2ZW51ZVByZW1pdW0gOiAwLjQwKSAqIDEwMCkgLyAxMDA7CgogICAgICAgIC8vIEtlZXAgbGVnYWN5IGFsaWFzIGluIHN5bmMKICAgICAgICBmaW4uZW5lcmd5UHVyY2hhc2VQcmljZSA9IGZpbi5lbmVyZ3lTZWxsUHJpY2U7CgogICAgICAgIC8vIFRyaWdnZXIgZnVsbCByZWNhbGN1bGF0ZSB2aWEgZmluYW5jaWFsUGFyYW1zIHBhbmVsIGlmIGF2YWlsYWJsZQogICAgICAgIGlmIChIQi5VSS5maW5hbmNpYWxQYXJhbXMgJiYgSEIuVUkuZmluYW5jaWFsUGFyYW1zLl9yZWNhbGN1bGF0ZSkgewogICAgICAgICAgICBIQi5VSS5maW5hbmNpYWxQYXJhbXMuX3JlY2FsY3VsYXRlKCk7CiAgICAgICAgfSBlbHNlIGlmIChIQi5VSS5zY2FsZVVwICYmIEhCLlVJLnNjYWxlVXAucmVmcmVzaCkgewogICAgICAgICAgICBIQi5VSS5zY2FsZVVwLnJlZnJlc2goKTsKICAgICAgICB9CgogICAgICAgIC8vIEZsYXNoIGFwcGx5IGJ1dHRvbgogICAgICAgIGNvbnN0IGJ0biA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdidG4tcmV2LWFwcGx5Jyk7CiAgICAgICAgaWYgKGJ0bikgewogICAgICAgICAgICBjb25zdCBvcmlnID0gYnRuLnRleHRDb250ZW50OwogICAgICAgICAgICBidG4udGV4dENvbnRlbnQgPSAnQXBwbGllZCDinJMnOwogICAgICAgICAgICBidG4uc3R5bGUuYmFja2dyb3VuZCA9ICcjMmU3ZDMyJzsKICAgICAgICAgICAgc2V0VGltZW91dCgoKSA9PiB7CiAgICAgICAgICAgICAgICBidG4udGV4dENvbnRlbnQgPSBvcmlnOwogICAgICAgICAgICAgICAgYnRuLnN0eWxlLmJhY2tncm91bmQgPSAnJzsKICAgICAgICAgICAgfSwgMTQwMCk7CiAgICAgICAgfQogICAgfSwKCiAgICAvLyAtLS0tIFN5bmMgRlJPTSBmaW5hbmNpYWxzIChjYWxsZWQgd2hlbiBzaXRlIGNoYW5nZXMpIC0tLS0tLS0tLS0tLS0tLS0tLS0KICAgIHN5bmNGcm9tRmluYW5jaWFscygpIHsKICAgICAgICBjb25zdCBmaW4gPSBIQi5Db3N0LmZpbmFuY2lhbHM7CiAgICAgICAgaWYgKGZpbi5lbmVyZ3lTZWxsUHJpY2UpICAgICAgICAgICAgICAgICAgICAgdGhpcy5fc2V0VmFsKCdyZXYtc2VsbC1wcmljZScsICBmaW4uZW5lcmd5U2VsbFByaWNlKTsKICAgICAgICBpZiAoZmluLmVuZXJneUJ1eVByaWNlKSAgICAgICAgICAgICAgICAgICAgICB0aGlzLl9zZXRWYWwoJ3Jldi1idXktcHJpY2UnLCAgIGZpbi5lbmVyZ3lCdXlQcmljZSk7CiAgICAgICAgaWYgKGZpbi5jeWNsZXNQZXJZZWFyKSAgICAgICAgICAgICAgICAgICAgICAgdGhpcy5fc2V0VmFsKCdyZXYtY3ljbGVzJywgICAgICBmaW4uY3ljbGVzUGVyWWVhcik7CiAgICAgICAgaWYgKGZpbi5jYXBhY2l0eVBheW1lbnRQZXJLVyAhPT0gdW5kZWZpbmVkKSAgdGhpcy5fc2V0VmFsKCdyZXYtY2FwLXBheW1lbnQnLCBmaW4uY2FwYWNpdHlQYXltZW50UGVyS1cpOwogICAgICAgIGlmIChmaW4uYW5jaWxsYXJ5UmV2ZW51ZVByZW1pdW0gIT09IHVuZGVmaW5lZCkgdGhpcy5fc2V0VmFsKCdyZXYtYW5jaWxsYXJ5JywgTWF0aC5yb3VuZChmaW4uYW5jaWxsYXJ5UmV2ZW51ZVByZW1pdW0gKiAxMDApKTsKICAgICAgICB0aGlzLl91cGRhdGVCYXIoKTsKICAgIH0sCgogICAgLy8gLS0tLSBEZXNjcmlwdGlvbiB0ZXh0IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICBfdXBkYXRlRGVzY3JpcHRpb24odHh0KSB7CiAgICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmV2LXByZXNldC1kZXNjJyk7CiAgICAgICAgaWYgKGVsKSBlbC50ZXh0Q29udGVudCA9IHR4dDsKICAgIH0sCgogICAgLy8gLS0tLSBIZWxwZXJzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgICBfc2V0VmFsKGlkLCB2YWwpIHsKICAgICAgICBjb25zdCBlbCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGlkKTsKICAgICAgICBpZiAoZWwpIGVsLnZhbHVlID0gdmFsOwogICAgfSwKICAgIF9nZXROdW0oaWQsIGZhbGxiYWNrKSB7CiAgICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChpZCk7CiAgICAgICAgaWYgKCFlbCB8fCBlbC52YWx1ZSA9PT0gJycpIHJldHVybiBmYWxsYmFjazsKICAgICAgICBjb25zdCB2ID0gcGFyc2VGbG9hdChlbC52YWx1ZSk7CiAgICAgICAgcmV0dXJuIGlzTmFOKHYpID8gZmFsbGJhY2sgOiB2OwogICAgfSwKICAgIF9zZXRUZXh0KGlkLCB0eHQpIHsKICAgICAgICBjb25zdCBlbCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGlkKTsKICAgICAgICBpZiAoZWwpIGVsLnRleHRDb250ZW50ID0gdHh0OwogICAgfSwKfTsK
+/**
+ * Revenue Model Panel
+ *
+ * UI controls for the full PHES revenue model:
+ *   • Energy arbitrage  (sell price, buy price, cycles/year)
+ *   • Ancillary services premium  (FCR / aFRR / FCAS)
+ *   • Capacity payments  ($/kW/year — availability fee)
+ *
+ * Market profile presets let users quickly switch between well-calibrated
+ * scenarios (Conservative → Full Service), with a Custom mode for manual tuning.
+ *
+ * On apply, the module writes values into HB.Cost.financials and
+ * HB.Cost.scaleUp, then triggers a full recalculate + scale-up refresh.
+ */
+HB.UI = HB.UI || {};
+
+HB.UI.revenueModel = {
+
+    // ---- Market profile presets ----------------------------------------
+    PRESETS: {
+        conservative: {
+            label:       'Conservative (Arbitrage Only)',
+            description: 'Pure price-spread arbitrage; no capacity or ancillary revenue.',
+            sellPrice:    47,
+            buyPrice:     19,
+            cycles:       240,
+            capPayment:   0,
+            ancillary:    0,
+        },
+        eu_balanced: {
+            label:       'EU Grid Services (Balanced)',
+            description: 'IRENA 2023 / ENTSO-E central case for EU grid-connected PHES.',
+            sellPrice:    90,
+            buyPrice:     42,
+            cycles:       300,
+            capPayment:   50,
+            ancillary:    40,
+        },
+        romania: {
+            label:       'Romania Market',
+            description: 'OPCOM day-ahead + Transelectrica balancing + emerging capacity mechanism (ANRE).',
+            sellPrice:    90,
+            buyPrice:     42,
+            cycles:       300,
+            capPayment:   50,
+            ancillary:    35,
+        },
+        optimistic: {
+            label:       'Full Service (Optimistic)',
+            description: 'Best-case: high peak prices, full ancillary stack, mature capacity market.',
+            sellPrice:   120,
+            buyPrice:     45,
+            cycles:       330,
+            capPayment:   80,
+            ancillary:    60,
+        },
+        custom: {
+            label:       'Custom',
+            description: 'Manually configure all revenue parameters.',
+            sellPrice:    90,
+            buyPrice:     42,
+            cycles:       300,
+            capPayment:   50,
+            ancillary:    40,
+        },
+    },
+
+    // ---- State -------------------------------------------------------------
+    _activePreset: 'eu_balanced',
+
+    // ---- Init --------------------------------------------------------------
+    init() {
+        // Collapse / expand toggle
+        const toggle = document.getElementById('toggle-rev-model');
+        if (toggle) toggle.addEventListener('click', () => {
+            const body = document.getElementById('rev-model-body');
+            const collapsed = body.classList.toggle('hidden');
+            toggle.textContent = collapsed ? '+' : '−';
+        });
+
+        // Populate preset dropdown
+        this._buildPresetOptions();
+
+        // Preset selector change
+        const sel = document.getElementById('rev-preset');
+        if (sel) sel.addEventListener('change', () => this._onPresetChange(sel.value));
+
+        // Input changes → update bar live
+        ['rev-sell-price', 'rev-buy-price', 'rev-cycles', 'rev-cap-payment', 'rev-ancillary'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => {
+                this._markCustom();
+                this._updateBar();
+            });
+        });
+
+        // Buttons
+        const applyBtn  = document.getElementById('btn-rev-apply');
+        const resetBtn  = document.getElementById('btn-rev-reset');
+        if (applyBtn)  applyBtn.addEventListener('click',  () => this._apply());
+        if (resetBtn)  resetBtn.addEventListener('click',  () => this._resetToPreset('eu_balanced'));
+
+        // Seed with EU balanced default
+        this._loadPreset('eu_balanced');
+    },
+
+    // ---- Build preset <option> elements ------------------------------------
+    _buildPresetOptions() {
+        const sel = document.getElementById('rev-preset');
+        if (!sel) return;
+        Object.entries(this.PRESETS).forEach(([key, p]) => {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = p.label;
+            sel.appendChild(opt);
+        });
+    },
+
+    // ---- Preset selected ---------------------------------------------------
+    _onPresetChange(key) {
+        if (key === 'custom') {
+            this._activePreset = 'custom';
+            this._updateDescription('Manually configure all revenue parameters.');
+            return;
+        }
+        this._loadPreset(key);
+    },
+
+    _loadPreset(key) {
+        const p = this.PRESETS[key];
+        if (!p) return;
+        this._activePreset = key;
+
+        this._setVal('rev-sell-price', p.sellPrice);
+        this._setVal('rev-buy-price',  p.buyPrice);
+        this._setVal('rev-cycles',     p.cycles);
+        this._setVal('rev-cap-payment',p.capPayment);
+        this._setVal('rev-ancillary',  p.ancillary);
+
+        const sel = document.getElementById('rev-preset');
+        if (sel) sel.value = key;
+
+        this._updateDescription(p.description);
+        this._updateBar();
+    },
+
+    _resetToPreset(key) {
+        this._loadPreset(key);
+        this._apply(/* silent */ false);
+    },
+
+    // ---- Mark inputs as "custom" when user edits manually -----------------
+    _markCustom() {
+        const sel = document.getElementById('rev-preset');
+        if (sel) sel.value = 'custom';
+        this._activePreset = 'custom';
+        this._updateDescription(this.PRESETS.custom.description);
+    },
+
+    // ---- Revenue composition bar ------------------------------------------
+    _updateBar() {
+        const sellPrice  = this._getNum('rev-sell-price',  90);
+        const buyPrice   = this._getNum('rev-buy-price',   42);
+        const cycles     = this._getNum('rev-cycles',      300);
+        const capPayment = this._getNum('rev-cap-payment', 50);
+        const ancillary  = this._getNum('rev-ancillary',   40) / 100;
+
+        // Effective $/MWh from each stream (gross, before pumping cost)
+        const annualMWhPerMW = 8 * cycles;   // 8h storage × cycles — representative basis
+        const capPerMWh      = capPayment > 0 ? (capPayment * 1000 / annualMWhPerMW) : 0;
+        const ancPerMWh      = sellPrice * ancillary;
+        const totalPerMWh    = Math.max(1, sellPrice + ancPerMWh + capPerMWh);
+
+        const energyPct    = Math.round(sellPrice  / totalPerMWh * 100);
+        const ancillaryPct = Math.round(ancPerMWh  / totalPerMWh * 100);
+        const capacityPct  = 100 - energyPct - ancillaryPct;
+
+        // Net spread highlight
+        const spread = sellPrice - buyPrice;
+
+        // Update bar segments
+        this._setBarWidth('rev-bar-energy',    energyPct);
+        this._setBarWidth('rev-bar-ancillary', ancillaryPct);
+        this._setBarWidth('rev-bar-capacity',  capacityPct);
+
+        // Update labels
+        this._setText('rev-pct-energy',    `${energyPct}%`);
+        this._setText('rev-pct-ancillary', `${ancillaryPct}%`);
+        this._setText('rev-pct-capacity',  `${capacityPct}%`);
+
+        // Effective revenue label
+        const effectivePerMWh = Math.round(totalPerMWh);
+        const spreadTxt = `Arbitrage spread: $${spread}/MWh · Effective: $${effectivePerMWh}/MWh gross`;
+        this._setText('rev-spread-info', spreadTxt);
+    },
+
+    _setBarWidth(id, pct) {
+        const el = document.getElementById(id);
+        if (el) el.style.width = Math.max(0, pct) + '%';
+    },
+
+    // ---- Apply to cost engine and refresh ----------------------------------
+    _apply(/* unused */ _) {
+        const fin = HB.Cost.financials;
+
+        // Write new values into financials
+        fin.energySellPrice         = this._getNum('rev-sell-price',  fin.energySellPrice  || 90);
+        fin.energyBuyPrice          = this._getNum('rev-buy-price',   fin.energyBuyPrice   || 42);
+        fin.cyclesPerYear           = this._getNum('rev-cycles',       fin.cyclesPerYear    || 300);
+        fin.capacityPaymentPerKW    = this._getNum('rev-cap-payment',  fin.capacityPaymentPerKW !== undefined ? fin.capacityPaymentPerKW : 50);
+        fin.ancillaryRevenuePremium = this._getNum('rev-ancillary',    (fin.ancillaryRevenuePremium !== undefined ? fin.ancillaryRevenuePremium : 0.40) * 100) / 100;
+
+        // Keep legacy alias in sync
+        fin.energyPurchasePrice = fin.energySellPrice;
+
+        // Trigger full recalculate via financialParams panel if available
+        if (HB.UI.financialParams && HB.UI.financialParams._recalculate) {
+            HB.UI.financialParams._recalculate();
+        } else if (HB.UI.scaleUp && HB.UI.scaleUp.refresh) {
+            HB.UI.scaleUp.refresh();
+        }
+
+        // Flash apply button
+        const btn = document.getElementById('btn-rev-apply');
+        if (btn) {
+            const orig = btn.textContent;
+            btn.textContent = 'Applied ✓';
+            btn.style.background = '#2e7d32';
+            setTimeout(() => {
+                btn.textContent = orig;
+                btn.style.background = '';
+            }, 1400);
+        }
+    },
+
+    // ---- Sync FROM financials (called when site changes) -------------------
+    syncFromFinancials() {
+        const fin = HB.Cost.financials;
+        if (fin.energySellPrice)                    this._setVal('rev-sell-price',  fin.energySellPrice);
+        if (fin.energyBuyPrice)                     this._setVal('rev-buy-price',   fin.energyBuyPrice);
+        if (fin.cyclesPerYear)                      this._setVal('rev-cycles',      fin.cyclesPerYear);
+        if (fin.capacityPaymentPerKW !== undefined) this._setVal('rev-cap-payment', fin.capacityPaymentPerKW);
+        if (fin.ancillaryRevenuePremium !== undefined) this._setVal('rev-ancillary', Math.round(fin.ancillaryRevenuePremium * 100));
+        this._updateBar();
+    },
+
+    // ---- Description text --------------------------------------------------
+    _updateDescription(txt) {
+        const el = document.getElementById('rev-preset-desc');
+        if (el) el.textContent = txt;
+    },
+
+    // ---- Helpers -----------------------------------------------------------
+    _setVal(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    },
+    _getNum(id, fallback) {
+        const el = document.getElementById(id);
+        if (!el || el.value === '') return fallback;
+        const v = parseFloat(el.value);
+        return isNaN(v) ? fallback : v;
+    },
+    _setText(id, txt) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+    },
+};

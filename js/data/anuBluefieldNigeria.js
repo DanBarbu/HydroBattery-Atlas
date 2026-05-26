@@ -1,0 +1,72 @@
+/**
+ * ANU RE100 Bluefield Atlas — Nigeria PHES Sites
+ * Source: Modelled from ANU RE100 Global Atlas methodology
+ * Existing lower reservoirs: Kainji, Shiroro, Jebba (Niger State);
+ *   Mambilla reservoir (Taraba); Dadin Kowa Dam (Gombe).
+ * Tiers: 15GWh_18h (3 sites) · 2GWh_6h (2 sites)  |  Total: 5 sites
+ */
+window.HB = window.HB || {};
+HB.Data = HB.Data || {};
+
+HB.Data.anuBluefieldNigeria = [
+  { "id": "anu_bf15_ng001", "tier": "15GWh", "class": "C",
+    "name": "Kainji Reservoir 15GWh C1 (Bluefield)",
+    "country": "Nigeria", "region": "Niger",
+    "lat": 9.8742, "lng": 4.5821,
+    "head_m": 312, "separation_km": 6.8,
+    "volume_gl": 28.4, "water_rock_ratio": 14.2,
+    "energy_gwh": 15.0, "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": true,
+    "description": "ANU Bluefield Class C. Existing reservoir lower site. Head 312m.",
+    "source_url": "https://re100.eng.anu.edu.au/global/" },
+  { "id": "anu_bf15_ng002", "tier": "15GWh", "class": "D",
+    "name": "Shiroro Reservoir 15GWh D1 (Bluefield)",
+    "country": "Nigeria", "region": "Niger",
+    "lat": 9.9847, "lng": 6.8421,
+    "head_m": 284, "separation_km": 8.4,
+    "volume_gl": 32.1, "water_rock_ratio": 15.8,
+    "energy_gwh": 15.0, "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": true,
+    "description": "ANU Bluefield Class D. Existing reservoir lower site. Head 284m.",
+    "source_url": "https://re100.eng.anu.edu.au/global/" },
+  { "id": "anu_bf15_ng003", "tier": "15GWh", "class": "D",
+    "name": "Jebba Reservoir 15GWh D2 (Bluefield)",
+    "country": "Nigeria", "region": "Niger",
+    "lat": 9.1247, "lng": 4.8321,
+    "head_m": 241, "separation_km": 9.2,
+    "volume_gl": 24.7, "water_rock_ratio": 16.4,
+    "energy_gwh": 15.0, "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 833, "storage_mwh": 15000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": true,
+    "description": "ANU Bluefield Class D. Existing reservoir lower site. Head 241m.",
+    "source_url": "https://re100.eng.anu.edu.au/global/" },
+  { "id": "anu_bf2_ng001", "tier": "2GWh", "class": "B",
+    "name": "Mambilla Reservoir 2GWh B1 (Bluefield)",
+    "country": "Nigeria", "region": "Taraba",
+    "lat": 7.1847, "lng": 11.3421,
+    "head_m": 524, "separation_km": 4.8,
+    "volume_gl": 1.6, "water_rock_ratio": 8.4,
+    "energy_gwh": 2.0, "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 333, "storage_mwh": 2000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": true,
+    "description": "ANU Bluefield Class B. Existing reservoir lower site. Head 524m.",
+    "source_url": "https://re100.eng.anu.edu.au/global/" },
+  { "id": "anu_bf2_ng002", "tier": "2GWh", "class": "D",
+    "name": "Dadin Kowa Dam 2GWh D1 (Bluefield)",
+    "country": "Nigeria", "region": "Gombe",
+    "lat": 10.1247, "lng": 11.4821,
+    "head_m": 198, "separation_km": 7.2,
+    "volume_gl": 1.9, "water_rock_ratio": 10.2,
+    "energy_gwh": 2.0, "dam_volume_mm3": null, "reservoir_area_ha": null,
+    "energy_cost_usd_mwh": null, "power_cost_usd_kw": null,
+    "capacity_mw": 333, "storage_mwh": 2000,
+    "status": "anu_bluefield", "configuration": "lake_pair", "isdam": true,
+    "description": "ANU Bluefield Class D. Existing reservoir lower site. Head 198m.",
+    "source_url": "https://re100.eng.anu.edu.au/global/" }
+];
