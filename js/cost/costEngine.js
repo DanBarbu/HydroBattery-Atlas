@@ -159,6 +159,7 @@ HB.Cost.financials = {
         'Spain':          1.10,
         'Portugal':       1.05,
         'United Kingdom': 1.35,   // complex planning, Dinorwig/Cruachan precedent
+        'Nigeria':        1.10,   // NERC permitting + moderate governance risk, active EPC market
         'Norway':         1.20,
         'Sweden':         1.15,
         'United States':  1.90,   // NEPA review, FERC licensing, legal — NREL ATB calibrated
