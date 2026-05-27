@@ -174,6 +174,15 @@
     _mergeAnuDataset(HB.Data.anuGreenfieldKenya,       'ANU Greenfield Kenya');
     _mergeAnuDataset(HB.Data.anuBluefieldKenya,        'ANU Bluefield Kenya');
     _mergeAnuDataset(HB.Data.anuBrownfieldKenya,       'ANU Brownfield Kenya');
+    _mergeAnuDataset(HB.Data.anuGreenfieldOman,        'ANU Greenfield Oman');
+    _mergeAnuDataset(HB.Data.anuBluefieldOman,         'ANU Bluefield Oman');
+    _mergeAnuDataset(HB.Data.anuBrownfieldOman,        'ANU Brownfield Oman');
+    _mergeAnuDataset(HB.Data.anuGreenfieldSaudiArabia, 'ANU Greenfield Saudi Arabia');
+    _mergeAnuDataset(HB.Data.anuBluefieldSaudiArabia,  'ANU Bluefield Saudi Arabia');
+    _mergeAnuDataset(HB.Data.anuBrownfieldSaudiArabia, 'ANU Brownfield Saudi Arabia');
+    _mergeAnuDataset(HB.Data.anuGreenfieldUAE,         'ANU Greenfield UAE');
+    _mergeAnuDataset(HB.Data.anuBluefieldUAE,          'ANU Bluefield UAE');
+    _mergeAnuDataset(HB.Data.anuBrownfieldUAE,         'ANU Brownfield UAE');
 
     // Merge Olt River cascade hydropower plants (Romania)
     // Source: GEM Global Hydropower Tracker + OpenStreetMap Overpass API

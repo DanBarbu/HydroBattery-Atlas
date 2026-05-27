@@ -171,7 +171,10 @@ HB.Cost.financials = {
         'South Africa':   1.15,   // higher than raw labour costs due to governance/overrun risk
         'Kenya':          1.05,
         'Ethiopia':       1.00,
+        'Oman':           1.05,   // OIF renewable support, stable governance, limited PHES market
+        'Saudi Arabia':   1.05,   // Vision 2030 streamlined some approvals, strong EPC market
         'Sabah / Borneo': 0.95,
+        'UAE':            1.00,   // DEWA/MASDAR precedent, highly efficient delivery
         'default':        1.10
     },
 
