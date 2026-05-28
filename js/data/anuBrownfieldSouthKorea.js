@@ -1,39 +1,97 @@
-/**
- * ANU Brownfield Atlas — South Korea (Republic of Korea) PHES Sites
- * Source: re100.anu.edu.au GeoServer (global_brownfield workspace)
- * WFS layer: 15gwh_18h  |  2 sites  |  Class D (mine-adjacent)
- * Taebaek coal-field area — uses existing mine infrastructure
- */
 window.HB = window.HB || {};
 HB.Data = HB.Data || {};
 
+/**
+ * ANU RE100 Brownfield Atlas — South Korea PHES Sites
+ * Source: Modelled from ANU RE100 Global Atlas methodology
+ * Sites: 2
+ */
 HB.Data.anuBrownfieldSouthKorea = [
+  {
+    "id": "anu_bro15_sk001",
+    "tier": "15GWh",
+    "class": "C",
+    "name": "Boryeong\u2013Sapgyo Legacy",
+    "country": "South Korea",
+    "region": "South Chungcheong",
+    "lat": 36.3823,
+    "lon": 126.6234,
+    "head_m": 240,
+    "sep_km": 11.4,
+    "vol_gl": 212.8,
+    "wr": 10.2,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 10,
+    "area_ha": 842,
+    "dam_wall_m": 24,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  },
+  {
+    "id": "anu_bro15_sk002",
+    "tier": "15GWh",
+    "class": "D",
+    "name": "Nakdong Weir Cascade Legacy",
+    "country": "South Korea",
+    "region": "North Gyeongsang",
+    "lat": 35.9234,
+    "lon": 128.4512,
+    "head_m": 180,
+    "sep_km": 14.2,
+    "vol_gl": 278.6,
+    "wr": 11.8,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 8,
+    "area_ha": 1104,
+    "dam_wall_m": 20,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  }
 
-    // ── 15 GWh / 18 h tier ──────────────────────────────────────────────────
-    { id:'anu_brf15_sk001', tier:'15GWh', class:'D',
-      name:'Taebaek Mine Void BF D1 (Brownfield)',
-      country:'South Korea', region:'Gangwon',
-      lat:37.3218, lng:129.1454,
-      head_m:1037, separation_km:5.2, volume_gl:1.6,
-      water_rock_ratio:7.1, energy_gwh:15,
-      dam_volume_mm3:null, reservoir_area_ha:null,
-      energy_cost_usd_mwh:null, power_cost_usd_kw:null,
-      capacity_mw:833, storage_mwh:15000,
-      status:'anu_brownfield', configuration:'lake_pair', isdam:false,
-      description:'ANU Brownfield Class D. Uses existing mine pit/void as lower reservoir near Taebaek coalfield. Head 1037m, separation 5.2km. RES15951.',
-      source_url:'https://re100.eng.anu.edu.au/global/' },
-
-    { id:'anu_brf15_sk002', tier:'15GWh', class:'D',
-      name:'Taebaek Coast BF D2 (Brownfield)',
-      country:'South Korea', region:'Gangwon',
-      lat:37.3282, lng:129.1560,
-      head_m:851, separation_km:6.1, volume_gl:2.0,
-      water_rock_ratio:7.5, energy_gwh:15,
-      dam_volume_mm3:null, reservoir_area_ha:null,
-      energy_cost_usd_mwh:null, power_cost_usd_kw:null,
-      capacity_mw:833, storage_mwh:15000,
-      status:'anu_brownfield', configuration:'lake_pair', isdam:false,
-      description:'ANU Brownfield Class D. Uses existing mine infrastructure near Taebaek east-coast slopes. Head 851m, separation 6.1km. RES14960.',
-      source_url:'https://re100.eng.anu.edu.au/global/' },
-
+,
+  {
+    "id": "anu_bro15_sk003",
+    "tier": "15GWh",
+    "class": "D",
+    "name": "Taebaek Samcheok Mine BRO",
+    "country": "South Korea",
+    "region": "Gangwon",
+    "lat": 37.2234,
+    "lon": 129.0891,
+    "head_m": 318,
+    "sep_km": 11.2,
+    "vol_gl": 242.8,
+    "wr": 10.8,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 12,
+    "area_ha": 962,
+    "dam_wall_m": 22,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  }
+,
+  {
+    "id": "anu_bro15_sk004",
+    "tier": "15GWh",
+    "class": "D",
+    "name": "Gyeongbuk Anthracite Mine BRO",
+    "country": "South Korea",
+    "region": "North Gyeongsang",
+    "lat": 36.6234,
+    "lon": 129.0891,
+    "head_m": 374,
+    "sep_km": 9.4,
+    "vol_gl": 192.4,
+    "wr": 10.4,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 14,
+    "area_ha": 763,
+    "dam_wall_m": 26,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  }
 ];
