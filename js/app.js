@@ -155,19 +155,24 @@
     }
 
     _mergeAnuDataset(HB.Data.anuGreenfieldMalaysia,    'ANU Greenfield Malaysia');
-    _mergeAnuDataset(HB.Data.anuGreenfieldRomania,     'ANU Greenfield Romania');
+    _mergeAnuDataset(HB.Data.anuBluefieldMalaysia,     'ANU Bluefield Malaysia');
     _mergeAnuDataset(HB.Data.anuBrownfieldMalaysia,    'ANU Brownfield Malaysia');
-    _mergeAnuDataset(HB.Data.anuBrownfieldRomania,     'ANU Brownfield Romania');
     _mergeAnuDataset(HB.Data.anuOceanMalaysia,         'ANU Ocean Malaysia');
-    _mergeAnuDataset(HB.Data.anuBluefieldSouthKorea,   'ANU Bluefield South Korea');
+    _mergeAnuDataset(HB.Data.anuGreenfieldRomania,     'ANU Greenfield Romania');
+    _mergeAnuDataset(HB.Data.anuBluefieldRomania,      'ANU Bluefield Romania');
+    _mergeAnuDataset(HB.Data.anuBrownfieldRomania,     'ANU Brownfield Romania');
     _mergeAnuDataset(HB.Data.anuGreenfieldSouthKorea,  'ANU Greenfield South Korea');
+    _mergeAnuDataset(HB.Data.anuBluefieldSouthKorea,   'ANU Bluefield South Korea');
     _mergeAnuDataset(HB.Data.anuBrownfieldSouthKorea,  'ANU Brownfield South Korea');
-    _mergeAnuDataset(HB.Data.anuBluefieldPhilippines,  'ANU Bluefield Philippines');
+    _mergeAnuDataset(HB.Data.anuOceanSouthKorea,       'ANU Ocean South Korea');
     _mergeAnuDataset(HB.Data.anuGreenfieldPhilippines, 'ANU Greenfield Philippines');
+    _mergeAnuDataset(HB.Data.anuBluefieldPhilippines,  'ANU Bluefield Philippines');
     _mergeAnuDataset(HB.Data.anuBrownfieldPhilippines, 'ANU Brownfield Philippines');
-    _mergeAnuDataset(HB.Data.anuBluefieldIndonesia,    'ANU Bluefield Indonesia');
+    _mergeAnuDataset(HB.Data.anuOceanPhilippines,      'ANU Ocean Philippines');
     _mergeAnuDataset(HB.Data.anuGreenfieldIndonesia,   'ANU Greenfield Indonesia');
+    _mergeAnuDataset(HB.Data.anuBluefieldIndonesia,    'ANU Bluefield Indonesia');
     _mergeAnuDataset(HB.Data.anuBrownfieldIndonesia,   'ANU Brownfield Indonesia');
+    _mergeAnuDataset(HB.Data.anuOceanIndonesia,        'ANU Ocean Indonesia');
     _mergeAnuDataset(HB.Data.anuGreenfieldNigeria,     'ANU Greenfield Nigeria');
     _mergeAnuDataset(HB.Data.anuBluefieldNigeria,      'ANU Bluefield Nigeria');
     _mergeAnuDataset(HB.Data.anuBrownfieldNigeria,     'ANU Brownfield Nigeria');
@@ -177,12 +182,15 @@
     _mergeAnuDataset(HB.Data.anuGreenfieldOman,        'ANU Greenfield Oman');
     _mergeAnuDataset(HB.Data.anuBluefieldOman,         'ANU Bluefield Oman');
     _mergeAnuDataset(HB.Data.anuBrownfieldOman,        'ANU Brownfield Oman');
+    _mergeAnuDataset(HB.Data.anuOceanOman,             'ANU Ocean Oman');
     _mergeAnuDataset(HB.Data.anuGreenfieldSaudiArabia, 'ANU Greenfield Saudi Arabia');
     _mergeAnuDataset(HB.Data.anuBluefieldSaudiArabia,  'ANU Bluefield Saudi Arabia');
     _mergeAnuDataset(HB.Data.anuBrownfieldSaudiArabia, 'ANU Brownfield Saudi Arabia');
+    _mergeAnuDataset(HB.Data.anuOceanSaudiArabia,      'ANU Ocean Saudi Arabia');
     _mergeAnuDataset(HB.Data.anuGreenfieldUAE,         'ANU Greenfield UAE');
     _mergeAnuDataset(HB.Data.anuBluefieldUAE,          'ANU Bluefield UAE');
     _mergeAnuDataset(HB.Data.anuBrownfieldUAE,         'ANU Brownfield UAE');
+    _mergeAnuDataset(HB.Data.anuOceanUAE,              'ANU Ocean UAE');
 
     // Merge Olt River cascade hydropower plants (Romania)
     // Source: GEM Global Hydropower Tracker + OpenStreetMap Overpass API
