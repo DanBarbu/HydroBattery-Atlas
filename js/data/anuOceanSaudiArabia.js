@@ -5,7 +5,7 @@ HB.Data = HB.Data || {};
  * ANU RE100 Ocean Atlas — Saudi Arabia PHES Sites
  * Upper reservoir + ocean as lower reservoir
  * configuration: lake_ocean | status: anu_ocean
- * Sites: 12 | Tiers: {'50GWh': 4, '15GWh': 5, '2GWh': 3}
+ * Sites: 15 | Tiers: {'50GWh': 5, '15GWh': 6, '5GWh': 1, '2GWh': 3}
  */
 HB.Data.anuOceanSaudiArabia = [
   {
@@ -27,6 +27,72 @@ HB.Data.anuOceanSaudiArabia = [
     "area_ha": 62,
     "dam_wall_m": 46.4,
     "capacity_mw": 2778,
+    "configuration": "lake_ocean",
+    "status": "anu_ocean"
+  },
+  {
+    "id": "anu_oc50_sa013",
+    "tier": "50GWh",
+    "class": "B",
+    "name": "Tabuk Gulf Aqaba Ocean 50GWh B5 (n28_e035_RES68475)",
+    "country": "Saudi Arabia",
+    "region": "Tabuk",
+    "lat": 28.17819,
+    "lng": 35.23806,
+    "head_m": 1513,
+    "separation_km": 29.8,
+    "vol_gl": 15.9,
+    "wr": 2.5,
+    "energy_gwh": 50,
+    "storage_h": 18,
+    "slope_pct": 47,
+    "area_ha": 18,
+    "dam_wall_m": 112.4,
+    "capacity_mw": 2778,
+    "configuration": "lake_ocean",
+    "status": "anu_ocean"
+  },
+  {
+    "id": "anu_oc15_sa014",
+    "tier": "15GWh",
+    "class": "B",
+    "name": "Tabuk Gulf Aqaba Ocean 15GWh B6 (n28_e035_RES68475)",
+    "country": "Saudi Arabia",
+    "region": "Tabuk",
+    "lat": 28.17819,
+    "lng": 35.23806,
+    "head_m": 1513,
+    "separation_km": 29.8,
+    "vol_gl": 9.5,
+    "wr": 2.5,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 47,
+    "area_ha": 14,
+    "dam_wall_m": 112.4,
+    "capacity_mw": 833,
+    "configuration": "lake_ocean",
+    "status": "anu_ocean"
+  },
+  {
+    "id": "anu_oc5_sa015",
+    "tier": "5GWh",
+    "class": "B",
+    "name": "Tabuk Gulf Aqaba Ocean 5GWh B7 (n28_e035_RES68475)",
+    "country": "Saudi Arabia",
+    "region": "Tabuk",
+    "lat": 28.17819,
+    "lng": 35.23806,
+    "head_m": 1513,
+    "separation_km": 29.8,
+    "vol_gl": 15.9,
+    "wr": 2.5,
+    "energy_gwh": 5,
+    "storage_h": 18,
+    "slope_pct": 47,
+    "area_ha": 8,
+    "dam_wall_m": 112.4,
+    "capacity_mw": 278,
     "configuration": "lake_ocean",
     "status": "anu_ocean"
   },

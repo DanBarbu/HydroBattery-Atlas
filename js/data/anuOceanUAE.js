@@ -5,7 +5,7 @@ HB.Data = HB.Data || {};
  * ANU RE100 Ocean Atlas — UAE PHES Sites
  * Upper reservoir + ocean as lower reservoir
  * configuration: lake_ocean | status: anu_ocean
- * Sites: 8 | Tiers: {'50GWh': 3, '15GWh': 3, '2GWh': 2}
+ * Sites: 9 | Tiers: {'50GWh': 3, '15GWh': 4, '2GWh': 2}
  */
 HB.Data.anuOceanUAE = [
   {
@@ -159,6 +159,28 @@ HB.Data.anuOceanUAE = [
     "area_ha": 46,
     "dam_wall_m": 60.6,
     "capacity_mw": 2778,
+    "configuration": "lake_ocean",
+    "status": "anu_ocean"
+  },
+  {
+    "id": "anu_oc15_ae009",
+    "tier": "15GWh",
+    "class": "B",
+    "name": "RAK Hajar Arabian Gulf Ocean 15GWh B (n25_e056_RES17226)",
+    "country": "UAE",
+    "region": "Ras Al Khaimah",
+    "lat": 25.75958,
+    "lng": 56.03792,
+    "head_m": 761,
+    "separation_km": 15.2,
+    "vol_gl": 9.5,
+    "wr": 7.9,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 32,
+    "area_ha": 24,
+    "dam_wall_m": 58.0,
+    "capacity_mw": 833,
     "configuration": "lake_ocean",
     "status": "anu_ocean"
   },
