@@ -49,4 +49,48 @@ HB.Data.anuBrownfieldPhilippines = [
     "configuration": "lake_lake",
     "status": "anu_bro"
   }
+,
+  {
+    "id": "anu_bro15_ph003",
+    "tier": "15GWh",
+    "class": "C",
+    "name": "Benguet Mine Void Luzon BRO",
+    "country": "Philippines",
+    "region": "Cordillera Administrative Region",
+    "lat": 16.6234,
+    "lon": 120.6891,
+    "head_m": 428,
+    "sep_km": 8.8,
+    "vol_gl": 242.4,
+    "wr": 9.4,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 18,
+    "area_ha": 962,
+    "dam_wall_m": 28,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  }
+,
+  {
+    "id": "anu_bro15_ph004",
+    "tier": "15GWh",
+    "class": "D",
+    "name": "Camarines Sur Mine BRO",
+    "country": "Philippines",
+    "region": "Bicol",
+    "lat": 13.4234,
+    "lon": 123.2891,
+    "head_m": 298,
+    "sep_km": 11.4,
+    "vol_gl": 342.8,
+    "wr": 10.8,
+    "energy_gwh": 15,
+    "storage_h": 18,
+    "slope_pct": 11,
+    "area_ha": 1360,
+    "dam_wall_m": 21,
+    "configuration": "lake_lake",
+    "status": "anu_bro"
+  }
 ];
