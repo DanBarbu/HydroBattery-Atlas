@@ -15,7 +15,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Benguet",
     "lat": 16.6234,
-    "lon": 120.7891,
+    "lng": 120.7891,
     "head_m": 1060,
     "sep_km": 2.2,
     "vol_gl": 6.4,
@@ -25,7 +25,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 52,
     "area_ha": 24,
     "dam_wall_m": 72,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Mountain Province",
     "lat": 16.9823,
-    "lon": 121.0234,
+    "lng": 121.0234,
     "head_m": 1140,
     "sep_km": 2.0,
     "vol_gl": 5.2,
@@ -46,7 +46,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 58,
     "area_ha": 20,
     "dam_wall_m": 78,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Kalinga",
     "lat": 17.4512,
-    "lon": 121.3678,
+    "lng": 121.3678,
     "head_m": 980,
     "sep_km": 2.6,
     "vol_gl": 8.2,
@@ -67,7 +67,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 46,
     "area_ha": 32,
     "dam_wall_m": 66,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Bukidnon",
     "lat": 8.0341,
-    "lon": 124.9823,
+    "lng": 124.9823,
     "head_m": 720,
     "sep_km": 3.6,
     "vol_gl": 15.8,
@@ -88,7 +88,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 33,
     "area_ha": 62,
     "dam_wall_m": 52,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -99,7 +99,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "North Cotabato",
     "lat": 6.9823,
-    "lon": 125.2712,
+    "lng": 125.2712,
     "head_m": 1180,
     "sep_km": 1.9,
     "vol_gl": 4.8,
@@ -109,7 +109,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 62,
     "area_ha": 18,
     "dam_wall_m": 82,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -120,7 +120,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Albay",
     "lat": 13.2456,
-    "lon": 123.6891,
+    "lng": 123.6891,
     "head_m": 680,
     "sep_km": 4.2,
     "vol_gl": 26.4,
@@ -130,7 +130,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 29,
     "area_ha": 104,
     "dam_wall_m": 48,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -141,7 +141,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Quezon",
     "lat": 14.1234,
-    "lon": 121.8912,
+    "lng": 121.8912,
     "head_m": 860,
     "sep_km": 3.2,
     "vol_gl": 18.6,
@@ -151,7 +151,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 42,
     "area_ha": 74,
     "dam_wall_m": 62,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -162,7 +162,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Lanao Del Sur",
     "lat": 7.8234,
-    "lon": 124.3412,
+    "lng": 124.3412,
     "head_m": 740,
     "sep_km": 4.0,
     "vol_gl": 30.2,
@@ -172,7 +172,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 31,
     "area_ha": 120,
     "dam_wall_m": 50,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -183,7 +183,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Mountain Province",
     "lat": 17.0847,
-    "lon": 120.9234,
+    "lng": 120.9234,
     "head_m": 780,
     "sep_km": 4.8,
     "vol_gl": 72.4,
@@ -193,7 +193,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 34,
     "area_ha": 286,
     "dam_wall_m": 56,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -204,7 +204,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Ifugao",
     "lat": 16.7823,
-    "lon": 121.1156,
+    "lng": 121.1156,
     "head_m": 1020,
     "sep_km": 3.2,
     "vol_gl": 52.6,
@@ -214,7 +214,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 48,
     "area_ha": 208,
     "dam_wall_m": 72,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 
@@ -227,7 +227,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Cordillera Administrative Region",
     "lat": 17.4234,
-    "lon": 121.2891,
+    "lng": 121.2891,
     "head_m": 820,
     "sep_km": 3.8,
     "vol_gl": 12.4,
@@ -237,7 +237,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 38,
     "area_ha": 49,
     "dam_wall_m": 60,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -249,7 +249,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Bicol",
     "lat": 12.7634,
-    "lon": 124.0891,
+    "lng": 124.0891,
     "head_m": 580,
     "sep_km": 5.4,
     "vol_gl": 18.2,
@@ -259,7 +259,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 24,
     "area_ha": 72,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -271,7 +271,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Davao",
     "lat": 7.2823,
-    "lon": 125.8234,
+    "lng": 125.8234,
     "head_m": 620,
     "sep_km": 5.2,
     "vol_gl": 16.8,
@@ -281,7 +281,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 26,
     "area_ha": 67,
     "dam_wall_m": 44,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -293,7 +293,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Eastern Visayas",
     "lat": 11.7234,
-    "lon": 125.0891,
+    "lng": 125.0891,
     "head_m": 312,
     "sep_km": 8.4,
     "vol_gl": 28.4,
@@ -303,7 +303,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 14,
     "area_ha": 112,
     "dam_wall_m": 26,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -315,7 +315,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Cordillera Administrative Region",
     "lat": 17.5234,
-    "lon": 121.3891,
+    "lng": 121.3891,
     "head_m": 1280,
     "sep_km": 4.4,
     "vol_gl": 28.4,
@@ -325,7 +325,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 52,
     "area_ha": 112,
     "dam_wall_m": 92,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -337,7 +337,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Northern Mindanao",
     "lat": 8.0234,
-    "lon": 124.9891,
+    "lng": 124.9891,
     "head_m": 820,
     "sep_km": 5.8,
     "vol_gl": 38.4,
@@ -347,7 +347,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 34,
     "area_ha": 152,
     "dam_wall_m": 60,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -359,7 +359,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Cagayan Valley",
     "lat": 16.3234,
-    "lon": 121.1891,
+    "lng": 121.1891,
     "head_m": 560,
     "sep_km": 8.2,
     "vol_gl": 58.2,
@@ -369,7 +369,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 22,
     "area_ha": 232,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -381,7 +381,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Eastern Visayas",
     "lat": 11.1234,
-    "lon": 124.9891,
+    "lng": 124.9891,
     "head_m": 348,
     "sep_km": 12.4,
     "vol_gl": 88.2,
@@ -391,7 +391,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 14,
     "area_ha": 350,
     "dam_wall_m": 24,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -403,7 +403,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Cordillera Administrative Region",
     "lat": 18.0234,
-    "lon": 121.2891,
+    "lng": 121.2891,
     "head_m": 1380,
     "sep_km": 5.4,
     "vol_gl": 72.4,
@@ -413,7 +413,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 56,
     "area_ha": 286,
     "dam_wall_m": 100,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -425,7 +425,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "Caraga",
     "lat": 8.2234,
-    "lon": 126.0891,
+    "lng": 126.0891,
     "head_m": 820,
     "sep_km": 8.2,
     "vol_gl": 104.8,
@@ -435,7 +435,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 32,
     "area_ha": 415,
     "dam_wall_m": 62,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -447,7 +447,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "SOCCSKSARGEN",
     "lat": 6.9234,
-    "lon": 124.8891,
+    "lng": 124.8891,
     "head_m": 548,
     "sep_km": 11.2,
     "vol_gl": 154.8,
@@ -457,7 +457,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 22,
     "area_ha": 614,
     "dam_wall_m": 40,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -469,7 +469,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "country": "Philippines",
     "region": "BARMM",
     "lat": 7.8234,
-    "lon": 124.3891,
+    "lng": 124.3891,
     "head_m": 328,
     "sep_km": 14.8,
     "vol_gl": 222.4,
@@ -479,7 +479,7 @@ HB.Data.anuGreenfieldPhilippines = [
     "slope_pct": 12,
     "area_ha": 882,
     "dam_wall_m": 22,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ];

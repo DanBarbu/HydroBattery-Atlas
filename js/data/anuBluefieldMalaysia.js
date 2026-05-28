@@ -15,7 +15,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Terengganu",
     "lat": 4.9823,
-    "lon": 102.6234,
+    "lng": 102.6234,
     "head_m": 580,
     "sep_km": 5.2,
     "vol_gl": 18.4,
@@ -25,7 +25,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 24,
     "area_ha": 73,
     "dam_wall_m": 44,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Perak",
     "lat": 5.3456,
-    "lon": 101.3823,
+    "lng": 101.3823,
     "head_m": 540,
     "sep_km": 5.8,
     "vol_gl": 22.6,
@@ -46,7 +46,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 22,
     "area_ha": 90,
     "dam_wall_m": 40,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Sarawak",
     "lat": 2.8341,
-    "lon": 114.6234,
+    "lng": 114.6234,
     "head_m": 620,
     "sep_km": 6.2,
     "vol_gl": 88.4,
@@ -67,7 +67,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 22,
     "area_ha": 350,
     "dam_wall_m": 46,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Sarawak",
     "lat": 3.2156,
-    "lon": 114.9823,
+    "lng": 114.9823,
     "head_m": 820,
     "sep_km": 4.6,
     "vol_gl": 62.4,
@@ -88,7 +88,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 34,
     "area_ha": 247,
     "dam_wall_m": 58,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -99,7 +99,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Sarawak",
     "lat": 1.1823,
-    "lon": 112.0912,
+    "lng": 112.0912,
     "head_m": 560,
     "sep_km": 6.8,
     "vol_gl": 94.6,
@@ -109,7 +109,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 20,
     "area_ha": 374,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -120,7 +120,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Kelantan",
     "lat": 5.7234,
-    "lon": 102.0341,
+    "lng": 102.0341,
     "head_m": 640,
     "sep_km": 5.6,
     "vol_gl": 76.8,
@@ -130,7 +130,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 26,
     "area_ha": 304,
     "dam_wall_m": 48,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -142,7 +142,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Sarawak",
     "lat": 3.4234,
-    "lon": 114.8891,
+    "lng": 114.8891,
     "head_m": 680,
     "sep_km": 8.4,
     "vol_gl": 124.8,
@@ -152,7 +152,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 28,
     "area_ha": 495,
     "dam_wall_m": 52,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -164,7 +164,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Sarawak",
     "lat": 2.7234,
-    "lon": 114.0891,
+    "lng": 114.0891,
     "head_m": 482,
     "sep_km": 11.2,
     "vol_gl": 182.4,
@@ -174,7 +174,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 20,
     "area_ha": 724,
     "dam_wall_m": 36,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -186,7 +186,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Perak",
     "lat": 5.4234,
-    "lon": 101.3234,
+    "lng": 101.3234,
     "head_m": 1180,
     "sep_km": 12.8,
     "vol_gl": 42.4,
@@ -196,7 +196,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 48,
     "area_ha": 168,
     "dam_wall_m": 88,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -208,7 +208,7 @@ HB.Data.anuBluefieldMalaysia = [
     "country": "Malaysia",
     "region": "Terengganu",
     "lat": 5.0823,
-    "lon": 102.7234,
+    "lng": 102.7234,
     "head_m": 380,
     "sep_km": 4.8,
     "vol_gl": 72.4,
@@ -218,7 +218,7 @@ HB.Data.anuBluefieldMalaysia = [
     "slope_pct": 16,
     "area_ha": 288,
     "dam_wall_m": 24,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ];

@@ -15,7 +15,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Benguet",
     "lat": 16.4234,
-    "lon": 120.7512,
+    "lng": 120.7512,
     "head_m": 560,
     "sep_km": 5.2,
     "vol_gl": 18.8,
@@ -25,7 +25,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 24,
     "area_ha": 74,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Bulacan",
     "lat": 14.8912,
-    "lon": 121.1234,
+    "lng": 121.1234,
     "head_m": 340,
     "sep_km": 6.8,
     "vol_gl": 48.6,
@@ -46,7 +46,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 18,
     "area_ha": 192,
     "dam_wall_m": 34,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Pangasinan",
     "lat": 16.1823,
-    "lon": 120.6891,
+    "lng": 120.6891,
     "head_m": 620,
     "sep_km": 5.8,
     "vol_gl": 86.4,
@@ -67,7 +67,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 22,
     "area_ha": 342,
     "dam_wall_m": 46,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Isabela",
     "lat": 16.9234,
-    "lon": 121.5678,
+    "lng": 121.5678,
     "head_m": 580,
     "sep_km": 6.2,
     "vol_gl": 92.8,
@@ -88,7 +88,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 24,
     "area_ha": 368,
     "dam_wall_m": 44,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -100,7 +100,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Central Luzon",
     "lat": 14.9234,
-    "lon": 121.1891,
+    "lng": 121.1891,
     "head_m": 428,
     "sep_km": 8.4,
     "vol_gl": 862,
@@ -110,7 +110,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 18,
     "area_ha": 3422,
     "dam_wall_m": 28,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -122,7 +122,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Ilocos",
     "lat": 15.9234,
-    "lon": 120.8891,
+    "lng": 120.8891,
     "head_m": 382,
     "sep_km": 9.2,
     "vol_gl": 684,
@@ -132,7 +132,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 16,
     "area_ha": 2714,
     "dam_wall_m": 24,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -144,7 +144,7 @@ HB.Data.anuBluefieldPhilippines = [
     "country": "Philippines",
     "region": "Cordillera Administrative Region",
     "lat": 16.6234,
-    "lon": 120.8891,
+    "lng": 120.8891,
     "head_m": 642,
     "sep_km": 6.2,
     "vol_gl": 128.4,
@@ -154,7 +154,7 @@ HB.Data.anuBluefieldPhilippines = [
     "slope_pct": 28,
     "area_ha": 509,
     "dam_wall_m": 48,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ];
