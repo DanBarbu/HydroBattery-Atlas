@@ -139,6 +139,24 @@ ADR-014.)
 
 ## Status
 
-**Proposed.** Implementation is blocked until Tech Lead, Compliance
-(licence + ITAR), and Security (mTLS, egress gate) co-sign. No TAK code,
-config, or vendored sources land before sign-off.
+**Proposed.** A `tak-gateway` scaffold has been built at
+`will-platform/services/tak-gateway` at the platform owner's direction, but
+it ships **disabled-by-default behind two gates** and is **not for production
+use** until Tech Lead, Compliance (licence + ITAR), and Security (mTLS,
+egress gate) co-sign:
+
+1. **Install/first-run opt-out decision.** On a fresh install the gateway
+   starts in `pending` and opens no TAK socket. An operator must record an
+   explicit `enabled` or `opted_out` decision (persisted, attributable) via
+   `POST /decision`. Opt-out is sticky and never overridden by unattended
+   seeds.
+2. **Co-sign acknowledgement.** Even when an operator enables it, the bridge
+   will not connect unless `TAK_COSIGN_ACK=true`, which is set only after this
+   ADR is Accepted.
+
+The dev `docker-compose` ships the service `pending` with co-sign `false`,
+so nothing connects. No TAK Server / ATAK-CIV sources are vendored. The
+egress classification gate is fail-closed and covered by
+`TestEgressNeverExceedsCeiling`. Promotion to **Accepted** still requires
+the three co-signs (notably the custom TAK Product Center licence + ITAR
+review).
