@@ -22,6 +22,7 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-014](ADR-014-legacy-c2-bridge.md) | Legacy C2 Bridge — BC2A® / ICIS interoperability | Accepted (co-signed: Tech Lead · Compliance) |
 | [ADR-015](ADR-015-metoc-module.md) | METOC module — weather impact + Lagrangian drift (advisory) | Accepted (co-signed: Tech Lead · Compliance) |
 | [ADR-016](ADR-016-osint-module.md) | OSINT module — ADS-B / AIS / TLE / hazards (advisory, low-confidence) | Accepted (co-signed: Tech Lead · Compliance · Security) |
+| [ADR-017](ADR-017-tak-server-integration.md) | TAK Server integration — bidirectional, classification-gated | Proposed (co-sign required: Tech Lead · Compliance · Security) |
 
 ## Authoring
 
