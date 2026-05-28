@@ -18,6 +18,15 @@ For each registered country the audit verifies:
 - **Brownfield** data file exists and has > 0 sites
 - **Ocean** data file exists for coastal countries with ocean-PHES potential
 
+### Rigorous ocean checks (per-file)
+
+- **A. Geographic bounds** — flags any site whose lat/lng falls outside the country bounding box
+- **B. Tier coverage** — ocean files must have all three tiers: `2GWh`, `15GWh`, `50GWh`; missing tiers reported as `⚠ MISSING TIER: 50GWh`
+- **C. Ocean configuration** — all sites must have `configuration: "lake_ocean"`
+- **D. Upper/lower coords** — reports fraction of ocean sites with `upper_lat`/`lower_lat` defined (e.g. `9/9 sites have upper_lat`); tells us satellite view quality
+- **E. Known ANU site verification** — checks that confirmed ANU reference IDs appear in site names (e.g. `n28_e035_RES68475` in Saudi Arabia, `n25_e056_RES17226` in UAE)
+- **F. Minimum count sanity** — warns if ocean site count is below expected minimum for each country
+
 Coastal countries with expected Ocean PHES:
 `Malaysia, Indonesia, Philippines, South Korea, Oman, Saudi Arabia, UAE`
 
