@@ -155,11 +155,9 @@
     }
 
     _mergeAnuDataset(HB.Data.anuGreenfieldMalaysia,    'ANU Greenfield Malaysia');
-    _mergeAnuDataset(HB.Data.anuBluefieldMalaysia,     'ANU Bluefield Malaysia');
     _mergeAnuDataset(HB.Data.anuBrownfieldMalaysia,    'ANU Brownfield Malaysia');
     _mergeAnuDataset(HB.Data.anuOceanMalaysia,         'ANU Ocean Malaysia');
     _mergeAnuDataset(HB.Data.anuGreenfieldRomania,     'ANU Greenfield Romania');
-    _mergeAnuDataset(HB.Data.anuBluefieldRomania,      'ANU Bluefield Romania');
     _mergeAnuDataset(HB.Data.anuBrownfieldRomania,     'ANU Brownfield Romania');
     _mergeAnuDataset(HB.Data.anuGreenfieldSouthKorea,  'ANU Greenfield South Korea');
     _mergeAnuDataset(HB.Data.anuBluefieldSouthKorea,   'ANU Bluefield South Korea');

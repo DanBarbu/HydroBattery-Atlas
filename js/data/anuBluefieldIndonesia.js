@@ -15,7 +15,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "West Java",
     "lat": -6.5234,
-    "lon": 107.3891,
+    "lng": 107.3891,
     "head_m": 540,
     "sep_km": 4.8,
     "vol_gl": 18.6,
@@ -25,7 +25,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 24,
     "area_ha": 74,
     "dam_wall_m": 44,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "North Sumatra",
     "lat": 2.0941,
-    "lon": 99.2347,
+    "lng": 99.2347,
     "head_m": 480,
     "sep_km": 5.6,
     "vol_gl": 22.4,
@@ -46,7 +46,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 20,
     "area_ha": 88,
     "dam_wall_m": 40,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "West Java",
     "lat": -6.8456,
-    "lon": 107.1234,
+    "lng": 107.1234,
     "head_m": 320,
     "sep_km": 7.2,
     "vol_gl": 128.4,
@@ -67,7 +67,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 16,
     "area_ha": 508,
     "dam_wall_m": 36,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "East Kalimantan",
     "lat": 2.8234,
-    "lon": 114.8912,
+    "lng": 114.8912,
     "head_m": 290,
     "sep_km": 8.4,
     "vol_gl": 148.6,
@@ -88,7 +88,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 14,
     "area_ha": 588,
     "dam_wall_m": 32,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -99,7 +99,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "North Sumatra",
     "lat": 2.4512,
-    "lon": 99.4823,
+    "lng": 99.4823,
     "head_m": 620,
     "sep_km": 5.8,
     "vol_gl": 86.4,
@@ -109,7 +109,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 342,
     "dam_wall_m": 46,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 
@@ -122,7 +122,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "West Java",
     "lat": -6.6823,
-    "lon": 107.3234,
+    "lng": 107.3234,
     "head_m": 420,
     "sep_km": 6.8,
     "vol_gl": 284.2,
@@ -132,7 +132,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 18,
     "area_ha": 1128,
     "dam_wall_m": 28,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -144,7 +144,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "Riau",
     "lat": 0.3234,
-    "lon": 100.7891,
+    "lng": 100.7891,
     "head_m": 480,
     "sep_km": 7.4,
     "vol_gl": 242.4,
@@ -154,7 +154,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 962,
     "dam_wall_m": 34,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -166,7 +166,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "East Java",
     "lat": -8.1634,
-    "lon": 112.4891,
+    "lng": 112.4891,
     "head_m": 298,
     "sep_km": 9.8,
     "vol_gl": 384.8,
@@ -176,7 +176,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 12,
     "area_ha": 1528,
     "dam_wall_m": 22,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -188,7 +188,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "West Sumatra",
     "lat": -0.4823,
-    "lon": 100.3234,
+    "lng": 100.3234,
     "head_m": 448,
     "sep_km": 5.2,
     "vol_gl": 22.4,
@@ -198,7 +198,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 89,
     "dam_wall_m": 36,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -210,7 +210,7 @@ HB.Data.anuBluefieldIndonesia = [
     "country": "Indonesia",
     "region": "East Java",
     "lat": -7.8234,
-    "lon": 112.2891,
+    "lng": 112.2891,
     "head_m": 318,
     "sep_km": 7.8,
     "vol_gl": 34.8,
@@ -220,7 +220,7 @@ HB.Data.anuBluefieldIndonesia = [
     "slope_pct": 14,
     "area_ha": 138,
     "dam_wall_m": 26,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ];

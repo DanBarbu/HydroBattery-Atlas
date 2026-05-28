@@ -15,7 +15,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "Gangwon",
     "lat": 37.9823,
-    "lon": 127.8912,
+    "lng": 127.8912,
     "head_m": 540,
     "sep_km": 5.2,
     "vol_gl": 18.2,
@@ -25,7 +25,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 24,
     "area_ha": 72,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "North Chungcheong",
     "lat": 36.9823,
-    "lon": 128.2678,
+    "lng": 128.2678,
     "head_m": 380,
     "sep_km": 6.8,
     "vol_gl": 46.4,
@@ -46,7 +46,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 18,
     "area_ha": 184,
     "dam_wall_m": 32,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "North Gyeongsang",
     "lat": 36.5634,
-    "lon": 128.7234,
+    "lng": 128.7234,
     "head_m": 490,
     "sep_km": 6.4,
     "vol_gl": 76.8,
@@ -67,7 +67,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 22,
     "area_ha": 304,
     "dam_wall_m": 40,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "South Gyeongsang",
     "lat": 35.5234,
-    "lon": 128.1823,
+    "lng": 128.1823,
     "head_m": 360,
     "sep_km": 7.6,
     "vol_gl": 96.4,
@@ -88,7 +88,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 16,
     "area_ha": 382,
     "dam_wall_m": 30,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -100,7 +100,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "Gangwon",
     "lat": 37.9234,
-    "lon": 127.9891,
+    "lng": 127.9891,
     "head_m": 284,
     "sep_km": 8.8,
     "vol_gl": 2900,
@@ -110,7 +110,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 11,
     "area_ha": 11520,
     "dam_wall_m": 20,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -122,7 +122,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "North Chungcheong",
     "lat": 37.0234,
-    "lon": 128.0891,
+    "lng": 128.0891,
     "head_m": 242,
     "sep_km": 10.4,
     "vol_gl": 2750,
@@ -132,7 +132,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 9,
     "area_ha": 10920,
     "dam_wall_m": 18,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ,
@@ -144,7 +144,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "country": "South Korea",
     "region": "South Gyeongsang",
     "lat": 35.5234,
-    "lon": 127.9891,
+    "lng": 127.9891,
     "head_m": 224,
     "sep_km": 11.2,
     "vol_gl": 790,
@@ -154,7 +154,7 @@ HB.Data.anuBluefieldSouthKorea = [
     "slope_pct": 9,
     "area_ha": 3138,
     "dam_wall_m": 17,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bf"
   }
 ];

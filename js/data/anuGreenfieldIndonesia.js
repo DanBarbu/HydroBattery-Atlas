@@ -15,7 +15,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Sumatra",
     "lat": -0.9422,
-    "lon": 100.3561,
+    "lng": 100.3561,
     "head_m": 920,
     "sep_km": 2.8,
     "vol_gl": 7.2,
@@ -25,7 +25,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 42,
     "area_ha": 28,
     "dam_wall_m": 68,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Jambi",
     "lat": -2.0847,
-    "lon": 101.2634,
+    "lng": 101.2634,
     "head_m": 1050,
     "sep_km": 2.4,
     "vol_gl": 5.8,
@@ -46,7 +46,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 48,
     "area_ha": 22,
     "dam_wall_m": 72,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -57,7 +57,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "North Sumatra",
     "lat": 2.3156,
-    "lon": 99.1872,
+    "lng": 99.1872,
     "head_m": 880,
     "sep_km": 3.1,
     "vol_gl": 8.4,
@@ -67,7 +67,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 38,
     "area_ha": 34,
     "dam_wall_m": 61,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -78,7 +78,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Java",
     "lat": -7.1123,
-    "lon": 107.5234,
+    "lng": 107.5234,
     "head_m": 620,
     "sep_km": 4.2,
     "vol_gl": 14.3,
@@ -88,7 +88,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 28,
     "area_ha": 56,
     "dam_wall_m": 48,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -99,7 +99,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Java",
     "lat": -7.2082,
-    "lon": 109.9241,
+    "lng": 109.9241,
     "head_m": 940,
     "sep_km": 2.6,
     "vol_gl": 6.4,
@@ -109,7 +109,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 44,
     "area_ha": 26,
     "dam_wall_m": 65,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -120,7 +120,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Java",
     "lat": -7.9341,
-    "lon": 112.9162,
+    "lng": 112.9162,
     "head_m": 710,
     "sep_km": 3.8,
     "vol_gl": 28.6,
@@ -130,7 +130,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 32,
     "area_ha": 112,
     "dam_wall_m": 52,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -141,7 +141,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "South Sulawesi",
     "lat": -3.4856,
-    "lon": 119.9234,
+    "lng": 119.9234,
     "head_m": 1120,
     "sep_km": 2.2,
     "vol_gl": 18.4,
@@ -151,7 +151,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 52,
     "area_ha": 72,
     "dam_wall_m": 86,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -162,7 +162,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Sulawesi",
     "lat": -1.6247,
-    "lon": 120.2891,
+    "lng": 120.2891,
     "head_m": 980,
     "sep_km": 3.0,
     "vol_gl": 22.1,
@@ -172,7 +172,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 46,
     "area_ha": 86,
     "dam_wall_m": 76,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -183,7 +183,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Kalimantan",
     "lat": 0.2341,
-    "lon": 114.8234,
+    "lng": 114.8234,
     "head_m": 760,
     "sep_km": 4.6,
     "vol_gl": 31.2,
@@ -193,7 +193,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 29,
     "area_ha": 124,
     "dam_wall_m": 54,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -204,7 +204,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Papua",
     "lat": -4.0831,
-    "lon": 138.2156,
+    "lng": 138.2156,
     "head_m": 1380,
     "sep_km": 1.8,
     "vol_gl": 12.6,
@@ -214,7 +214,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 62,
     "area_ha": 48,
     "dam_wall_m": 94,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -225,7 +225,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Papua",
     "lat": -1.3245,
-    "lon": 133.9867,
+    "lng": 133.9867,
     "head_m": 1240,
     "sep_km": 2.1,
     "vol_gl": 16.8,
@@ -235,7 +235,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 56,
     "area_ha": 66,
     "dam_wall_m": 88,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -246,7 +246,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Riau",
     "lat": -0.6234,
-    "lon": 102.8341,
+    "lng": 102.8341,
     "head_m": 680,
     "sep_km": 5.2,
     "vol_gl": 82.4,
@@ -256,7 +256,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 26,
     "area_ha": 326,
     "dam_wall_m": 46,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -267,7 +267,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Java",
     "lat": -7.8234,
-    "lon": 110.4156,
+    "lng": 110.4156,
     "head_m": 590,
     "sep_km": 6.1,
     "vol_gl": 98.3,
@@ -277,7 +277,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 388,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -288,7 +288,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Sulawesi",
     "lat": -0.3456,
-    "lon": 121.4823,
+    "lng": 121.4823,
     "head_m": 1060,
     "sep_km": 3.4,
     "vol_gl": 56.2,
@@ -298,7 +298,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 48,
     "area_ha": 222,
     "dam_wall_m": 78,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   },
   {
@@ -309,7 +309,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Nusa Tenggara",
     "lat": -8.4123,
-    "lon": 116.4678,
+    "lng": 116.4678,
     "head_m": 820,
     "sep_km": 3.8,
     "vol_gl": 64.8,
@@ -319,7 +319,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 36,
     "area_ha": 256,
     "dam_wall_m": 62,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 
@@ -332,7 +332,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Java",
     "lat": -7.2014,
-    "lon": 109.9143,
+    "lng": 109.9143,
     "head_m": 780,
     "sep_km": 3.2,
     "vol_gl": 11.4,
@@ -342,7 +342,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 36,
     "area_ha": 45,
     "dam_wall_m": 58,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -354,7 +354,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Java",
     "lat": -7.9872,
-    "lon": 113.5634,
+    "lng": 113.5634,
     "head_m": 720,
     "sep_km": 3.8,
     "vol_gl": 13.2,
@@ -364,7 +364,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 32,
     "area_ha": 52,
     "dam_wall_m": 54,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -376,7 +376,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "South Sulawesi",
     "lat": -3.0122,
-    "lon": 120.1456,
+    "lng": 120.1456,
     "head_m": 520,
     "sep_km": 5.4,
     "vol_gl": 18.6,
@@ -386,7 +386,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 24,
     "area_ha": 74,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -398,7 +398,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Sulawesi",
     "lat": -1.5234,
-    "lon": 120.4891,
+    "lng": 120.4891,
     "head_m": 480,
     "sep_km": 5.8,
     "vol_gl": 21.4,
@@ -408,7 +408,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 85,
     "dam_wall_m": 38,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -420,7 +420,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Papua",
     "lat": -0.8634,
-    "lon": 134.0891,
+    "lng": 134.0891,
     "head_m": 842,
     "sep_km": 4.2,
     "vol_gl": 12.8,
@@ -430,7 +430,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 34,
     "area_ha": 51,
     "dam_wall_m": 60,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -442,7 +442,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Papua",
     "lat": -4.0234,
-    "lon": 138.4891,
+    "lng": 138.4891,
     "head_m": 1180,
     "sep_km": 4.8,
     "vol_gl": 28.4,
@@ -452,7 +452,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 48,
     "area_ha": 112,
     "dam_wall_m": 88,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -464,7 +464,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "North Sulawesi",
     "lat": 1.2156,
-    "lon": 124.6782,
+    "lng": 124.6782,
     "head_m": 780,
     "sep_km": 5.6,
     "vol_gl": 38.2,
@@ -474,7 +474,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 32,
     "area_ha": 151,
     "dam_wall_m": 60,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -486,7 +486,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Bali",
     "lat": -8.3422,
-    "lon": 115.3861,
+    "lng": 115.3861,
     "head_m": 760,
     "sep_km": 5.2,
     "vol_gl": 36.4,
@@ -496,7 +496,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 34,
     "area_ha": 144,
     "dam_wall_m": 58,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -508,7 +508,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Nusa Tenggara",
     "lat": -8.6234,
-    "lon": 120.4892,
+    "lng": 120.4892,
     "head_m": 560,
     "sep_km": 7.2,
     "vol_gl": 52.4,
@@ -518,7 +518,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 24,
     "area_ha": 208,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -530,7 +530,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Papua",
     "lat": -1.0234,
-    "lon": 133.5891,
+    "lng": 133.5891,
     "head_m": 520,
     "sep_km": 7.8,
     "vol_gl": 58.2,
@@ -540,7 +540,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 232,
     "dam_wall_m": 40,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -552,7 +552,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Papua",
     "lat": -4.1623,
-    "lon": 138.6891,
+    "lng": 138.6891,
     "head_m": 1240,
     "sep_km": 5.2,
     "vol_gl": 84.2,
@@ -562,7 +562,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 52,
     "area_ha": 332,
     "dam_wall_m": 92,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -574,7 +574,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Central Sulawesi",
     "lat": -2.2234,
-    "lon": 121.5891,
+    "lng": 121.5891,
     "head_m": 760,
     "sep_km": 7.4,
     "vol_gl": 124.8,
@@ -584,7 +584,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 32,
     "area_ha": 494,
     "dam_wall_m": 58,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -596,7 +596,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "North Sumatra",
     "lat": 1.9823,
-    "lon": 99.0234,
+    "lng": 99.0234,
     "head_m": 820,
     "sep_km": 6.8,
     "vol_gl": 112.4,
@@ -606,7 +606,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 34,
     "area_ha": 445,
     "dam_wall_m": 62,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -618,7 +618,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Java",
     "lat": -7.9234,
-    "lon": 113.0891,
+    "lng": 113.0891,
     "head_m": 540,
     "sep_km": 9.4,
     "vol_gl": 158.2,
@@ -628,7 +628,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 22,
     "area_ha": 628,
     "dam_wall_m": 42,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -640,7 +640,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "West Papua",
     "lat": -2.8634,
-    "lon": 132.2891,
+    "lng": 132.2891,
     "head_m": 480,
     "sep_km": 10.2,
     "vol_gl": 182.4,
@@ -650,7 +650,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 20,
     "area_ha": 724,
     "dam_wall_m": 38,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -662,7 +662,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Jambi",
     "lat": -2.2234,
-    "lon": 101.2891,
+    "lng": 101.2891,
     "head_m": 500,
     "sep_km": 13.4,
     "vol_gl": 282.4,
@@ -672,7 +672,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 18,
     "area_ha": 1122,
     "dam_wall_m": 30,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -684,7 +684,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Kalimantan",
     "lat": 0.9234,
-    "lon": 116.8891,
+    "lng": 116.8891,
     "head_m": 360,
     "sep_km": 15.8,
     "vol_gl": 442.4,
@@ -694,7 +694,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 14,
     "area_ha": 1754,
     "dam_wall_m": 22,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -706,7 +706,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "Papua",
     "lat": -3.4234,
-    "lon": 138.6891,
+    "lng": 138.6891,
     "head_m": 340,
     "sep_km": 16.4,
     "vol_gl": 482.4,
@@ -716,7 +716,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 12,
     "area_ha": 1916,
     "dam_wall_m": 20,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -728,7 +728,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "East Kalimantan",
     "lat": -0.8234,
-    "lon": 116.4891,
+    "lng": 116.4891,
     "head_m": 328,
     "sep_km": 8.8,
     "vol_gl": 28.4,
@@ -738,7 +738,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 14,
     "area_ha": 112,
     "dam_wall_m": 30,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ,
@@ -750,7 +750,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "country": "Indonesia",
     "region": "South Sumatra",
     "lat": -3.4234,
-    "lon": 103.8891,
+    "lng": 103.8891,
     "head_m": 298,
     "sep_km": 9.4,
     "vol_gl": 32.4,
@@ -760,7 +760,7 @@ HB.Data.anuGreenfieldIndonesia = [
     "slope_pct": 12,
     "area_ha": 128,
     "dam_wall_m": 26,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_gf"
   }
 ];

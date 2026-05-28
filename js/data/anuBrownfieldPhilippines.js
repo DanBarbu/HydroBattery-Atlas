@@ -15,7 +15,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "country": "Philippines",
     "region": "Laguna",
     "lat": 14.2234,
-    "lon": 121.5612,
+    "lng": 121.5612,
     "head_m": 260,
     "sep_km": 10.2,
     "vol_gl": 186.4,
@@ -25,7 +25,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "slope_pct": 11,
     "area_ha": 738,
     "dam_wall_m": 28,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bro"
   },
   {
@@ -36,7 +36,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "country": "Philippines",
     "region": "Lanao Del Norte",
     "lat": 8.2341,
-    "lon": 124.2456,
+    "lng": 124.2456,
     "head_m": 200,
     "sep_km": 13.4,
     "vol_gl": 248.6,
@@ -46,7 +46,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "slope_pct": 9,
     "area_ha": 984,
     "dam_wall_m": 22,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bro"
   }
 ,
@@ -58,7 +58,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "country": "Philippines",
     "region": "Cordillera Administrative Region",
     "lat": 16.6234,
-    "lon": 120.6891,
+    "lng": 120.6891,
     "head_m": 428,
     "sep_km": 8.8,
     "vol_gl": 242.4,
@@ -68,7 +68,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "slope_pct": 18,
     "area_ha": 962,
     "dam_wall_m": 28,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bro"
   }
 ,
@@ -80,7 +80,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "country": "Philippines",
     "region": "Bicol",
     "lat": 13.4234,
-    "lon": 123.2891,
+    "lng": 123.2891,
     "head_m": 298,
     "sep_km": 11.4,
     "vol_gl": 342.8,
@@ -90,7 +90,7 @@ HB.Data.anuBrownfieldPhilippines = [
     "slope_pct": 11,
     "area_ha": 1360,
     "dam_wall_m": 21,
-    "configuration": "lake_lake",
+    "configuration": "lake_pair",
     "status": "anu_bro"
   }
 ];
