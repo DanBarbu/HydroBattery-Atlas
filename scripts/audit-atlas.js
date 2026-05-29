@@ -45,25 +45,32 @@ const COUNTRY_BOUNDS = {
   UAE:            [22.6, 26.1, 51.6,  56.5],
 };
 
-// B. Required ocean tiers
+// B. Required ocean tiers (informational — not hard failure for confirmed-only mode)
 const OCEAN_REQUIRED_TIERS = ['2GWh', '15GWh', '50GWh'];
 
 // E. Known ANU site reference IDs that must appear in ocean files
+//    Every anu_ocean site MUST include its RES identifier in the name field.
+//    Format: "(n##_e###_RES#####)"
 const KNOWN_ANU_SITES = {
   'Saudi Arabia': { file: 'anuOceanSaudiArabia.js', ref: 'n28_e035_RES68475' },
   UAE:            { file: 'anuOceanUAE.js',          ref: 'n25_e056_RES17226' },
 };
 
 // F. Minimum ocean site counts
+//    UAE and SA are currently confirmed-only — use extraction tool to find more:
+//    scripts/extract-anu-ocean-sites.html
 const MIN_OCEAN_COUNTS = {
-  UAE:            8,
-  'Saudi Arabia': 12,
+  UAE:            1,   // confirmed: n25_e056_RES17226 (15GWh B)
+  'Saudi Arabia': 3,   // confirmed: n28_e035_RES68475 (50GWh+15GWh+5GWh B)
   Oman:           12,
   Malaysia:       20,
   Indonesia:      20,
   Philippines:    15,
   'South Korea':  10,
 };
+
+// G. RES identifier pattern — every anu_ocean site name must contain a RES ID
+const RES_ID_PATTERN = /n\d+_e\d+_RES\d+/;
 
 const STANDARD_TYPES = ['Greenfield', 'Bluefield', 'Brownfield'];
 const OCEAN_TYPE = 'Ocean';
@@ -217,6 +224,13 @@ function runAudit() {
             oceanChecks.countOk = sites.length >= minCount;
           }
 
+          // G. RES identifier check — every anu_ocean site must have a RES ID in its name
+          const missingResId = sites.filter(s =>
+            s.name && !RES_ID_PATTERN.test(s.name)
+          );
+          oceanChecks.resIdIssues = missingResId.map(s => s.id);
+          oceanChecks.resIdCoverage = `${sites.length - missingResId.length}/${sites.length}`;
+
           countryResult.oceanChecks = oceanChecks;
 
           // Accumulate issues from ocean checks
@@ -238,6 +252,9 @@ function runAudit() {
           }
           if (oceanChecks.minCount && !oceanChecks.countOk) {
             countryResult.issues.push(`⚠ LOW SITE COUNT: ${sites.length} < min ${oceanChecks.minCount}`);
+          }
+          if (oceanChecks.resIdIssues && oceanChecks.resIdIssues.length > 0) {
+            countryResult.issues.push(`✗ MISSING RES ID: ${oceanChecks.resIdIssues.join(', ')} — run scripts/extract-anu-ocean-sites.html`);
           }
         }
       }
@@ -312,6 +329,17 @@ function printReport({ results, totalMissing, totalEmpty, totalSites, totalIssue
       if (oc.knownSiteRef !== undefined) {
         const kIcon = oc.knownSiteFound ? '✓' : '✗';
         console.log(`   Known site:     ${kIcon} ${oc.knownSiteRef} ${oc.knownSiteFound ? 'FOUND' : 'NOT FOUND'}`);
+      }
+
+      // RES identifier coverage
+      if (oc.resIdCoverage !== undefined) {
+        const [rn, rt] = oc.resIdCoverage.split('/').map(Number);
+        const rIcon = rn === rt ? '✓' : rn === 0 ? '✗' : '⚠';
+        console.log(`   RES IDs:        ${rIcon} ${oc.resIdCoverage} sites have confirmed ANU RES identifier`);
+        if (oc.resIdIssues && oc.resIdIssues.length > 0) {
+          console.log(`                   ✗ Missing: ${oc.resIdIssues.join(', ')}`);
+          console.log(`                   → Run scripts/extract-anu-ocean-sites.html to find real IDs`);
+        }
       }
 
       // Minimum count

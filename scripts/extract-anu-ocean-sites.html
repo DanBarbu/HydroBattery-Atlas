@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ANU Ocean PHES Site Extractor — UAE & Saudi Arabia</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f4f6f9; padding: 24px; color: #222; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #1565C0; }
+  .subtitle { font-size: 13px; color: #555; margin-bottom: 20px; }
+  .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 20px; margin-bottom: 18px; }
+  h2 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #333; }
+  .btn { padding: 10px 22px; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .btn-primary { background: #1565C0; color: #fff; }
+  .btn-primary:hover { background: #0D47A1; }
+  .btn-secondary { background: #fff; color: #1565C0; border: 1px solid #1565C0; margin-left: 8px; }
+  .btn-secondary:hover { background: #E3F2FD; }
+  #log { font-family: monospace; font-size: 12px; padding: 12px; background: #1e1e2e; color: #cdd6f4; border-radius: 6px; max-height: 220px; overflow-y: auto; white-space: pre-wrap; }
+  .log-ok { color: #a6e3a1; }
+  .log-err { color: #f38ba8; }
+  .log-info { color: #89dceb; }
+  .log-warn { color: #f9e2af; }
+  #output { font-family: monospace; font-size: 11.5px; white-space: pre; overflow-x: auto; padding: 14px; background: #1e1e2e; color: #cdd6f4; border-radius: 6px; max-height: 500px; overflow-y: auto; display: none; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th { background: #E3F2FD; padding: 7px 10px; text-align: left; font-weight: 700; color: #1565C0; border-bottom: 2px solid #1565C0; }
+  td { padding: 6px 10px; border-bottom: 1px solid #e8ecf1; }
+  tr:hover td { background: #f0f6ff; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .b-2gwh { background: #e8f5e9; color: #1b5e20; }
+  .b-5gwh { background: #e3f2fd; color: #0d47a1; }
+  .b-15gwh { background: #fff3e0; color: #e65100; }
+  .b-50gwh { background: #fce4ec; color: #880e4f; }
+  .b-a { color: #1b5e20; font-weight: 800; }
+  .b-b { color: #1565c0; font-weight: 800; }
+  .b-c { color: #e65100; font-weight: 700; }
+  .b-d { color: #b71c1c; font-weight: 700; }
+  #table-container { display: none; }
+  .stat { display: inline-block; background: #E3F2FD; color: #1565C0; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; margin: 4px 4px 0 0; }
+</style>
+</head>
+<body>
+
+<h1>🌊 ANU Ocean PHES Site Extractor</h1>
+<p class="subtitle">Queries the live ANU RE100 GeoServer WFS to find ALL confirmed ocean PHES sites for UAE and Saudi Arabia across all energy tiers.<br>
+<strong>Requirements:</strong> Open this page from a browser with access to <code>re100.anu.edu.au</code> (NOT the HydroBattery Atlas deployment server).</p>
+
+<div class="card">
+  <h2>Step 1 — Run Extraction</h2>
+  <p style="font-size:12px;color:#555;margin-bottom:14px;">Queries 4 energy tiers × 6 geographic regions = 24 WFS requests. Takes ~15–30 seconds.</p>
+  <button class="btn btn-primary" onclick="extractAll()" id="runBtn">🔍 Extract All ANU Ocean Sites</button>
+  <button class="btn btn-secondary" onclick="copyOutput()" id="copyBtn" style="display:none;">📋 Copy JS Data</button>
+  <button class="btn btn-secondary" onclick="downloadOutput()" id="dlBtn" style="display:none;">⬇ Download JSON</button>
+</div>
+
+<div class="card" id="log-card" style="display:none;">
+  <h2>Progress Log</h2>
+  <div id="log"></div>
+</div>
+
+<div class="card" id="stats-card" style="display:none;">
+  <h2>Summary</h2>
+  <div id="stats"></div>
+</div>
+
+<div class="card" id="table-container">
+  <h2>Confirmed ANU Ocean PHES Sites — UAE &amp; Saudi Arabia</h2>
+  <p style="font-size:12px;color:#555;margin-bottom:12px;">Use these identifiers to populate <code>js/data/anuOceanUAE.js</code> and <code>js/data/anuOceanSaudiArabia.js</code>.</p>
+  <div id="table-wrapper"></div>
+</div>
+
+<div class="card" id="output-card" style="display:none;">
+  <h2>Step 2 — JavaScript Data for HydroBattery Atlas</h2>
+  <p style="font-size:12px;color:#555;margin-bottom:10px;">Paste this output in a message to Claude to update the data files.</p>
+  <div id="output"></div>
+</div>
+
+<script>
+const TIERS = [
+  { key: '2gwh_6h',   label: '2GWh',  capacity_mw: 333,  storage_h: 6  },
+  { key: '5gwh_18h',  label: '5GWh',  capacity_mw: 278,  storage_h: 18 },
+  { key: '15gwh_18h', label: '15GWh', capacity_mw: 833,  storage_h: 18 },
+  { key: '50gwh_18h', label: '50GWh', capacity_mw: 2778, storage_h: 18 },
+];
+
+const REGIONS = [
+  { name: 'UAE — Gulf of Oman',        bbox: [55.5, 23.0, 60.5, 26.5], country: 'UAE' },
+  { name: 'UAE — Arabian Gulf (RAK)',   bbox: [54.5, 24.5, 57.5, 27.0], country: 'UAE' },
+  { name: 'SA — Gulf of Aqaba',        bbox: [34.2, 26.0, 36.5, 30.0], country: 'Saudi Arabia' },
+  { name: 'SA — Red Sea (North)',       bbox: [35.5, 23.5, 40.0, 28.5], country: 'Saudi Arabia' },
+  { name: 'SA — Red Sea (Central)',     bbox: [38.5, 18.5, 43.5, 24.5], country: 'Saudi Arabia' },
+  { name: 'SA — Red Sea (South/Jizan)',  bbox: [41.0, 14.5, 45.0, 20.5], country: 'Saudi Arabia' },
+];
+
+const WFS_BASE = 'https://re100.anu.edu.au/geoserver/global_ocean/wfs';
+
+let _output = '';
+
+function logLine(msg, cls = '') {
+  const el = document.getElementById('log');
+  el.innerHTML += `<span class="${cls}">${msg}\n</span>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function polyCentroid(geometry) {
+  const coords = geometry.type === 'MultiPolygon'
+    ? geometry.coordinates[0][0]
+    : geometry.coordinates[0];
+  const lngs = coords.map(c => c[0]);
+  const lats = coords.map(c => c[1]);
+  return {
+    lat: +((Math.min(...lats) + Math.max(...lats)) / 2).toFixed(5),
+    lng: +((Math.min(...lngs) + Math.max(...lngs)) / 2).toFixed(5),
+    bbox_lng_min: Math.min(...lngs), bbox_lng_max: Math.max(...lngs),
+    bbox_lat_min: Math.min(...lats), bbox_lat_max: Math.max(...lats),
+  };
+}
+
+function parseDesc(html) {
+  if (!html) return {};
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const d = {};
+    doc.querySelectorAll('tr').forEach(tr => {
+      const cells = [...tr.querySelectorAll('td, th')];
+      if (cells.length >= 2) d[cells[0].textContent.trim().replace(/:$/, '')] = cells[1].textContent.trim();
+    });
+    return d;
+  } catch { return {}; }
+}
+
+async function fetchLayer(tier, region) {
+  const [b0, b1, b2, b3] = region.bbox;
+  const url = `${WFS_BASE}?service=WFS&version=2.0.0&request=GetFeature`
+    + `&typeNames=global_ocean:${tier.key}`
+    + `&outputFormat=application%2Fjson&count=500`
+    + `&bbox=${b0},${b1},${b2},${b3},EPSG:4326`;
+  const resp = await fetch(url, { mode: 'cors' });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  return resp.json();
+}
+
+async function extractAll() {
+  document.getElementById('log-card').style.display = 'block';
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('runBtn').textContent = '⏳ Running...';
+  document.getElementById('log').innerHTML = '';
+
+  const allFeatures = [];
+  const seenIds = new Set();
+
+  for (const tier of TIERS) {
+    logLine(`\n── Tier: ${tier.label} ──────────────────────`, 'log-info');
+    for (const region of REGIONS) {
+      logLine(`  ${region.name}...`);
+      try {
+        const gj = await fetchLayer(tier, region);
+        const all = gj.features || [];
+
+        // Upper reservoir features only (avoid double-counting from pipe features)
+        const upperFeats = all.filter(f =>
+          !f.properties.isdam &&
+          !f.properties.ispipe &&
+          (f.properties.isupper === '1' || f.properties.isupper === 1 || f.properties.isupper === true)
+        );
+
+        // Also get pipe features for the lower intake point
+        const pipeFeats = all.filter(f => f.properties.ispipe === true || f.properties.ispipe === 'true');
+
+        // Build lookup of pipe data by site identifier
+        const pipeByParent = {};
+        pipeFeats.forEach(p => {
+          const d = parseDesc(p.properties.description);
+          const pid = p.properties.identifier || d['Identifier'] || '';
+          if (pid) pipeByParent[pid] = { props: p.properties, desc: d };
+        });
+
+        let newCount = 0;
+        upperFeats.forEach(f => {
+          const id = f.properties.identifier || '';
+          if (seenIds.has(id)) return;
+          seenIds.add(id);
+          newCount++;
+
+          const c = polyCentroid(f.geometry);
+          const d = parseDesc(f.properties.description);
+          const pipe = pipeByParent[id] || null;
+
+          // Try to find lower intake from pipe geometry
+          let lower_lat = null, lower_lng = null;
+          if (pipe && pipe.props && pipe.props.geometry) {
+            try {
+              const pc = pipe.props.geometry.coordinates;
+              const lastPt = pc[pc.length - 1];
+              lower_lng = +lastPt[0].toFixed(5);
+              lower_lat = +lastPt[1].toFixed(5);
+            } catch {}
+          }
+
+          // Parse description fields
+          const head = d['Head (m)'] || d['Head'] || f.properties.head_m || null;
+          const sep  = d['Separation (km)'] || d['Separation'] || f.properties.separation_km || null;
+          const cls  = d['Class'] || f.properties.class || null;
+          const ctry = d['Country'] || f.properties.country || region.country;
+          const elev = d['Elevation (m)'] || null;
+          const area = d['Area (ha)'] || null;
+          const vol  = d['Volume (GL)'] || null;
+          const wrock = d['Water/Rock Ratio'] || d['Water Rock Ratio'] || null;
+          const slope = d['Average Slope (%)'] || null;
+          const damH  = d['Dam Wall Height (m)'] || null;
+
+          allFeatures.push({
+            raw_id: id,
+            tier: tier.label,
+            tier_key: tier.key,
+            capacity_mw: tier.capacity_mw,
+            storage_h: tier.storage_h,
+            energy_gwh: parseInt(tier.label),
+            class: cls,
+            country: ctry,
+            region: region.name,
+            lat: c.lat, lng: c.lng,
+            upper_lat: c.lat, upper_lng: c.lng,
+            lower_lat, lower_lng,
+            head_m: head ? parseFloat(head) : null,
+            separation_km: sep ? parseFloat(sep) : null,
+            slope_pct: slope ? parseFloat(slope) : null,
+            area_ha: area ? parseFloat(area) : null,
+            vol_gl: vol ? parseFloat(vol) : null,
+            dam_wall_m: damH ? parseFloat(damH) : null,
+            wr: wrock ? parseFloat(wrock) : null,
+            bbox: [c.bbox_lng_min, c.bbox_lat_min, c.bbox_lng_max, c.bbox_lat_max],
+          });
+        });
+
+        logLine(`    → ${upperFeats.length} upper features, ${newCount} new unique`, newCount > 0 ? 'log-ok' : '');
+        await new Promise(r => setTimeout(r, 150)); // small delay to avoid hammering the server
+      } catch (e) {
+        logLine(`    ✗ ${e.message}`, 'log-err');
+      }
+    }
+  }
+
+  // Sort by country, then tier, then class
+  const tierOrder = { '50GWh': 0, '15GWh': 1, '5GWh': 2, '2GWh': 3 };
+  allFeatures.sort((a, b) => {
+    if (a.country !== b.country) return a.country < b.country ? -1 : 1;
+    return (tierOrder[a.tier] ?? 9) - (tierOrder[b.tier] ?? 9);
+  });
+
+  logLine(`\n✅ Done — ${allFeatures.length} unique confirmed ANU ocean sites found.`, 'log-ok');
+
+  renderStats(allFeatures);
+  renderTable(allFeatures);
+  renderOutput(allFeatures);
+
+  document.getElementById('runBtn').textContent = '✅ Done';
+  document.getElementById('copyBtn').style.display = 'inline-block';
+  document.getElementById('dlBtn').style.display = 'inline-block';
+}
+
+function renderStats(sites) {
+  const byCountry = {};
+  const byTier = {};
+  sites.forEach(s => {
+    byCountry[s.country] = (byCountry[s.country] || 0) + 1;
+    byTier[s.tier] = (byTier[s.tier] || 0) + 1;
+  });
+  let html = '';
+  Object.entries(byCountry).forEach(([c, n]) => html += `<span class="stat">🌍 ${c}: ${n}</span>`);
+  Object.entries(byTier).forEach(([t, n]) => html += `<span class="stat">⚡ ${t}: ${n}</span>`);
+  document.getElementById('stats').innerHTML = html;
+  document.getElementById('stats-card').style.display = 'block';
+}
+
+function renderTable(sites) {
+  const tierClass = t => t === '2GWh' ? 'b-2gwh' : t === '5GWh' ? 'b-5gwh' : t === '15GWh' ? 'b-15gwh' : 'b-50gwh';
+  const clsClass = c => c === 'A' ? 'b-a' : c === 'B' ? 'b-b' : c === 'C' ? 'b-c' : 'b-d';
+
+  // Derive HB ID format
+  let uaeIdx = 1, saIdx = 1;
+  const rows = sites.map(s => {
+    const country_code = s.country === 'UAE' ? 'ae' : 'sa';
+    const tierStr = s.tier.toLowerCase().replace('gwh', '');
+    const idx = s.country === 'UAE' ? uaeIdx++ : saIdx++;
+    const hbId = `anu_oc${tierStr}_${country_code}${String(idx).padStart(3, '0')}`;
+    const tileMatch = s.raw_id.match(/^(n\d+_e\d+_RES\d+)/);
+    const resId = tileMatch ? tileMatch[1] : s.raw_id;
+    const hbLabel = `${country_code}${String(idx).padStart(3,'0')} (${resId})`;
+    s._hb_id = hbId;
+    s._res_id = resId;
+    s._hb_label = hbLabel;
+
+    return `<tr>
+      <td style="font-family:monospace;font-size:11px;">${hbLabel}</td>
+      <td><span class="badge ${tierClass(s.tier)}">${s.tier}</span></td>
+      <td><strong class="${clsClass(s.class)}">${s.class || '?'}</strong></td>
+      <td>${s.country}</td>
+      <td style="font-size:11px;">${s.region}</td>
+      <td style="font-family:monospace;">${s.lat}, ${s.lng}</td>
+      <td>${s.head_m ? s.head_m + ' m' : '—'}</td>
+      <td>${s.separation_km ? s.separation_km + ' km' : '—'}</td>
+      <td>${s.lower_lat ? `${s.lower_lat}, ${s.lower_lng}` : '<span style="color:#999">from WFS</span>'}</td>
+    </tr>`;
+  });
+
+  const html = `<table>
+    <thead><tr>
+      <th>HB Identifier</th><th>Tier</th><th>Class</th><th>Country</th>
+      <th>Region</th><th>Upper Lat,Lng</th><th>Head</th><th>Sep</th><th>Lower Lat,Lng</th>
+    </tr></thead>
+    <tbody>${rows.join('')}</tbody>
+  </table>`;
+
+  document.getElementById('table-wrapper').innerHTML = html;
+  document.getElementById('table-container').style.display = 'block';
+}
+
+function buildSiteObject(s, idx) {
+  const tierStr = s.tier.replace('GWh','').toLowerCase();
+  const cc = s.country === 'UAE' ? 'ae' : 'sa';
+  const id = s._hb_id || `anu_oc${tierStr}_${cc}${String(idx).padStart(3,'0')}`;
+  const resId = s._res_id || s.raw_id;
+  const nameSuffix = resId ? ` (${resId})` : '';
+
+  return {
+    id,
+    tier: s.tier,
+    class: s.class || 'C',
+    name: `${s.region.split('—')[1]?.trim() || s.region} ${s.tier} ${s.class || 'C'}${nameSuffix}`,
+    country: s.country,
+    region: s.region.split('—')[1]?.trim().split('(')[0].trim() || s.region,
+    lat: s.lat, lng: s.lng,
+    upper_lat: s.upper_lat, upper_lng: s.upper_lng,
+    lower_lat: s.lower_lat || null, lower_lng: s.lower_lng || null,
+    head_m: s.head_m, separation_km: s.separation_km,
+    vol_gl: s.vol_gl, wr: s.wr,
+    energy_gwh: s.energy_gwh,
+    storage_h: s.storage_h,
+    slope_pct: s.slope_pct,
+    area_ha: s.area_ha,
+    dam_wall_m: s.dam_wall_m,
+    capacity_mw: s.capacity_mw,
+    configuration: 'lake_ocean',
+    status: 'anu_ocean'
+  };
+}
+
+function renderOutput(sites) {
+  const uae = sites.filter(s => s.country === 'UAE');
+  const sa  = sites.filter(s => s.country === 'Saudi Arabia');
+
+  let out = '';
+  out += '// ============================================================\n';
+  out += '// ANU Ocean PHES — CONFIRMED SITE DATA FROM LIVE WFS\n';
+  out += `// Extracted: ${new Date().toISOString()}\n`;
+  out += `// Total sites: ${sites.length} (UAE: ${uae.length}, SA: ${sa.length})\n`;
+  out += '// PASTE THIS TO CLAUDE to update the data files\n';
+  out += '// ============================================================\n\n';
+
+  out += '// === UAE SITES ===\n';
+  out += '// js/data/anuOceanUAE.js\n';
+  out += 'HB.Data.anuOceanUAE = [\n';
+  uae.forEach((s, i) => {
+    const obj = buildSiteObject(s, i + 1);
+    out += '  ' + JSON.stringify(obj, null, null)
+      .replace(/},?$/, i < uae.length - 1 ? '},' : '}')
+      .replace(/"([^"]+)":/g, '"$1":')
+      + '\n';
+  });
+  out += '];\n\n';
+
+  out += '// === SAUDI ARABIA SITES ===\n';
+  out += '// js/data/anuOceanSaudiArabia.js\n';
+  out += 'HB.Data.anuOceanSaudiArabia = [\n';
+  sa.forEach((s, i) => {
+    const obj = buildSiteObject(s, i + 1);
+    out += '  ' + JSON.stringify(obj, null, null)
+      .replace(/},?$/, i < sa.length - 1 ? '},' : '}')
+      .replace(/"([^"]+)":/g, '"$1":')
+      + '\n';
+  });
+  out += '];\n';
+
+  // Also output raw JSON for debugging
+  out += '\n\n// === RAW EXTRACTED DATA ===\n';
+  out += JSON.stringify(sites, null, 2);
+
+  _output = out;
+  document.getElementById('output').textContent = out;
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('output-card').style.display = 'block';
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(_output).then(() => {
+    document.getElementById('copyBtn').textContent = '✅ Copied!';
+    setTimeout(() => document.getElementById('copyBtn').textContent = '📋 Copy JS Data', 2000);
+  });
+}
+
+function downloadOutput() {
+  const blob = new Blob([_output], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `anu-ocean-sites-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+}
+</script>
+</body>
+</html>
