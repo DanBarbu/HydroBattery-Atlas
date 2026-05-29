@@ -106,8 +106,10 @@
         let added = 0;
         for (const f of uppers) {
           const id = f.properties.identifier || '';
-          if (seen.has(id)) continue;
-          seen.add(id); added++;
+          // Key includes tier so the same reservoir can appear at different storage capacities
+          const seenKey = id + '::' + tier.label;
+          if (seen.has(seenKey)) continue;
+          seen.add(seenKey); added++;
           const [lat,lng] = centroid(f.geometry);
           const d = parseDesc(f.properties.description);
           let ll = null, llng = null;
