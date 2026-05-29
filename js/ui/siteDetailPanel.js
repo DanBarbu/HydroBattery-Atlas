@@ -1339,6 +1339,29 @@ HB.UI.siteDetail = {
                     const lBounds = lFeats.length ? L.geoJSON({ type: 'FeatureCollection', features: lFeats }).getBounds() : null;
                     this._setupZoomButtons(uBounds, lBounds, this._miniMapLayers.polygons.getBounds());
                 }
+
+                // Auto-fit to show full WFS extent (reservoirs + pipeline).
+                // Needed because the pipeline can extend far outside the initial view frame.
+                setTimeout(() => {
+                    if (!this._miniMap) return;
+                    this._miniMap.invalidateSize();
+                    const layers = [
+                        this._miniMapLayers.polygons,
+                        this._miniMapLayers.pipeline
+                    ].filter(Boolean);
+                    if (layers.length) {
+                        let bounds = null;
+                        layers.forEach(l => {
+                            try {
+                                const b = l.getBounds();
+                                if (b && b.isValid()) bounds = bounds ? bounds.extend(b) : b;
+                            } catch (e) {}
+                        });
+                        if (bounds && bounds.isValid()) {
+                            this._miniMap.fitBounds(bounds.pad(0.2), { maxZoom: 13 });
+                        }
+                    }
+                }, 250);
             })
             .catch(() => {
                 // WFS unavailable or CORS — draw estimated circles from known reservoir data
