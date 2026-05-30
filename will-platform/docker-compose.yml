@@ -486,6 +486,29 @@ services:
     networks:
       - will-net
 
+  skynex-cuas:
+    build:
+      context: ./plugins/skynex-cuas
+    container_name: will-skynex-cuas
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Skynex C-RAM/C-UAS ingest. Coordinator-only: WILL never tasks
+      # Skynex. Defaults to sim mode for dev/HIL; vendor adapter is a follow-up.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: skynex/battery-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/cuas/skynex
+      SIM_NUM_TRACKS: "2"
+      SIM_PERIOD_S: "2"
+      SIM_BATTERY_LAT: "45.872"
+      SIM_BATTERY_LON: "24.776"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
