@@ -536,6 +536,31 @@ services:
     networks:
       - will-net
 
+  vector-mini-uas:
+    build:
+      context: ./plugins/vector-mini-uas
+    container_name: will-vector-mini-uas
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Quantum Systems Vector / Scorpion Class I Mini UAS ingest.
+      # Friendly ISR asset (NOT a threat). Coordinator-only: no flight tasking
+      # from WILL. Defaults to sim; mavlink + quantum vendor adapters TBD.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: vector/gcs-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/uas/vector
+      SIM_UNIT_ID: vector-01
+      SIM_VARIANT: Vector
+      SIM_ORBIT_LAT: "45.870"
+      SIM_ORBIT_LON: "24.800"
+      SIM_ORBIT_RADIUS_M: "1500"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
