@@ -618,6 +618,32 @@ services:
     networks:
       - will-net
 
+  merops-osint:
+    build:
+      context: ./plugins/merops-osint
+    container_name: will-merops-osint
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — US MEROPS counter-drone advisory feed. OSINT layer per
+      # ADR-016: classification forced to "<base> // OSINT", advisory only,
+      # never auto-fused with operational C-UAS picture. Engagement outcomes
+      # reported as metadata; WILL never actuates MEROPS.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: merops/site-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/osint/merops
+      SIM_SITE_LAT: "45.870"
+      SIM_SITE_LON: "28.000"
+      SIM_THREAT_BEARING_DEG: "45"
+      SIM_THREAT_RANGE_M: "12000"
+      SIM_AI_CLASSIFIER: "SHAHED"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
