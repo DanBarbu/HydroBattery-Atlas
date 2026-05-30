@@ -561,6 +561,33 @@ services:
     networks:
       - will-net
 
+  lynx-ifv:
+    build:
+      context: ./plugins/lynx-ifv
+    container_name: will-lynx-ifv
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Rheinmetall Lynx KF41 IFV ingest. Coordinator-only: no
+      # turret control, no FCS access, no ammunition release. Advisory ammo
+      # counts populate the operator picture only. Defaults to sim;
+      # vehicle-bus + crew-tablet CoT adapters are follow-ups.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: lynx/btn-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/bft/lynx
+      SIM_UNIT_PREFIX: lynx
+      SIM_START_LAT: "45.850"
+      SIM_START_LON: "24.780"
+      SIM_HEADING_DEG: "90"
+      SIM_MARCH_SPEED_MPS: "8"
+      SIM_VEHICLES: "4"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
