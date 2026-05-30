@@ -509,6 +509,33 @@ services:
     networks:
       - will-net
 
+  skyranger-vshorad:
+    build:
+      context: ./plugins/skyranger-vshorad
+    container_name: will-skyranger-vshorad
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Skyranger 35 mobile VSHORAD ingest. Coordinator-only:
+      # WILL never tasks the mount. Emits both detections (hostile UAS)
+      # and own-mount platform PLI. Defaults to sim; vendor adapter follow-up.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: skyranger/A1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_DETECTIONS: telemetry/cuas/skyranger
+      MQTT_TOPIC_PLATFORM: telemetry/bft/skyranger
+      SIM_UNIT_ID: skyranger-A1
+      SIM_START_LAT: "45.700"
+      SIM_START_LON: "24.500"
+      SIM_HEADING_DEG: "45"
+      SIM_PATROL_SPEED_MPS: "5"
+      SIM_NUM_TRACKS: "2"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
