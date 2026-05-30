@@ -17,6 +17,12 @@
  *
  * Cost engine region factors (costEngine.js):
  *   Australia 1.0x  |  Malaysia 0.5x  |  Romania 0.7x  |  default 0.8x
+ *
+ * Water contamination risk levels (water_contamination.risk):
+ *   high   — cyanide/tailings/uranium AMD (Rosia Montana, Certej, Zlatna, Witwatersrand)
+ *   medium — heavy-metals/Cu/Pb-Zn AMD (Mamut, Mount Morgan, Brad, Baia de Aries,
+ *             Baia Sprie, Cavnic, Moldova Noua)
+ *   (absent) — clean or low-risk site (coal, iron ore, proposed voids)
  */
 HB.Data = HB.Data || {};
 
@@ -73,6 +79,12 @@ HB.Data.mineVoids = [
         capacity_mw: 100,
         storage_mwh: 800,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['heavy_metals', 'acid_mine_drainage', 'copper', 'arsenic'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Significant acid mine drainage into the Dee River documented since closure. Elevated Cu, As, Pb, Zn in pit lake water. Electrocoagulation + membrane filtration required before turbine discharge into Dee River catchment. Queensland EPA monitoring ongoing.'
+        },
         description: 'Historic gold and copper mine with potential for PHES conversion.',
         source_url: '',
         developer: ''
@@ -269,6 +281,12 @@ HB.Data.mineVoids = [
         capacity_mw: 300,
         storage_mwh: 3600,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'high',
+            contaminants: ['acid_mine_drainage', 'heavy_metals', 'uranium', 'sulfate'],
+            lower_reservoir_type: 'underground_void',
+            treatment_note: 'Witwatersrand deep gold mines produce highly acidic AMD (pH 2–4) with elevated Fe, Mn, U, SO₄ and trace heavy metals. Full neutralisation, uranium removal by ion-exchange, and reverse osmosis required before any surface discharge. South Africa DWA mine water management compliance required.'
+        },
         description: 'Ultra-deep gold mines near Carletonville (Mponeng, TauTona — deepest mines on Earth at 3.5–4 km). Underground PHES concept: surface reservoir on the uninhabited Witwatersrand ridge feeds water to existing deep excavations (1,450 m head). Requires dewatering reversal and structural assessment. No inhabited land used as reservoir.',
         source_url: 'https://en.wikipedia.org/wiki/Mponeng_gold_mine',
         developer: ''
@@ -411,6 +429,12 @@ HB.Data.mineVoids = [
         capacity_mw: 85,
         storage_mwh: 680,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'high',
+            contaminants: ['cyanide_residue', 'heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'tailings_pond',
+            treatment_note: 'Site of the 1971 Certej tailings dam collapse (89 deaths). Legacy cyanide residue, Pb, Zn, As and AMD from gold processing remain in valley. Full tailings remediation and lining required before PHES use. Romanian National Environmental Guard oversight and EU DNSH compliance required.'
+        },
         description: 'Historic gold and silver mine in the Golden Quadrilateral of the Apuseni Mountains. Open pits at ~580 m ASL with ~210 m head to the uninhabited Crisul Negru tributary valley. Site of the 1971 Certej tailings dam disaster; any PHES development would require full tailings remediation first. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Certej_mine_disaster',
         developer: ''
@@ -439,6 +463,12 @@ HB.Data.mineVoids = [
         capacity_mw: 96,
         storage_mwh: 768,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Gold processing in the Apuseni auriferous belt leaves elevated As, Pb, Zn and mild acid drainage. Sidestream coagulation-flocculation and pH correction required before discharge into the Crisul Negru River. Regional cost factor 0.7× AU baseline.'
+        },
         description: 'Historic gold mine complex near Brad, in the same auriferous belt as Rosia Montana and Certej. Open pits (Musariu, Troita) at ~680 m ASL; lower reservoir in a bend of the Crisul Negru valley below Brad town (uninhabited floodplain). ~240 m head, 2.1 km tunnel. Regional cost factor 0.7× Australian baseline.',
         source_url: '',
         developer: ''
@@ -495,6 +525,12 @@ HB.Data.mineVoids = [
         capacity_mw: 68,
         storage_mwh: 544,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'high',
+            contaminants: ['heavy_metals', 'acid_mine_drainage', 'copper', 'sulfur_dioxide_legacy'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Historic copper smelting has left elevated Cu, Pb, Zn, Cd and SO₂-derived acid deposition across the Zlatna valley. Ampoi River heavily impacted. Full lining of lower reservoir and electrocoagulation + NF membrane treatment required. Classified as a Romanian Priority Contaminated Site under EU Directive 2004/35/CE.'
+        },
         description: 'Historic copper and gold mining district with Roman-era origins in the Ampoi valley. Existing pit voids at ~740 m ASL on the ridge NE of Zlatna, paired with the Ampoi valley (570 m ASL) for ~170 m head. Lower reservoir uses uninhabited valley terrain downstream of the town. Site requires significant environmental remediation from historic copper smelting. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Zlatna',
         developer: ''
@@ -523,6 +559,12 @@ HB.Data.mineVoids = [
         capacity_mw: 112,
         storage_mwh: 896,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Gold/silver processing in the Apuseni auriferous belt generates As, Pb, Zn and mild AMD. Coagulation-flocculation and pH correction required before discharge into the Arieș River. More remote site with lower population exposure than Certej or Rosia Montana.'
+        },
         description: 'Gold and silver mine in the western Apuseni Mountains (Metaliferi Mountains), part of the historic Golden Quadrilateral. Open pits at ~900 m ASL on the ridge above the Arieș River, paired with an uninhabited valley 2 km downstream (~280 m head). Remote mountain terrain with good environmental profile. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Baia_de_Arie%C8%99',
         developer: ''
@@ -554,6 +596,12 @@ HB.Data.mineVoids = [
         capacity_mw: 94,
         storage_mwh: 752,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['heavy_metals', 'acid_mine_drainage', 'lead', 'zinc'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Lead-zinc-silver processing leaves elevated Pb, Zn, Cd and mild AMD in pit waters. Part of the Baia Mare contamination corridor (linked to the 2000 Aurul cyanide spill area). Coagulation-flocculation + ion-exchange required. Romanian ANPM monitoring applies.'
+        },
         description: 'Historic polymetallic mine on the southern slopes of the Gutâi Mountains in the Maramureș mining district. Open pits at ~610 m ASL paired with the Sasar River valley (375 m ASL, uninhabited terrain 2 km east) for ~235 m head. Part of the Baia Mare–Baia Sprie–Cavnic mining corridor. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Baia_Sprie',
         developer: ''
@@ -582,6 +630,12 @@ HB.Data.mineVoids = [
         capacity_mw: 134,
         storage_mwh: 1072,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['heavy_metals', 'acid_mine_drainage', 'lead', 'zinc'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Silver-lead-zinc processing generates AMD with elevated Pb, Zn, Cd and Ag. More remote than Baia Sprie; Drăghia valley has low exposure. Coagulation-flocculation + ion-exchange polishing required before discharge into Drăghia River. Romanian ANPM monitoring applies.'
+        },
         description: 'Closed polymetallic mine on the Gutâi ridge with one of the best PHES geometries in Romania: ~335 m head, mine pits at 790 m ASL, lower reservoir in the uninhabited Drăghia valley (455 m ASL). Remote mountain terrain, minimal resettlement risk. Part of the historic Maramureș silver-lead-zinc district. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Cavnic',
         developer: ''
@@ -641,6 +695,12 @@ HB.Data.mineVoids = [
         capacity_mw: 120,
         storage_mwh: 1440,
         estimated_cost_musd: null,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['copper', 'heavy_metals', 'acid_mine_drainage'],
+            lower_reservoir_type: 'pit_lake',
+            treatment_note: 'Active copper mine generates Cu, Mo, Se and mild AMD in pit waters. Lower reservoir discharges to the Danube (Iron Gates UNESCO Biosphere Reserve) — cross-border Romania–Serbia environmental review and Danube River Protection Convention compliance required. Electrocoagulation + membrane filtration before turbine outlet mandatory.'
+        },
         description: 'Open-pit copper mine operated by Cuprumin SA on the plateau above the Danube (Iron Gates reservoir). Outstanding PHES candidate: ~257 m head from mine plateau (~325 m ASL) to an uninhabited Danube embayment (~68 m ASL), 4.8 km tunnel. The Danube acts as an effectively infinite lower reservoir. Cross-border environmental review (Romania–Serbia) required. Regional cost factor 0.7× Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Moldova_Nou%C4%83',
         developer: 'Cuprumin SA'
