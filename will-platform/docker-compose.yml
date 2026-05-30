@@ -588,6 +588,36 @@ services:
     networks:
       - will-net
 
+  mmpv90-naval:
+    build:
+      context: ./plugins/mmpv90-naval
+    container_name: will-mmpv90-naval
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Rheinmetall MMPV-90 corvette ingest, Phase 1.
+      # Coordinator-only: no CMS replacement, no weapons direction, no sail
+      # orders. Three streams: friendly own-ship PLI, naval sensor detections,
+      # and AIS broadcasts marked OSINT (ADR-016).
+      # Phase 2 (bidirectional) is blocked on Squad Alpha's Link-22 gateway.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: mmpv90/F501
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_OWNSHIP: telemetry/bft/mmpv90
+      MQTT_TOPIC_SENSOR: telemetry/sensor/mmpv90
+      MQTT_TOPIC_AIS_OSINT: telemetry/osint/mmpv90-ais
+      SIM_HULL_ID: F501
+      SIM_PENNANT: "501"
+      SIM_START_LAT: "44.170"
+      SIM_START_LON: "28.650"
+      SIM_HEADING_DEG: "90"
+      SIM_CRUISE_MPS: "12"
+    networks:
+      - will-net
+
   sam-battery-mock:
     build:
       context: ./plugins/sam-battery-mock
