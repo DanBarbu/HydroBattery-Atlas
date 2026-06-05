@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>WILL Romania — demos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { --bg:#0e1620; --panel:#151f2c; --text:#d8e0ee; --muted:#7c8aa0;
+          --accent:#2d8cf0; --banner:#f1c40f; }
+  html,body { margin:0; padding:0; background:var(--bg); color:var(--text);
+              font:14px/1.5 -apple-system,"Segoe UI",system-ui,sans-serif; }
+  .banner { background:var(--banner); color:#111; text-align:center;
+            font-weight:700; padding:4px 8px; letter-spacing:1px; font-size:12px; }
+  main { max-width:780px; margin:32px auto; padding:0 24px; }
+  h1 { font-size:22px; margin:0 0 4px 0; }
+  .sub { color:var(--muted); margin-bottom:24px; }
+  .card { background:var(--panel); border:1px solid #233246; border-radius:8px;
+          padding:18px 20px; margin:12px 0; }
+  .card a { color:var(--accent); text-decoration:none; font-weight:600; }
+  .card a:hover { text-decoration:underline; }
+  .meta { color:var(--muted); font-size:12px; margin-top:8px; }
+  code { background:#0d1722; padding:1px 5px; border-radius:3px;
+         font-family:ui-monospace,monospace; font-size:12px; }
+  footer { color:var(--muted); margin-top:32px; font-size:12px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="banner">NESECRET — DEMO ONLY — NOT FOR OPERATIONAL USE</div>
+<main>
+  <h1>WILL Romania — demos</h1>
+  <div class="sub">Self-contained demos of the WILL platform. Open any link in a browser; no build step, no backend.</div>
+
+  <div class="card">
+    <a href="will-demo.html">Operator picture — SAFE 2026 wave</a>
+    <div class="meta">
+      Leaflet map centred on eastern Romania, showing mock <code>will.track.v0</code>
+      tracks from all six SAFE plugins (Skynex, Skyranger 35, Vector / Scorpion,
+      Lynx KF41, MMPV-90, MEROPS) plus the TAK-gateway ingest. Affiliation
+      colours, classification banner, OSINT-vs-operational layer toggles, and
+      the full track payload on click.
+    </div>
+  </div>
+
+  <footer>
+    Source: <a href="https://github.com/DanBarbu/HydroBattery-Atlas">DanBarbu/HydroBattery-Atlas</a> ·
+    Built from <code>docs/demo/</code> on the platform branch.
+  </footer>
+</main>
+<div class="banner">NESECRET — DEMO ONLY — NOT FOR OPERATIONAL USE</div>
+</body>
+</html>
