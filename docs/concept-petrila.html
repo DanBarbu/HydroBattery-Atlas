@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petrila Mine PHES — Concept Sheet | HydroBattery Atlas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <style>
+        :root { --accent:#1e88e5; --text:#263238; --muted:#607d8b; --bg:#f5f7fa; --card:#ffffff; --warn:#e65100; --urgent:#c62828; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:var(--bg); color:var(--text); font:15px/1.6 -apple-system,"Segoe UI",system-ui,sans-serif; }
+        .banner { background:#37474f; color:#eceff1; text-align:center; font-size:12px; letter-spacing:1px; padding:5px 10px; }
+        main { max-width:840px; margin:28px auto 48px; padding:0 22px; }
+        h1 { font-size:26px; margin:0 0 2px; }
+        h2 { font-size:17px; margin:28px 0 10px; color:var(--accent); border-bottom:1px solid #e0e6ec; padding-bottom:4px; }
+        .sub { color:var(--muted); margin-bottom:18px; }
+        .chips span { display:inline-block; background:#e3f2fd; color:#1565c0; border-radius:12px; padding:2px 12px; font-size:12px; font-weight:600; margin:0 6px 6px 0; }
+        .chips .warn { background:#fff3e0; color:var(--warn); }
+        table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid #e0e6ec; border-radius:6px; overflow:hidden; }
+        td, th { padding:8px 12px; border-bottom:1px solid #eef2f6; text-align:left; vertical-align:top; }
+        th { background:#eef4fa; font-size:13px; }
+        td:first-child { color:var(--muted); width:38%; font-weight:600; font-size:13px; }
+        .note { background:#fffde7; border-left:4px solid #fbc02d; padding:10px 14px; font-size:13.5px; border-radius:0 6px 6px 0; }
+        ul { padding-left:20px; } li { margin:4px 0; }
+        a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+        footer { color:var(--muted); font-size:12px; margin-top:36px; border-top:1px solid #e0e6ec; padding-top:12px; }
+    </style>
+</head>
+<body>
+<div class="banner">SCREENING-LEVEL CONCEPT — NOT SURVEY DATA — FOR FEASIBILITY DISCUSSION ONLY</div>
+<main>
+    <h1>Petrila Mine — Underground Pumped Hydro Concept</h1>
+    <div class="sub">Jiu Valley (Valea Jiului) coal basin · Petrila, Hunedoara County, Romania · 45.45 N, 23.42 E (town-level)</div>
+    <div class="chips">
+        <span>~2.9 GWh storage</span><span>~800 m head</span><span>350 MW / ~8 h</span>
+        <span class="warn">High priority — basin anchor</span>
+    </div>
+
+    <h2>Why this site</h2>
+    <p>Petrila is the <strong>deepest mine in the Jiu Valley</strong> (workings to ~940 m below a ~675 m ASL surface) and one of the deepest in Romania, closed in 2015 after 156 years of operation. Its surface headframe towers are preserved as historic monuments — a strong indicator that the <strong>main shafts have not yet been backfilled</strong>, unlike most of the basin's older closures. Depth is the entire game in underground PHES: at ~800 m of usable head, every cubic metre of accessible void stores roughly 2 kWh, so even the harsh void haircut applied below still leaves an Altân Tepe-class storage figure.</p>
+
+    <h2>Key figures (screening estimates)</h2>
+    <table>
+        <tr><td>Configuration</td><td>Underground PHES: constructed surface reservoir + mine workings as lower reservoir</td></tr>
+        <tr><td>Usable head</td><td>~800 m (from ~940 m mine depth; surface ~675 m ASL, deep workings ~−125 m ASL)</td></tr>
+        <tr><td>Accessible void</td><td>~1.5 Mm³ — shafts, main galleries and chambers only, after a deliberately harsh 5–15% accessibility haircut (longwall mining caves the mined seams; goaf is <em>not</em> usable)</td></tr>
+        <tr><td>Storage / power</td><td>~2.9 GWh · 350 MW · ~8 h discharge</td></tr>
+        <tr><td>Grid</td><td>Own 110 kV feed ~1 km (legacy mine connection); 220 kV node at CET Paroșeni ~12 km down-valley</td></tr>
+        <tr><td>Counterparty</td><td>SNIMVJ (Societatea Națională de Închideri Mine Valea Jiului) — state closure company holding the closure dossiers</td></tr>
+        <tr><td>Funding context</td><td>Jiu Valley is a designated EU Just Transition Fund territory</td></tr>
+        <tr><td>Closed</td><td>2015 (surface ensemble protected as industrial heritage)</td></tr>
+    </table>
+
+    <h2>Risks and engineering burden</h2>
+    <ul>
+        <li><strong>Methane.</strong> Gassy coal mine — the 2008 Petrila explosion killed 13. Ventilation/inertisation is a precondition for any underground works; residual gas management must be designed into the water cycle.</li>
+        <li><strong>Acid mine water.</strong> Coal-basin water chemistry requires treatment or isolation of the cycling volume (encoded as a water-contamination flag in the Atlas record).</li>
+        <li><strong>Weak rock.</strong> Coal measures, not hard rock: chamber stability for machine halls needs early geotechnical screening.</li>
+        <li><strong>Heritage interface.</strong> The protected surface ensemble constrains surface works but also protects shaft access — likely a net positive if engaged early.</li>
+    </ul>
+
+    <h2>What the SNIMVJ closure dossier must confirm</h2>
+    <ul>
+        <li>Which shafts are open, their depths and lining condition;</li>
+        <li>Gallery/chamber volumes by level, and which levels are sealed by concrete closure dams;</li>
+        <li>Current mine-water level and pumping history (flooded levels reduce usable head);</li>
+        <li>Residual methane regime.</li>
+    </ul>
+    <div class="note"><strong>Caveats:</strong> town-level coordinates; depth and void figures are estimates pending the closure dossier; storage uses ~0.0024 GWh per Mm³ per metre of head. Treat every number on this sheet as a screening value with roughly a factor-2 band.</div>
+
+    <h2>Suggested next step</h2>
+    <p>Request closure-dossier access from SNIMVJ for Petrila (and, urgently, a backfilling pause at Lonea and Lupeni, which are in active closure). A two-week desk study against the dossier resolves most of the uncertainty in this sheet before any site work is needed.</p>
+
+    <footer>
+        HydroBattery Atlas · Atlas record: <code>mv_petrila</code> · Companion sheet: <a href="concept-lupeni.html">Lupeni Mine</a> ·
+        Background: <a href="https://en.wikipedia.org/wiki/Petrila_mine" target="_blank">Petrila mine (Wikipedia)</a> ·
+        <a href="../index.html">← Back to the Atlas map</a>
+    </footer>
+</main>
+</body>
+</html>

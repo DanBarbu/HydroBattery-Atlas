@@ -328,7 +328,7 @@ HB.Data.mineVoids = [
         commodity: 'Copper',
         // ANU confirmed pit lake (n06_e116_PITL65): 1,246 m ASL, 5.2 GL
         upper_pit_elevation_m: 1246,
-        lower_pit_elevation_m: 850,
+        lower_pit_elevation_m: 374,
         head_m: 872,           // paired with RES_154907 (374 m ASL)
         upper_pit_volume_m3: 5200000,
         lower_pit_volume_m3: 5000000,
@@ -1022,6 +1022,7 @@ HB.Data.mineVoids = [
         storage_mwh: 2900,
         estimated_cost_musd: null,
         hv_node_distance_km: 1,
+        concept_sheet_url: 'docs/concept-petrila.html',
         description: 'Deepest mine in the Jiu Valley coal basin (~940 m), closed 2015; surface headframe towers preserved as historic monuments, shafts likely still intact. Basin anchor: ~800 m usable head, ~1.5 Mm3 accessible void (shafts + main galleries; 5-15% haircut on caved longwall workings), ~2.9 GWh screening estimate. Methane and acid-mine-water hazards. SNIMVJ counterparty; EU Just Transition Fund territory; own 110 kV feed ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Petrila_mine',
         developer: 'SNIMVJ'
@@ -1056,6 +1057,7 @@ HB.Data.mineVoids = [
         storage_mwh: 2300,
         estimated_cost_musd: null,
         hv_node_distance_km: 1,
+        concept_sheet_url: 'docs/concept-lupeni.html',
         description: 'URGENT — in the official SNIMVJ closure program since 2022; shafts on the backfilling schedule now. Second basin anchor: ~650 m head, ~1.5 Mm3 accessible void, ~2.3 GWh. Unique hybrid head play: an upper reservoir on the Straja slope above the town (ridges 1,400-1,870 m) stacks surface relief on top of mine depth for >1,000 m total head. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
         source_url: 'https://en.wikipedia.org/wiki/Lupeni_coal_mine',
         developer: 'SNIMVJ'
