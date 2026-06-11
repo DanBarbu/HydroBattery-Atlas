@@ -209,7 +209,8 @@ HB.UI.siteDetail = {
                     upper_volume_gl: mv.upper_pit_volume_m3 ? +(mv.upper_pit_volume_m3 / 1e6).toFixed(1) : null,
                     lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
                     description: mv.description, source_url: mv.source_url,
-                    water_contamination: mv.water_contamination || null
+                    water_contamination: mv.water_contamination || null,
+                    concept_sheet_url: mv.concept_sheet_url || null
                 };
             }
         }
@@ -336,6 +337,7 @@ HB.UI.siteDetail = {
             configuration: site.configuration || 'lake_pair',
             description: site.description,
             source_url: site.source_url,
+            concept_sheet_url: site.concept_sheet_url || null,
             year_commissioned: site.year_commissioned,
             costResult,
             anuResult,
@@ -540,6 +542,11 @@ HB.UI.siteDetail = {
             params.push(['Contaminants', contaminants]);
             params.push(['Treatment Technology', techStack]);
             if (wc.treatment_note) params.push(['Compliance Note', wc.treatment_note]);
+        }
+
+        if (site.concept_sheet_url) {
+            params.push(['Concept Sheet',
+                `<a href="${site.concept_sheet_url}" target="_blank" style="color:var(--accent);text-decoration:none;">Project concept sheet ↗</a>`]);
         }
 
         params.forEach(([label, value]) => {
