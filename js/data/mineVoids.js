@@ -16,10 +16,16 @@
  *                    Anina, Rovina, Zlatna, Baia de Arieș, Brad/Musariu,
  *                    + Dobrogea screening set: Altân Tepe, Măcin-Greci,
  *                    Cârjelari, Mahmudia-Beștepe, Iacobdeal, Babadag, Cerna,
- *                    Somova, Murfatlar, Camena, Sitorman, Sibioara
+ *                    Somova, Murfatlar, Camena, Sitorman, Sibioara,
+ *                    + Jiu Valley closed coal mines: Petrila, Lupeni, Lonea,
+ *                    Uricani, Dâlja, Aninoasa, Paroșeni, Bărbăteni,
+ *                    Valea de Brazi, Petrila Sud, Câmpu lui Neag, Iscroni
  *
- * Dobrogea screening records carry hv_node_distance_km (km to nearest
- * 110/400 kV node) — MV distance is not a differentiator in rural Dobrogea.
+ * Dobrogea and Jiu Valley screening records carry hv_node_distance_km (km to
+ * nearest HV node) — MV distance is not a differentiator in rural Romania.
+ * Jiu Valley records also carry closure_year, priority and void_accessibility
+ * (harsh 5-15% haircut on longwall-caved coal workings vs 30-60% for
+ * hard-rock mines).
  *
  * Cost engine region factors (costEngine.js):
  *   Australia 1.0x  |  Malaysia 0.5x  |  Romania 0.7x  |  default 0.8x
@@ -959,5 +965,425 @@ HB.Data.mineVoids = [
         description: 'Modern green-schist quarry at Sibioara (comuna Lumina), still active. Screening: ~1.5 Mm3 at only ~50 m head (~0.2 GWh) — low-relief coastal Dobrogea. Locality-level coordinates. Low priority; active operations would also conflict with conversion.',
         source_url: '',
         developer: ''
+    },
+    // -------------------------------------------------------
+    //  ROMANIA — Jiu Valley (Valea Jiului) closed coal mines, Hunedoara County
+    //
+    //  Screening records for the deep hard-coal basin (12 closed mines under
+    //  SNIMVJ, the state closure company; basin total ~10-12 GWh accessible,
+    //  band ~5-20). Key differences from Dobrogea, encoded per record:
+    //  - Longwall coal mining CAVES: mined seams collapsed (goaf NOT usable).
+    //    Usable void = shafts + main galleries + chambers only; volumes below
+    //    already apply a harsh ~5-15% accessibility (void_accessibility),
+    //    vs 30-60% for hard-rock mines.
+    //  - A closing window: under the SNIMVJ closure program, galleries are
+    //    sealed with concrete dams and shafts backfilled with sterile.
+    //    Lonea and Lupeni (in closure since 2022) are URGENT — intervening
+    //    before shaft backfilling is the highest-value action.
+    //  - Coal-specific hazards: methane (Petrila 2008 explosion killed 13),
+    //    acid mine water, weak rock.
+    //  - Hybrid head play: valley floor (~600-650 m) sits beneath the
+    //    Straja/Valcan ridges (1,400-1,870 m) — an upper reservoir on the
+    //    slope stacks surface relief on top of mine depth (>1,000 m total
+    //    head potential at Lupeni).
+    //  - Counterparty/funding: SNIMVJ closure dossiers resolve shaft status,
+    //    gallery volumes and water levels; the valley is an EU Just
+    //    Transition Fund territory. Every mine had its own 110 kV feed,
+    //    plus the 220 kV node at CET Paroseni.
+    //  Coordinates are town-level approximations; depths are estimates.
+    // -------------------------------------------------------
+    {
+        id: 'mv_petrila',
+        name: 'Petrila Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.45,
+        lng: 23.42,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2015,
+        priority: 'high',
+        void_accessibility: '0.05-0.15',
+        // Surface ~675 m ASL; ~940 m deep workings -> ~800 m usable head
+        upper_pit_elevation_m: 675,
+        lower_pit_elevation_m: -125,
+        head_m: 800,
+        upper_pit_volume_m3: 1500000,
+        lower_pit_volume_m3: 1500000,
+        distance_between_pits_m: 800,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; methane hazard in workings (2008 explosion killed 13) requires ventilation/inertisation before any conversion works.'
+        },
+        capacity_mw: 350,
+        storage_mwh: 2900,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Deepest mine in the Jiu Valley coal basin (~940 m), closed 2015; surface headframe towers preserved as historic monuments, shafts likely still intact. Basin anchor: ~800 m usable head, ~1.5 Mm3 accessible void (shafts + main galleries; 5-15% haircut on caved longwall workings), ~2.9 GWh screening estimate. Methane and acid-mine-water hazards. SNIMVJ counterparty; EU Just Transition Fund territory; own 110 kV feed ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Petrila_mine',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_lupeni',
+        name: 'Lupeni Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.36,
+        lng: 23.24,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2024,
+        priority: 'urgent',
+        void_accessibility: '0.05-0.15',
+        // Surface ~640 m ASL; ~700 m deep workings -> ~650 m usable head
+        upper_pit_elevation_m: 640,
+        lower_pit_elevation_m: -10,
+        head_m: 650,
+        upper_pit_volume_m3: 1500000,
+        lower_pit_volume_m3: 1500000,
+        distance_between_pits_m: 800,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; methane hazard typical of the basin.'
+        },
+        capacity_mw: 300,
+        storage_mwh: 2300,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'URGENT — in the official SNIMVJ closure program since 2022; shafts on the backfilling schedule now. Second basin anchor: ~650 m head, ~1.5 Mm3 accessible void, ~2.3 GWh. Unique hybrid head play: an upper reservoir on the Straja slope above the town (ridges 1,400-1,870 m) stacks surface relief on top of mine depth for >1,000 m total head. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: 'https://en.wikipedia.org/wiki/Lupeni_coal_mine',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_lonea',
+        name: 'Lonea Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.44,
+        lng: 23.47,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2024,
+        priority: 'urgent',
+        void_accessibility: '0.05-0.15',
+        // Surface ~700 m ASL; ~450 m usable head
+        upper_pit_elevation_m: 700,
+        lower_pit_elevation_m: 250,
+        head_m: 450,
+        upper_pit_volume_m3: 1000000,
+        lower_pit_volume_m3: 1000000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; methane hazard typical of the basin.'
+        },
+        capacity_mw: 150,
+        storage_mwh: 1100,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'URGENT — in the official SNIMVJ closure program since 2022; galleries being sealed with concrete dams, shafts on the backfilling schedule. ~450 m head, ~1.0 Mm3 accessible void, ~1.1 GWh. Intervening before backfilling is the single highest-value action in the basin alongside Lupeni. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_uricani',
+        name: 'Uricani Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.34,
+        lng: 23.15,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2017,
+        priority: 'medium',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 670,
+        lower_pit_elevation_m: 220,
+        head_m: 450,
+        upper_pit_volume_m3: 800000,
+        lower_pit_volume_m3: 800000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; methane hazard typical of the basin.'
+        },
+        capacity_mw: 125,
+        storage_mwh: 900,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Closed 2017 under the SNIMVJ program. ~450 m head, ~0.8 Mm3 accessible void (5-15% haircut on caved longwall workings), ~0.9 GWh. Upper western basin near Retezat foothills. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_dalja',
+        name: 'Dalja Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.42,
+        lng: 23.35,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2001,
+        priority: 'medium',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 620,
+        lower_pit_elevation_m: 120,
+        head_m: 500,
+        upper_pit_volume_m3: 600000,
+        lower_pit_volume_m3: 600000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 100,
+        storage_mwh: 700,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Closed 2001 near Petrosani. ~500 m head, ~0.6 Mm3 accessible void, ~0.7 GWh. Closed two decades ago — shaft condition and flooding status unknown; SNIMVJ closure dossier is the key verification source. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_aninoasa',
+        name: 'Aninoasa Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.40,
+        lng: 23.31,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2006,
+        priority: 'medium',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 640,
+        lower_pit_elevation_m: 240,
+        head_m: 400,
+        upper_pit_volume_m3: 600000,
+        lower_pit_volume_m3: 600000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 85,
+        storage_mwh: 600,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Closed 2006. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Shaft condition unknown after two decades; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_paroseni',
+        name: 'Paroseni Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.37,
+        lng: 23.26,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2017,
+        priority: 'medium',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 630,
+        lower_pit_elevation_m: 230,
+        head_m: 400,
+        upper_pit_volume_m3: 600000,
+        lower_pit_volume_m3: 600000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; methane hazard typical of the basin.'
+        },
+        capacity_mw: 85,
+        storage_mwh: 600,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 0.5,
+        description: 'Closed 2017. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Best grid interface in the basin: ~0.5 km from the 220 kV node at CET Paroseni power station. SNIMVJ counterparty; EU Just Transition Fund territory. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_barbateni',
+        name: 'Barbateni Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.35,
+        lng: 23.21,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2007,
+        priority: 'low',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 660,
+        lower_pit_elevation_m: 260,
+        head_m: 400,
+        upper_pit_volume_m3: 500000,
+        lower_pit_volume_m3: 500000,
+        distance_between_pits_m: 600,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 70,
+        storage_mwh: 500,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Closed 2007, near Lupeni. ~400 m head, ~0.5 Mm3 accessible void, ~0.5 GWh. Shaft condition unknown; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_valea_de_brazi',
+        name: 'Valea de Brazi Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.33,
+        lng: 23.12,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 2004,
+        priority: 'low',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 700,
+        lower_pit_elevation_m: 350,
+        head_m: 350,
+        upper_pit_volume_m3: 400000,
+        lower_pit_volume_m3: 400000,
+        distance_between_pits_m: 500,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 50,
+        storage_mwh: 300,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 2,
+        description: 'Closed 2004, westernmost underground mine of the basin. ~350 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. EU Just Transition Fund territory; 110 kV ~2 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_petrila_sud',
+        name: 'Petrila Sud Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.43,
+        lng: 23.43,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 1999,
+        priority: 'low',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 650,
+        lower_pit_elevation_m: 350,
+        head_m: 300,
+        upper_pit_volume_m3: 400000,
+        lower_pit_volume_m3: 400000,
+        distance_between_pits_m: 500,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 50,
+        storage_mwh: 300,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'Closed 1999, satellite of Petrila. ~300 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. Closed 25+ years — likely flooded/sealed; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_campu_lui_neag',
+        name: 'Campu lui Neag Open Pit',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.32,
+        lng: 23.07,
+        status: 'potential',
+        mine_type: 'open_pit',
+        commodity: 'Hard Coal',
+        closure_year: 1999,
+        priority: 'medium',
+        // Lake-pair config: pit as lower pond (~600 m); built upper reservoir
+        // on the Retezat foothills (~800 m) -> ~200 m head
+        upper_pit_elevation_m: 800,
+        lower_pit_elevation_m: 600,
+        head_m: 200,
+        upper_pit_volume_m3: 2000000,
+        lower_pit_volume_m3: 2000000,
+        distance_between_pits_m: 1200,
+        capacity_mw: 125,
+        storage_mwh: 900,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 3,
+        description: 'The basin\'s only open-pit site, closed 1999 at the western end of the valley. Lake-pair configuration: the pit as lower pond plus a constructed upper reservoir on the Retezat foothills gives ~200 m head over ~2 Mm3 (~0.9 GWh) — no goaf-accessibility haircut needed. Retezat National Park proximity requires environmental review. EU Just Transition Fund territory; 110 kV ~3 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
+    },
+    {
+        id: 'mv_iscroni',
+        name: 'Iscroni Coal Mine',
+        country: 'Romania',
+        region: 'Hunedoara County',
+        lat: 45.39,
+        lng: 23.34,
+        status: 'potential',
+        mine_type: 'underground',
+        commodity: 'Hard Coal',
+        closure_year: 1990,
+        priority: 'low',
+        void_accessibility: '0.05-0.15',
+        upper_pit_elevation_m: 610,
+        lower_pit_elevation_m: 360,
+        head_m: 250,
+        upper_pit_volume_m3: 300000,
+        lower_pit_volume_m3: 300000,
+        distance_between_pits_m: 500,
+        water_contamination: {
+            risk: 'medium',
+            contaminants: ['acid_mine_drainage'],
+            lower_reservoir_type: 'underground_workings',
+            treatment_note: 'Acid coal-mine water; long-closed workings likely flooded.'
+        },
+        capacity_mw: 35,
+        storage_mwh: 200,
+        estimated_cost_musd: null,
+        hv_node_distance_km: 1,
+        description: 'First post-1989 closure in the basin (1990). ~250 m head, ~0.3 Mm3 accessible void, ~0.2 GWh. Closed 35 years — almost certainly flooded; lowest priority of the basin. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        source_url: '',
+        developer: 'SNIMVJ'
     }
 ];
