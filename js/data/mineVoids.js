@@ -391,10 +391,15 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 150,
         storage_mwh: 1200,
-        estimated_cost_musd: null,
-        description: 'Historic gold and silver mining district in the Western Carpathians. Multiple open pits (Cetate, Carnic, Orlea) offer complex PHES pairing options at ~250 m head. Currently protected as UNESCO industrial heritage; any development would require strict environmental review. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 286,
+        description: 'Historic gold and silver mining district in the Western Carpathians. Multiple open pits (Cetate, Carnic, Orlea) offer complex PHES pairing options at ~250 m head. Currently protected as UNESCO industrial heritage; any development would require strict environmental review. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $286M ($238.1/kWh, $1905/kW), LCOS $62.09/MWh, cost class E. Feasibility 1/5.',
         source_url: 'https://en.wikipedia.org/wiki/Ro%C8%99ia_Montan%C4%83',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 286,
+        computed_capex_per_kwh: 238.1,
+        computed_lcos_usd_mwh: 62.09,
+        computed_cost_class: 'E',
+        feasibility_rank: 1
     },
     // -------------------------------------------------------
     //  ROMANIA — Golden Quadrilateral (Apuseni Mountains)
@@ -422,10 +427,15 @@ HB.Data.mineVoids = [
         lower_lng: 22.8028,
         capacity_mw: 85,
         storage_mwh: 680,
-        estimated_cost_musd: null,
-        description: 'Historic gold and silver mine in the Golden Quadrilateral of the Apuseni Mountains. Open pits at ~580 m ASL with ~210 m head to the uninhabited Crisul Negru tributary valley. Site of the 1971 Certej tailings dam disaster; any PHES development would require full tailings remediation first. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 190,
+        description: 'Historic gold and silver mine in the Golden Quadrilateral of the Apuseni Mountains. Open pits at ~580 m ASL with ~210 m head to the uninhabited Crisul Negru tributary valley. Site of the 1971 Certej tailings dam disaster; any PHES development would require full tailings remediation first. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $190M ($279.1/kWh, $2233/kW), LCOS $70.09/MWh, cost class >E. Feasibility 1/5.',
         source_url: 'https://en.wikipedia.org/wiki/Certej_mine_disaster',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 190,
+        computed_capex_per_kwh: 279.1,
+        computed_lcos_usd_mwh: 70.09,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_brad_musariu',
@@ -450,10 +460,15 @@ HB.Data.mineVoids = [
         lower_lng: 22.7912,
         capacity_mw: 96,
         storage_mwh: 768,
-        estimated_cost_musd: null,
-        description: 'Historic gold mine complex near Brad, in the same auriferous belt as Rosia Montana and Certej. Open pits (Musariu, Troita) at ~680 m ASL; lower reservoir in a bend of the Crisul Negru valley below Brad town (uninhabited floodplain). ~240 m head, 2.1 km tunnel. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 195,
+        description: 'Historic gold mine complex near Brad, in the same auriferous belt as Rosia Montana and Certej. Open pits (Musariu, Troita) at ~680 m ASL; lower reservoir in a bend of the Crisul Negru valley below Brad town (uninhabited floodplain). ~240 m head, 2.1 km tunnel. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $195M ($254.4/kWh, $2035/kW), LCOS $65.26/MWh, cost class E. Feasibility 2/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 195,
+        computed_capex_per_kwh: 254.4,
+        computed_lcos_usd_mwh: 65.26,
+        computed_cost_class: 'E',
+        feasibility_rank: 2
     },
     {
         id: 'mv_rovina',
@@ -478,10 +493,15 @@ HB.Data.mineVoids = [
         lower_lng: 22.7528,
         capacity_mw: 106,
         storage_mwh: 1272,
-        estimated_cost_musd: null,
-        description: 'Proposed copper-gold open pit by Samax AB in the western Apuseni Mountains. The future pit void at ~650 m ASL could serve as upper PHES reservoir paired with an uninhabited Crisul Negru valley lower reservoir (~265 m head). Co-development as mine + energy storage could significantly improve project economics. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 207,
+        description: 'Proposed copper-gold open pit by Samax AB in the western Apuseni Mountains. The future pit void at ~650 m ASL could serve as upper PHES reservoir paired with an uninhabited Crisul Negru valley lower reservoir (~265 m head). Co-development as mine + energy storage could significantly improve project economics. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $207M ($163.1/kWh, $1957/kW), LCOS $45.75/MWh, cost class D. Feasibility 3/5.',
         source_url: '',
-        developer: 'Samax AB'
+        developer: 'Samax AB',
+        computed_capex_musd: 207,
+        computed_capex_per_kwh: 163.1,
+        computed_lcos_usd_mwh: 45.75,
+        computed_cost_class: 'D',
+        feasibility_rank: 3
     },
     {
         id: 'mv_zlatna',
@@ -506,10 +526,15 @@ HB.Data.mineVoids = [
         lower_lng: 23.1972,
         capacity_mw: 68,
         storage_mwh: 544,
-        estimated_cost_musd: null,
-        description: 'Historic copper and gold mining district with Roman-era origins in the Ampoi valley. Existing pit voids at ~740 m ASL on the ridge NE of Zlatna, paired with the Ampoi valley (570 m ASL) for ~170 m head. Lower reservoir uses uninhabited valley terrain downstream of the town. Site requires significant environmental remediation from historic copper smelting. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 174,
+        description: 'Historic copper and gold mining district with Roman-era origins in the Ampoi valley. Existing pit voids at ~740 m ASL on the ridge NE of Zlatna, paired with the Ampoi valley (570 m ASL) for ~170 m head. Lower reservoir uses uninhabited valley terrain downstream of the town. Site requires significant environmental remediation from historic copper smelting. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $174M ($320.3/kWh, $2562/kW), LCOS $78.11/MWh, cost class >E. Feasibility 1/5.',
         source_url: 'https://en.wikipedia.org/wiki/Zlatna',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 174,
+        computed_capex_per_kwh: 320.3,
+        computed_lcos_usd_mwh: 78.11,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_baia_de_aries',
@@ -534,10 +559,15 @@ HB.Data.mineVoids = [
         lower_lng: 23.3105,
         capacity_mw: 112,
         storage_mwh: 896,
-        estimated_cost_musd: null,
-        description: 'Gold and silver mine in the western Apuseni Mountains (Metaliferi Mountains), part of the historic Golden Quadrilateral. Open pits at ~900 m ASL on the ridge above the Arieș River, paired with an uninhabited valley 2 km downstream (~280 m head). Remote mountain terrain with good environmental profile. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 203,
+        description: 'Gold and silver mine in the western Apuseni Mountains (Metaliferi Mountains), part of the historic Golden Quadrilateral. Open pits at ~900 m ASL on the ridge above the Arieș River, paired with an uninhabited valley 2 km downstream (~280 m head). Remote mountain terrain with good environmental profile. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $203M ($227/kWh, $1816/kW), LCOS $59.92/MWh, cost class D. Feasibility 2/5.',
         source_url: 'https://en.wikipedia.org/wiki/Baia_de_Arie%C8%99',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 203,
+        computed_capex_per_kwh: 227,
+        computed_lcos_usd_mwh: 59.92,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     // -------------------------------------------------------
     //  ROMANIA — Maramureș Mining District
@@ -565,10 +595,15 @@ HB.Data.mineVoids = [
         lower_lng: 23.7118,
         capacity_mw: 94,
         storage_mwh: 752,
-        estimated_cost_musd: null,
-        description: 'Historic polymetallic mine on the southern slopes of the Gutâi Mountains in the Maramureș mining district. Open pits at ~610 m ASL paired with the Sasar River valley (375 m ASL, uninhabited terrain 2 km east) for ~235 m head. Part of the Baia Mare–Baia Sprie–Cavnic mining corridor. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 190,
+        description: 'Historic polymetallic mine on the southern slopes of the Gutâi Mountains in the Maramureș mining district. Open pits at ~610 m ASL paired with the Sasar River valley (375 m ASL, uninhabited terrain 2 km east) for ~235 m head. Part of the Baia Mare–Baia Sprie–Cavnic mining corridor. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $190M ($252.6/kWh, $2021/kW), LCOS $64.93/MWh, cost class E. Feasibility 2/5.',
         source_url: 'https://en.wikipedia.org/wiki/Baia_Sprie',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 190,
+        computed_capex_per_kwh: 252.6,
+        computed_lcos_usd_mwh: 64.93,
+        computed_cost_class: 'E',
+        feasibility_rank: 2
     },
     {
         id: 'mv_cavnic',
@@ -593,10 +628,15 @@ HB.Data.mineVoids = [
         lower_lng: 23.8668,
         capacity_mw: 134,
         storage_mwh: 1072,
-        estimated_cost_musd: null,
-        description: 'Closed polymetallic mine on the Gutâi ridge with one of the best PHES geometries in Romania: ~335 m head, mine pits at 790 m ASL, lower reservoir in the uninhabited Drăghia valley (455 m ASL). Remote mountain terrain, minimal resettlement risk. Part of the historic Maramureș silver-lead-zinc district. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 210,
+        description: 'Closed polymetallic mine on the Gutâi ridge with one of the best PHES geometries in Romania: ~335 m head, mine pits at 790 m ASL, lower reservoir in the uninhabited Drăghia valley (455 m ASL). Remote mountain terrain, minimal resettlement risk. Part of the historic Maramureș silver-lead-zinc district. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $210M ($196.2/kWh, $1570/kW), LCOS $53.93/MWh, cost class D. Feasibility 2/5.',
         source_url: 'https://en.wikipedia.org/wiki/Cavnic',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 210,
+        computed_capex_per_kwh: 196.2,
+        computed_lcos_usd_mwh: 53.93,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     // -------------------------------------------------------
     //  ROMANIA — Banat Mountains (Caraș-Severin)
@@ -624,10 +664,15 @@ HB.Data.mineVoids = [
         lower_lng: 21.8282,
         capacity_mw: 154,
         storage_mwh: 1848,
-        estimated_cost_musd: null,
-        description: 'Historic anthracite coal mining complex in the Banat Mountains, established 1790 — the oldest industrial mine in Romania. Open-pit sections at ~830 m ASL above the Minișel River gorge (445 m ASL) offer ~385 m head and 2.9 km tunnel — among the strongest PHES profiles for Romanian mine voids. Remote mountain terrain, uninhabited lower gorge. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 226,
+        description: 'Historic anthracite coal mining complex in the Banat Mountains, established 1790 — the oldest industrial mine in Romania. Open-pit sections at ~830 m ASL above the Minișel River gorge (445 m ASL) offer ~385 m head and 2.9 km tunnel — among the strongest PHES profiles for Romanian mine voids. Remote mountain terrain, uninhabited lower gorge. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $226M ($122.5/kWh, $1470/kW), LCOS $37.84/MWh, cost class B. Feasibility 4/5.',
         source_url: 'https://en.wikipedia.org/wiki/Anina',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 226,
+        computed_capex_per_kwh: 122.5,
+        computed_lcos_usd_mwh: 37.84,
+        computed_cost_class: 'B',
+        feasibility_rank: 4
     },
     {
         id: 'mv_moldova_noua',
@@ -652,10 +697,15 @@ HB.Data.mineVoids = [
         lower_lng: 21.6878,
         capacity_mw: 120,
         storage_mwh: 1440,
-        estimated_cost_musd: null,
-        description: 'Open-pit copper mine operated by Cuprumin SA on the plateau above the Danube (Iron Gates reservoir). Outstanding PHES candidate: ~257 m head from mine plateau (~325 m ASL) to an uninhabited Danube embayment (~68 m ASL), 4.8 km tunnel. The Danube acts as an effectively infinite lower reservoir. Cross-border environmental review (Romania–Serbia) required. Regional cost factor 0.7× Australian baseline.',
+        estimated_cost_musd: 262,
+        description: 'Open-pit copper mine operated by Cuprumin SA on the plateau above the Danube (Iron Gates reservoir). Outstanding PHES candidate: ~257 m head from mine plateau (~325 m ASL) to an uninhabited Danube embayment (~68 m ASL), 4.8 km tunnel. The Danube acts as an effectively infinite lower reservoir. Cross-border environmental review (Romania–Serbia) required. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $262M ($182.2/kWh, $2187/kW), LCOS $49.48/MWh, cost class D. Feasibility 2/5.',
         source_url: 'https://en.wikipedia.org/wiki/Moldova_Nou%C4%83',
-        developer: 'Cuprumin SA'
+        developer: 'Cuprumin SA',
+        computed_capex_musd: 262,
+        computed_capex_per_kwh: 182.2,
+        computed_lcos_usd_mwh: 49.48,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     // -------------------------------------------------------
     //  ROMANIA — Dobrogea mine/quarry screening set
@@ -696,11 +746,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 400,
         storage_mwh: 3400,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 298,
         hv_node_distance_km: 35,
-        description: 'Former underground copper-pyrite mine at Stejaru, Tulcea County (Dobrogea). Opened 1903, closed and conserved in 2003 after ~105 years of operation; Romania\'s third-largest copper reserve (~200 Mt @ 0.4% Cu). The only underground mine in north Dobrogea: its ~770 m shaft gives ~700 m of built-in head — the dominant PHES candidate in the region (~3.4 GWh screening estimate at ~2 Mm3 cycling volume, range 1-4 Mm3). ~30-40 km from the Tulcea and Cernavoda HV (110/400 kV) nodes. Screening-level data, not survey data. Regional cost factor 0.7x Australian baseline.',
+        description: 'Former underground copper-pyrite mine at Stejaru, Tulcea County (Dobrogea). Opened 1903, closed and conserved in 2003 after ~105 years of operation; Romania\'s third-largest copper reserve (~200 Mt @ 0.4% Cu). The only underground mine in north Dobrogea: its ~770 m shaft gives ~700 m of built-in head — the dominant PHES candidate in the region (~3.4 GWh screening estimate at ~2 Mm3 cycling volume, range 1-4 Mm3). ~30-40 km from the Tulcea and Cernavoda HV (110/400 kV) nodes. Screening-level data, not survey data. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $298M ($87.6/kWh, $744/kW), LCOS $32.46/MWh, cost class A. Feasibility 3/5.',
         source_url: 'https://en.wikipedia.org/wiki/Alt%C3%A2n_Tepe_mine',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 298,
+        computed_capex_per_kwh: 87.6,
+        computed_lcos_usd_mwh: 32.46,
+        computed_cost_class: 'A',
+        feasibility_rank: 3
     },
     {
         id: 'mv_macin_greci',
@@ -720,11 +775,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1500,
         capacity_mw: 300,
         storage_mwh: 1800,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 403,
         hv_node_distance_km: 20,
-        description: 'Pre-WWII granite quarries at Macin and Greci below the Macin Mountains (Tutuiatu 467 m) — the strongest quarry-cluster relief in Dobrogea. Screening: ~3 Mm3 cycling volume at ~250 m head (~1.8 GWh) assuming a constructed upper reservoir on the massif. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor (~15-40 km). Medium priority — second tier after Altan Tepe, useful as complementary volume. Macin Mountains National Park constraints apply.',
+        description: 'Pre-WWII granite quarries at Macin and Greci below the Macin Mountains (Tutuiatu 467 m) — the strongest quarry-cluster relief in Dobrogea. Screening: ~3 Mm3 cycling volume at ~250 m head (~1.8 GWh) assuming a constructed upper reservoir on the massif. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor (~15-40 km). Medium priority — second tier after Altan Tepe, useful as complementary volume. Macin Mountains National Park constraints apply. Computed (existing-pit PHES model, RO): CapEx $403M ($223.6/kWh, $1342/kW), LCOS $61/MWh, cost class C. Feasibility 2/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 403,
+        computed_capex_per_kwh: 223.6,
+        computed_lcos_usd_mwh: 61,
+        computed_cost_class: 'C',
+        feasibility_rank: 2
     },
     {
         id: 'mv_carjelari',
@@ -744,11 +804,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1200,
         capacity_mw: 150,
         storage_mwh: 1000,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 268,
         hv_node_distance_km: 30,
-        description: 'Granite plateau quarry (historic lime/limestone workings) at Carjelari-Atmagea in the north-Dobrogea uplands. Screening: ~2 Mm3 at ~200 m head (~1.0 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor. Medium priority.',
+        description: 'Granite plateau quarry (historic lime/limestone workings) at Carjelari-Atmagea in the north-Dobrogea uplands. Screening: ~2 Mm3 at ~200 m head (~1.0 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor. Medium priority. Computed (existing-pit PHES model, RO): CapEx $268M ($267.6/kWh, $1784/kW), LCOS $68.88/MWh, cost class E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 268,
+        computed_capex_per_kwh: 267.6,
+        computed_lcos_usd_mwh: 68.88,
+        computed_cost_class: 'E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_mahmudia_bestepe',
@@ -768,11 +833,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1000,
         capacity_mw: 100,
         storage_mwh: 900,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 245,
         hv_node_distance_km: 15,
-        description: 'Limestone quarry between Mahmudia and the Bestepe hills on the Danube Delta edge. Screening: ~3 Mm3 at ~130 m head (~0.9 GWh) assuming a constructed upper reservoir on the Bestepe ridge. Locality-level coordinates. Low priority — Danube Delta Biosphere Reserve proximity raises environmental constraints despite the volume.',
+        description: 'Limestone quarry between Mahmudia and the Bestepe hills on the Danube Delta edge. Screening: ~3 Mm3 at ~130 m head (~0.9 GWh) assuming a constructed upper reservoir on the Bestepe ridge. Locality-level coordinates. Low priority — Danube Delta Biosphere Reserve proximity raises environmental constraints despite the volume. Computed (existing-pit PHES model, RO): CapEx $245M ($271.8/kWh, $2446/kW), LCOS $68.08/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 245,
+        computed_capex_per_kwh: 271.8,
+        computed_lcos_usd_mwh: 68.08,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_iacobdeal',
@@ -792,11 +862,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1000,
         capacity_mw: 100,
         storage_mwh: 700,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 200,
         hv_node_distance_km: 20,
-        description: 'Flooded granite quarry on Iacobdeal hill near Turcoaia (Macin massif) — the existing quarry lake could serve as the lower reservoir. Screening: ~1.5 Mm3 at ~200 m head (~0.7 GWh) assuming a constructed upper reservoir on the hill. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor. Medium priority.',
+        description: 'Flooded granite quarry on Iacobdeal hill near Turcoaia (Macin massif) — the existing quarry lake could serve as the lower reservoir. Screening: ~1.5 Mm3 at ~200 m head (~0.7 GWh) assuming a constructed upper reservoir on the hill. Locality-level coordinates; near the Tulcea/Isaccea 400 kV corridor. Medium priority. Computed (existing-pit PHES model, RO): CapEx $200M ($285.1/kWh, $1996/kW), LCOS $72/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 200,
+        computed_capex_per_kwh: 285.1,
+        computed_lcos_usd_mwh: 72,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_babadag_codru',
@@ -816,11 +891,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1000,
         capacity_mw: 75,
         storage_mwh: 500,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 227,
         hv_node_distance_km: 25,
-        description: 'Limestone quarry near Babadag on the forested Codru plateau. Screening: ~2 Mm3 at ~100 m head (~0.5 GWh) assuming a constructed upper reservoir on the plateau. Locality-level coordinates. Low priority — modest relief.',
+        description: 'Limestone quarry near Babadag on the forested Codru plateau. Screening: ~2 Mm3 at ~100 m head (~0.5 GWh) assuming a constructed upper reservoir on the plateau. Locality-level coordinates. Low priority — modest relief. Computed (existing-pit PHES model, RO): CapEx $227M ($453.1/kWh, $3021/kW), LCOS $105.04/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 227,
+        computed_capex_per_kwh: 453.1,
+        computed_lcos_usd_mwh: 105.04,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_cerna',
@@ -840,11 +920,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1000,
         capacity_mw: 60,
         storage_mwh: 400,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 180,
         hv_node_distance_km: 25,
-        description: 'Historic road-stone quarry at Cerna, worked occasionally before WWII. Screening: ~1.5 Mm3 at ~120 m head (~0.4 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates. Low priority.',
+        description: 'Historic road-stone quarry at Cerna, worked occasionally before WWII. Screening: ~1.5 Mm3 at ~120 m head (~0.4 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates. Low priority. Computed (existing-pit PHES model, RO): CapEx $180M ($449/kWh, $2993/kW), LCOS $104.23/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 180,
+        computed_capex_per_kwh: 449,
+        computed_lcos_usd_mwh: 104.23,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_somova',
@@ -864,11 +949,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 800,
         capacity_mw: 60,
         storage_mwh: 400,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 191,
         hv_node_distance_km: 15,
-        description: 'Lime/limestone quarry at Somova near the Danube, worked since before WWII. Screening: ~1.5 Mm3 at ~100 m head (~0.4 GWh) assuming a constructed upper reservoir on the Somova hills. Locality-level coordinates; close to the Tulcea HV node. Low priority.',
+        description: 'Lime/limestone quarry at Somova near the Danube, worked since before WWII. Screening: ~1.5 Mm3 at ~100 m head (~0.4 GWh) assuming a constructed upper reservoir on the Somova hills. Locality-level coordinates; close to the Tulcea HV node. Low priority. Computed (existing-pit PHES model, RO): CapEx $191M ($478.6/kWh, $3190/kW), LCOS $109.99/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 191,
+        computed_capex_per_kwh: 478.6,
+        computed_lcos_usd_mwh: 109.99,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_murfatlar',
@@ -888,11 +978,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 800,
         capacity_mw: 50,
         storage_mwh: 300,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 215,
         hv_node_distance_km: 15,
-        description: 'Kaolin-clay and chalk quarry at Murfatlar (Basarabi), worked since before WWII. Screening: ~2 Mm3 at only ~60 m head (~0.3 GWh) — low-relief central Dobrogea. Locality-level coordinates. Low priority.',
+        description: 'Kaolin-clay and chalk quarry at Murfatlar (Basarabi), worked since before WWII. Screening: ~2 Mm3 at only ~60 m head (~0.3 GWh) — low-relief central Dobrogea. Locality-level coordinates. Low priority. Computed (existing-pit PHES model, RO): CapEx $215M ($717.5/kWh, $4305/kW), LCOS $157.25/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 215,
+        computed_capex_per_kwh: 717.5,
+        computed_lcos_usd_mwh: 157.25,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_camena',
@@ -912,11 +1007,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 800,
         capacity_mw: 40,
         storage_mwh: 200,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 147,
         hv_node_distance_km: 30,
-        description: 'Historic road-stone quarry at Camena (comuna Baia), worked before WWII. Screening: ~1 Mm3 at ~100 m head (~0.2 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates. Low priority.',
+        description: 'Historic road-stone quarry at Camena (comuna Baia), worked before WWII. Screening: ~1 Mm3 at ~100 m head (~0.2 GWh) assuming a constructed upper reservoir on adjacent relief. Locality-level coordinates. Low priority. Computed (existing-pit PHES model, RO): CapEx $147M ($734.9/kWh, $3675/kW), LCOS $162.02/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 147,
+        computed_capex_per_kwh: 734.9,
+        computed_lcos_usd_mwh: 162.02,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_sitorman',
@@ -936,11 +1036,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 800,
         capacity_mw: 40,
         storage_mwh: 200,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 203,
         hv_node_distance_km: 20,
-        description: 'Modern granite/aggregate quarry at Sitorman (comuna Mihail Kogalniceanu), still active. Screening: ~2 Mm3 at only ~50 m head (~0.2 GWh) — low-relief central Dobrogea. Locality-level coordinates. Low priority; active operations would also conflict with conversion.',
+        description: 'Modern granite/aggregate quarry at Sitorman (comuna Mihail Kogalniceanu), still active. Screening: ~2 Mm3 at only ~50 m head (~0.2 GWh) — low-relief central Dobrogea. Locality-level coordinates. Low priority; active operations would also conflict with conversion. Computed (existing-pit PHES model, RO): CapEx $203M ($1013.1/kWh, $5066/kW), LCOS $216.24/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 203,
+        computed_capex_per_kwh: 1013.1,
+        computed_lcos_usd_mwh: 216.24,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_sibioara',
@@ -960,11 +1065,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 800,
         capacity_mw: 35,
         storage_mwh: 200,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 186,
         hv_node_distance_km: 15,
-        description: 'Modern green-schist quarry at Sibioara (comuna Lumina), still active. Screening: ~1.5 Mm3 at only ~50 m head (~0.2 GWh) — low-relief coastal Dobrogea. Locality-level coordinates. Low priority; active operations would also conflict with conversion.',
+        description: 'Modern green-schist quarry at Sibioara (comuna Lumina), still active. Screening: ~1.5 Mm3 at only ~50 m head (~0.2 GWh) — low-relief coastal Dobrogea. Locality-level coordinates. Low priority; active operations would also conflict with conversion. Computed (existing-pit PHES model, RO): CapEx $186M ($928.1/kWh, $5303/kW), LCOS $198.63/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: ''
+        developer: '',
+        computed_capex_musd: 186,
+        computed_capex_per_kwh: 928.1,
+        computed_lcos_usd_mwh: 198.63,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     // -------------------------------------------------------
     //  ROMANIA — Jiu Valley (Valea Jiului) closed coal mines, Hunedoara County
@@ -1020,12 +1130,17 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 350,
         storage_mwh: 2900,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 254,
         hv_node_distance_km: 1,
         concept_sheet_url: 'docs/concept-petrila.html',
-        description: 'Deepest mine in the Jiu Valley coal basin (~940 m), closed 2015; surface headframe towers preserved as historic monuments, shafts likely still intact. Basin anchor: ~800 m usable head, ~1.5 Mm3 accessible void (shafts + main galleries; 5-15% haircut on caved longwall workings), ~2.9 GWh screening estimate. Methane and acid-mine-water hazards. SNIMVJ counterparty; EU Just Transition Fund territory; own 110 kV feed ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Deepest mine in the Jiu Valley coal basin (~940 m), closed 2015; surface headframe towers preserved as historic monuments, shafts likely still intact. Basin anchor: ~800 m usable head, ~1.5 Mm3 accessible void (shafts + main galleries; 5-15% haircut on caved longwall workings), ~2.9 GWh screening estimate. Methane and acid-mine-water hazards. SNIMVJ counterparty; EU Just Transition Fund territory; own 110 kV feed ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $254M ($87.8/kWh, $727/kW), LCOS $32.61/MWh, cost class A. Feasibility 4/5.',
         source_url: 'https://en.wikipedia.org/wiki/Petrila_mine',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 254,
+        computed_capex_per_kwh: 87.8,
+        computed_lcos_usd_mwh: 32.61,
+        computed_cost_class: 'A',
+        feasibility_rank: 4
     },
     {
         id: 'mv_lupeni',
@@ -1055,12 +1170,17 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 300,
         storage_mwh: 2300,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 250,
         hv_node_distance_km: 1,
         concept_sheet_url: 'docs/concept-lupeni.html',
-        description: 'URGENT — in the official SNIMVJ closure program since 2022; shafts on the backfilling schedule now. Second basin anchor: ~650 m head, ~1.5 Mm3 accessible void, ~2.3 GWh. Unique hybrid head play: an upper reservoir on the Straja slope above the town (ridges 1,400-1,870 m) stacks surface relief on top of mine depth for >1,000 m total head. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'URGENT — in the official SNIMVJ closure program since 2022; shafts on the backfilling schedule now. Second basin anchor: ~650 m head, ~1.5 Mm3 accessible void, ~2.3 GWh. Unique hybrid head play: an upper reservoir on the Straja slope above the town (ridges 1,400-1,870 m) stacks surface relief on top of mine depth for >1,000 m total head. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $250M ($108.5/kWh, $832/kW), LCOS $37.06/MWh, cost class A. Feasibility 4/5.',
         source_url: 'https://en.wikipedia.org/wiki/Lupeni_coal_mine',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 250,
+        computed_capex_per_kwh: 108.5,
+        computed_lcos_usd_mwh: 37.06,
+        computed_cost_class: 'A',
+        feasibility_rank: 4
     },
     {
         id: 'mv_lonea',
@@ -1090,11 +1210,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 150,
         storage_mwh: 1100,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 178,
         hv_node_distance_km: 1,
-        description: 'URGENT — in the official SNIMVJ closure program since 2022; galleries being sealed with concrete dams, shafts on the backfilling schedule. ~450 m head, ~1.0 Mm3 accessible void, ~1.1 GWh. Intervening before backfilling is the single highest-value action in the basin alongside Lupeni. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'URGENT — in the official SNIMVJ closure program since 2022; galleries being sealed with concrete dams, shafts on the backfilling schedule. ~450 m head, ~1.0 Mm3 accessible void, ~1.1 GWh. Intervening before backfilling is the single highest-value action in the basin alongside Lupeni. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $178M ($161.5/kWh, $1184/kW), LCOS $47.63/MWh, cost class B. Feasibility 3/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 178,
+        computed_capex_per_kwh: 161.5,
+        computed_lcos_usd_mwh: 47.63,
+        computed_cost_class: 'B',
+        feasibility_rank: 3
     },
     {
         id: 'mv_uricani',
@@ -1123,11 +1248,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 125,
         storage_mwh: 900,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 157,
         hv_node_distance_km: 1,
-        description: 'Closed 2017 under the SNIMVJ program. ~450 m head, ~0.8 Mm3 accessible void (5-15% haircut on caved longwall workings), ~0.9 GWh. Upper western basin near Retezat foothills. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2017 under the SNIMVJ program. ~450 m head, ~0.8 Mm3 accessible void (5-15% haircut on caved longwall workings), ~0.9 GWh. Upper western basin near Retezat foothills. SNIMVJ counterparty; EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $157M ($174/kWh, $1253/kW), LCOS $50.18/MWh, cost class B. Feasibility 3/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 157,
+        computed_capex_per_kwh: 174,
+        computed_lcos_usd_mwh: 50.18,
+        computed_cost_class: 'B',
+        feasibility_rank: 3
     },
     {
         id: 'mv_dalja',
@@ -1156,11 +1286,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 100,
         storage_mwh: 700,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 129,
         hv_node_distance_km: 1,
-        description: 'Closed 2001 near Petrosani. ~500 m head, ~0.6 Mm3 accessible void, ~0.7 GWh. Closed two decades ago — shaft condition and flooding status unknown; SNIMVJ closure dossier is the key verification source. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2001 near Petrosani. ~500 m head, ~0.6 Mm3 accessible void, ~0.7 GWh. Closed two decades ago — shaft condition and flooding status unknown; SNIMVJ closure dossier is the key verification source. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $129M ($183.8/kWh, $1286/kW), LCOS $52.24/MWh, cost class C. Feasibility 3/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 129,
+        computed_capex_per_kwh: 183.8,
+        computed_lcos_usd_mwh: 52.24,
+        computed_cost_class: 'C',
+        feasibility_rank: 3
     },
     {
         id: 'mv_aninoasa',
@@ -1189,11 +1324,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 85,
         storage_mwh: 600,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 127,
         hv_node_distance_km: 1,
-        description: 'Closed 2006. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Shaft condition unknown after two decades; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2006. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Shaft condition unknown after two decades; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $127M ($211.9/kWh, $1496/kW), LCOS $57.68/MWh, cost class D. Feasibility 2/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 127,
+        computed_capex_per_kwh: 211.9,
+        computed_lcos_usd_mwh: 57.68,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     {
         id: 'mv_paroseni',
@@ -1222,11 +1362,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 85,
         storage_mwh: 600,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 127,
         hv_node_distance_km: 0.5,
-        description: 'Closed 2017. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Best grid interface in the basin: ~0.5 km from the 220 kV node at CET Paroseni power station. SNIMVJ counterparty; EU Just Transition Fund territory. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2017. ~400 m head, ~0.6 Mm3 accessible void, ~0.6 GWh. Best grid interface in the basin: ~0.5 km from the 220 kV node at CET Paroseni power station. SNIMVJ counterparty; EU Just Transition Fund territory. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $127M ($211.9/kWh, $1496/kW), LCOS $57.68/MWh, cost class D. Feasibility 2/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 127,
+        computed_capex_per_kwh: 211.9,
+        computed_lcos_usd_mwh: 57.68,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     {
         id: 'mv_barbateni',
@@ -1255,11 +1400,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 70,
         storage_mwh: 500,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 112,
         hv_node_distance_km: 1,
-        description: 'Closed 2007, near Lupeni. ~400 m head, ~0.5 Mm3 accessible void, ~0.5 GWh. Shaft condition unknown; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2007, near Lupeni. ~400 m head, ~0.5 Mm3 accessible void, ~0.5 GWh. Shaft condition unknown; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $112M ($223.9/kWh, $1600/kW), LCOS $59.96/MWh, cost class D. Feasibility 2/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 112,
+        computed_capex_per_kwh: 223.9,
+        computed_lcos_usd_mwh: 59.96,
+        computed_cost_class: 'D',
+        feasibility_rank: 2
     },
     {
         id: 'mv_valea_de_brazi',
@@ -1288,11 +1438,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 50,
         storage_mwh: 300,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 95,
         hv_node_distance_km: 2,
-        description: 'Closed 2004, westernmost underground mine of the basin. ~350 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. EU Just Transition Fund territory; 110 kV ~2 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 2004, westernmost underground mine of the basin. ~350 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. EU Just Transition Fund territory; 110 kV ~2 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $95M ($315.9/kWh, $1895/kW), LCOS $78.98/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 95,
+        computed_capex_per_kwh: 315.9,
+        computed_lcos_usd_mwh: 78.98,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_petrila_sud',
@@ -1321,11 +1476,16 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 50,
         storage_mwh: 300,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 101,
         hv_node_distance_km: 1,
-        description: 'Closed 1999, satellite of Petrila. ~300 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. Closed 25+ years — likely flooded/sealed; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'Closed 1999, satellite of Petrila. ~300 m head, ~0.4 Mm3 accessible void, ~0.3 GWh. Closed 25+ years — likely flooded/sealed; verify via SNIMVJ closure dossier. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $101M ($336.9/kWh, $2022/kW), LCOS $83.08/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 101,
+        computed_capex_per_kwh: 336.9,
+        computed_lcos_usd_mwh: 83.08,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     },
     {
         id: 'mv_campu_lui_neag',
@@ -1349,11 +1509,16 @@ HB.Data.mineVoids = [
         distance_between_pits_m: 1200,
         capacity_mw: 125,
         storage_mwh: 900,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 236,
         hv_node_distance_km: 3,
-        description: 'The basin\'s only open-pit site, closed 1999 at the western end of the valley. Lake-pair configuration: the pit as lower pond plus a constructed upper reservoir on the Retezat foothills gives ~200 m head over ~2 Mm3 (~0.9 GWh) — no goaf-accessibility haircut needed. Retezat National Park proximity requires environmental review. EU Just Transition Fund territory; 110 kV ~3 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'The basin\'s only open-pit site, closed 1999 at the western end of the valley. Lake-pair configuration: the pit as lower pond plus a constructed upper reservoir on the Retezat foothills gives ~200 m head over ~2 Mm3 (~0.9 GWh) — no goaf-accessibility haircut needed. Retezat National Park proximity requires environmental review. EU Just Transition Fund territory; 110 kV ~3 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $236M ($262.3/kWh, $1889/kW), LCOS $67.39/MWh, cost class E. Feasibility 2/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 236,
+        computed_capex_per_kwh: 262.3,
+        computed_lcos_usd_mwh: 67.39,
+        computed_cost_class: 'E',
+        feasibility_rank: 2
     },
     {
         id: 'mv_iscroni',
@@ -1382,10 +1547,15 @@ HB.Data.mineVoids = [
         },
         capacity_mw: 35,
         storage_mwh: 200,
-        estimated_cost_musd: null,
+        estimated_cost_musd: 87,
         hv_node_distance_km: 1,
-        description: 'First post-1989 closure in the basin (1990). ~250 m head, ~0.3 Mm3 accessible void, ~0.2 GWh. Closed 35 years — almost certainly flooded; lowest priority of the basin. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline.',
+        description: 'First post-1989 closure in the basin (1990). ~250 m head, ~0.3 Mm3 accessible void, ~0.2 GWh. Closed 35 years — almost certainly flooded; lowest priority of the basin. EU Just Transition Fund territory; 110 kV ~1 km. Town-level coordinates, screening data only. Regional cost factor 0.7x Australian baseline. Computed (existing-pit PHES model, RO): CapEx $87M ($437.1/kWh, $2498/kW), LCOS $102.95/MWh, cost class >E. Feasibility 1/5.',
         source_url: '',
-        developer: 'SNIMVJ'
+        developer: 'SNIMVJ',
+        computed_capex_musd: 87,
+        computed_capex_per_kwh: 437.1,
+        computed_lcos_usd_mwh: 102.95,
+        computed_cost_class: '>E',
+        feasibility_rank: 1
     }
 ];
