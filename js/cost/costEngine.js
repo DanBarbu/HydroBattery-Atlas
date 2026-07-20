@@ -26,6 +26,7 @@ HB.Cost.financials = {
         'Australia': 1.0,
         'Malaysia': 0.5,
         'Romania': 0.7,
+        'Serbia': 0.8,
         'default': 0.8
     },
 
