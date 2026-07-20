@@ -20,6 +20,15 @@ Run directly for a worked example, or import `anu_model` / `scale_up`.
 
 All defaults are copied from HB.Cost.financials in js/cost/costEngine.js.
 Keep this file in sync if those defaults change.
+
+NOTE: the app's cost engine has since been re-calibrated (per-country tunnel
+`regionFactors` + a `countryOverheadIndex` applied to total CapEx, cycles 300,
+dam $195/m3, split sell/buy prices). This replica models the ANU-core formula
+only and does NOT apply the country overhead multiplier, so it now UNDER-states
+total CapEx by that country's overhead factor (e.g. ~1.05× for Romania/Serbia).
+For exact, app-consistent figures, run the pair through the live engine
+(`HB.Cost.engine.anuModel`) via node; use this replica for quick ANU-core
+estimates and cross-checks.
 """
 from __future__ import annotations
 

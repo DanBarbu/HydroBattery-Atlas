@@ -19,7 +19,7 @@ HB.UI.scaleUp = {
 
     _currentSite:   null,
     _results:       null,
-    _activeTiers:   new Set([2, 5, 10, 20, 50, 150]),
+    _activeTiers:   new Set(['p0', 'p1', 2, 5, 10, 20, 50, 150]),
     _storageHours:  18,
     _lifetime:      40,     // yr30 | yr40 | yr50
 
@@ -61,6 +61,20 @@ HB.UI.scaleUp = {
         const body = document.getElementById('scale-up-body');
         if (!body) return;
 
+        // Phase options (pre-PHES stages)
+        const phaseOptions = [
+            { id: 'p0', label: 'Phase 0 — FPV Only' },
+            { id: 'p1', label: 'Phase 1 — Retrofit + FPV' }
+        ].map(p => {
+            const checked = this._activeTiers.has(p.id) ? 'checked' : '';
+            return `<label style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;">
+                        <input type="checkbox" class="su-tier-cb" value="${p.id}" ${checked}
+                               style="cursor:pointer;" />
+                        <span style="font-style:italic;color:#0d47a1;">${p.label}</span>
+                    </label>`;
+        }).join('');
+
+        // GWh tier options (Phase 2+)
         const tierOptions = HB.Cost.scaleUp.TIERS.map(t => {
             const checked = this._activeTiers.has(t) ? 'checked' : '';
             return `<label style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;">
@@ -72,7 +86,11 @@ HB.UI.scaleUp = {
 
         body.innerHTML = `
             <div style="margin-bottom:10px;">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#666;margin-bottom:4px;">Storage Tiers</div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#666;margin-bottom:4px;">Pre-Integration Phases</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px;margin-bottom:6px;">
+                    ${phaseOptions}
+                </div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#666;margin-bottom:4px;">PHES Storage Tiers (Phase 2+)</div>
                 <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px;">
                     ${tierOptions}
                 </div>
@@ -107,7 +125,8 @@ HB.UI.scaleUp = {
         // Wire events
         document.querySelectorAll('.su-tier-cb').forEach(cb => {
             cb.addEventListener('change', () => {
-                const val = parseInt(cb.value, 10);
+                const raw = cb.value;
+                const val = (raw === 'p0' || raw === 'p1') ? raw : parseInt(raw, 10);
                 cb.checked ? this._activeTiers.add(val) : this._activeTiers.delete(val);
             });
         });
@@ -144,15 +163,52 @@ HB.UI.scaleUp = {
             || site.anu_water_rock_ratio || 10;
         const country = site.country || 'default';
 
-        const activeTiersArr = [...this._activeTiers].sort((a, b) => a - b);
+        // Build ordered tiers: phases first ('p0','p1'), then numeric GWh ascending
+        const phases = [];
+        const numeric = [];
+        this._activeTiers.forEach(t => {
+            if (typeof t === 'string') phases.push(t);
+            else numeric.push(t);
+        });
+        phases.sort();                    // p0 before p1
+        numeric.sort((a, b) => a - b);
+        const activeTiersArr = [...phases, ...numeric];
 
-        // Run scale-up engine
+        // Bluefield / operational sites use existing reservoirs: no new dam cost
+        const useExistingReservoirs = (site.isdam === false)
+            || (site.status && site.status.indexOf('bluefield') !== -1)
+            || site.status === 'operational'
+            || site.status === 'under_construction'
+            || site.configuration === 'lake_pair';
+
+        // Existing site capacity — used to zero-out costs for infrastructure
+        // that already exists (reservoirs, tunnels, powerhouse) when the scale-up
+        // tier fits within the existing built capacity.
+        //
+        // IMPORTANT: For ANU-modeled sites (bluefield/greenfield), capacity_mw is
+        // the THEORETICAL PSH design capacity (e.g. 833 MW for Tarnita-Belis),
+        // NOT the existing built infrastructure. Only the reservoirs/lakes exist;
+        // tunnels and powerhouse have NOT been built yet.
+        // Only operational/under-construction plants have actual built tunnels and
+        // powerhouse that can be counted as sunk cost.
+        const existingStorageMWh = site.storage_mwh || site.energyKWh / 1000 || 0;
+        // Detect ANU-modeled sites: siteDetailPanel may not copy anu_class/anu_tier,
+        // so also check status (anu_bluefield, anu_greenfield, etc.) and anuResult.
+        const isAnuDesign = !!(site.anu_class || site.anu_tier || site.anuResult
+            || (site.status && site.status.indexOf('anu_') === 0));
+        const existingPowerMW    = isAnuDesign ? 0
+            : (site.capacity_mw || site.powerKW / 1000 || 0);
+
+        // Run scale-up engine (handles 'p0','p1' + numeric tiers)
         this._results = HB.Cost.scaleUp.calculate({
             headM,
             separationM,
             waterRockRatio,
             country,
-            storageHours: this._storageHours
+            storageHours: this._storageHours,
+            useExistingReservoirs,
+            existingStorageGWh: existingStorageMWh / 1000,
+            existingPowerMW:    existingPowerMW
         }, activeTiersArr);
 
         if (btn) { btn.textContent = 'Regenerate Analysis'; btn.disabled = false; }
@@ -218,13 +274,20 @@ HB.UI.scaleUp = {
         const _num = (v, dp=0) => v === null || !isFinite(v) ? '—'
                         : v.toLocaleString(undefined, { minimumFractionDigits: dp, maximumFractionDigits: dp });
 
-        // Build column headers
-        const headerCols = results.map(r =>
-            `<th style="min-width:80px;text-align:right;padding:6px 8px;white-space:nowrap;">
+        // Build column headers (phases vs tiers)
+        const headerCols = results.map(r => {
+            if (r.isPhase) {
+                return `<th style="min-width:90px;text-align:right;padding:6px 8px;white-space:nowrap;">
+                    <div style="font-size:13px;font-weight:800;color:#0d47a1;">${r.label}</div>
+                    <div style="font-size:9px;color:#666;font-weight:400;line-height:1.3;">${r.sublabel}</div>
+                    <div style="font-size:10px;color:#888;margin-top:2px;">${_num(r.firmMW || r.powerMW, 0)} MW firm</div>
+                </th>`;
+            }
+            return `<th style="min-width:80px;text-align:right;padding:6px 8px;white-space:nowrap;">
                 <div style="font-size:14px;font-weight:800;color:#1565c0;">${r.energyGWh} GWh</div>
                 <div style="font-size:10px;color:#888;font-weight:400;">${_num(r.powerMW, 0)} MW</div>
-            </th>`
-        ).join('');
+            </th>`;
+        }).join('');
 
         // Build table rows — helper to build a data row
         const _row = (label, cells, sublabel) => `
@@ -244,18 +307,50 @@ HB.UI.scaleUp = {
                 <td colspan="${results.length + 1}" style="padding:5px 8px;font-size:10px;font-weight:800;text-transform:uppercase;color:#455a7b;letter-spacing:0.6px;">${title}</td>
             </tr>`;
 
+        // ---- PHASE DETAILS (only shown when phases are included) ----
+        const hasPhases = results.some(r => r.isPhase);
+        const phaseRows = !hasPhases ? '' : [
+            _section('Phase Details'),
+            _row('FPV solar capacity', results.map(r =>
+                _td(r.solarMW ? `${_num(r.solarMW, 0)} MW` : '\u2014')
+            ).join(''), 'floating PV'),
+            _row('Turbine-as-pump retrofit', results.map(r => {
+                if (!r.capex.turbineRetrofit_M) return _td('\u2014');
+                return _td(`$${_num(r.capex.turbineRetrofit_M, 1)}M`
+                    + `<div style="font-size:9px;color:#888;">$${HB.Cost.scaleUp.RETROFIT_PER_KW}/kW</div>`);
+            }).join(''), 'siphon-based, no runner replacement'),
+            _row('Round-trip efficiency', results.map(r => {
+                if (!r.efficiency) return _td('\u2014');
+                const col = r.efficiency.roundTrip >= 65 ? '#2e7d32' : '#e65100';
+                return _td(`<strong style="color:${col};">${r.efficiency.roundTrip}%</strong>`
+                    + `<div style="font-size:9px;color:#888;">pump ${r.efficiency.pumpMode}% × gen ${r.efficiency.genMode}%</div>`);
+            }).join(''), 'turbine-as-pump mode'),
+            _row('Firm 24/7 output', results.map(r =>
+                _td(r.firmMW != null ? `<strong>${_num(r.firmMW, 0)} MW</strong>` : '\u2014')
+            ).join(''), 'guaranteed dispatchable')
+        ].join('');
+
         // ---- ENGINEERING ----
         const engRows = [
             _section('Engineering'),
             _row('Power capacity', results.map(r => _td(`${_num(r.powerMW, 0)} MW`)).join('')),
-            _row('Storage duration', results.map(r => _td(`${r.storageHours} h`)).join('')),
+            _row('Storage duration', results.map(r =>
+                _td(r.storageHours ? `${r.storageHours} h` : '\u2014')
+            ).join('')),
             _row('Head height', results.map(r => _td(`${_num(r.anu.engineering.headM, 0)} m`)).join('')),
             _row('Tunnel / sep.', results.map(r => _td(`${(r.anu.engineering.separationM / 1000).toFixed(1)} km`)).join('')),
-            _row('Water volume', results.map(r => _td(`${r.anu.engineering.totalWaterGL.toFixed(1)} GL`)).join('')),
-            _row('Reservoir area', results.map(r => _td(`${_num(r.anu.engineering.upperAreaHa, 0)} ha`)).join('')),
-            _row('W:R ratio', results.map(r => _td(r.anu.engineering.waterRockRatio)).join('')),
+            _row('Water volume', results.map(r =>
+                _td(r.anu.engineering.totalWaterGL ? `${r.anu.engineering.totalWaterGL.toFixed(1)} GL` : '\u2014')
+            ).join('')),
+            _row('Reservoir area', results.map(r =>
+                _td(r.anu.engineering.upperAreaHa ? `${_num(r.anu.engineering.upperAreaHa, 0)} ha` : '\u2014')
+            ).join('')),
+            _row('W:R ratio', results.map(r =>
+                _td(r.anu.engineering.waterRockRatio || '\u2014')
+            ).join('')),
             _row('ANU cost class', results.map(r => {
                 const cls = r.anu.summary.costClass;
+                if (cls === '\u2014') return _td('\u2014');
                 const col = cls === 'A' ? '#2e7d32' : cls === 'B' ? '#1565c0'
                           : cls === 'C' ? '#e65100' : '#c62828';
                 return _td(`<span style="font-weight:800;color:${col};">${cls}</span>`);
@@ -263,23 +358,56 @@ HB.UI.scaleUp = {
         ].join('');
 
         // ---- CAPITAL COSTS ----
+        const hasMarginal = results.some(r => r.capex.isMarginal);
+        const capexLabel = hasMarginal
+            ? 'Capital Costs (CAPEX) — Marginal Expansion Only'
+            : 'Capital Costs (CAPEX)';
         const capexRows = [
-            _section('Capital Costs (CAPEX)'),
-            _row('Dam / reservoirs', results.map(r => _td(_$M(r.capex.dam_M))).join('')),
-            _row('Tunnel / penstock', results.map(r => _td(_$M(r.capex.tunnel_M))).join('')),
-            _row('Powerhouse + turbines', results.map(r => _td(_$M(r.capex.powerhouse_M))).join('')),
+            _section(capexLabel),
+            _row('Dam / reservoirs', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.dam_M ? _$M(r.capex.dam_M) : '\u2014');
+            }).join('')),
+            _row('Tunnel / penstock', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.tunnel_M ? _$M(r.capex.tunnel_M) : '\u2014');
+            }).join('')),
+            _row('Powerhouse + turbines', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<span style="color:#2e7d32;font-size:10px;">Existing</span>');
+                return _td(r.capex.powerhouse_M ? _$M(r.capex.powerhouse_M) : '\u2014');
+            }).join('')),
+            _row('Turbine-as-pump retrofit', results.map(r => {
+                if (!r.capex.turbineRetrofit_M) return _td('\u2014');
+                const rb = r.retrofitBreakdown;
+                if (!rb) return _td(_$M(r.capex.turbineRetrofit_M));
+                // Show component breakdown as tooltip-style detail
+                const detail = [
+                    rb.vfd_M        ? `VFD $${rb.vfd_M.toFixed(1)}M` : '',
+                    rb.siphon_M     ? `Siphon $${rb.siphon_M.toFixed(1)}M` : '',
+                    rb.guideVane_M  ? `Guide vane $${rb.guideVane_M.toFixed(1)}M` : '',
+                    rb.motorDrive_M ? `Motor $${rb.motorDrive_M.toFixed(1)}M` : '',
+                    rb.booster_M    ? `Booster $${rb.booster_M.toFixed(1)}M` : ''
+                ].filter(Boolean).join(', ');
+                return _td(_$M(r.capex.turbineRetrofit_M)
+                    + `<div style="font-size:9px;color:#888;max-width:120px;white-space:normal;line-height:1.3;">${detail}</div>`);
+            }).join(''), 'siphon-based minimal modification'),
+            _row('FPV solar', results.map(r => _td(r.capex.solar_M ? _$M(r.capex.solar_M) : '\u2014')).join(''), 'utility-scale floating PV'),
             _row('Electrical infra', results.map(r => _td(_$M(r.capex.electrical_M))).join(''), 'transformers, grid, SCADA'),
-            _row('Civil + environmental', results.map(r => _td(_$M(r.capex.civil_env_M))).join(''), 'roads, EIA, permitting'),
+            _row('Civil + environmental', results.map(r => _td(r.capex.civil_env_M ? _$M(r.capex.civil_env_M) : '\u2014')).join(''), 'roads, EIA, permitting'),
             _row('EPC contingency (10%)', results.map(r => _td(_$M(r.capex.epc_M))).join('')),
-            _row('Total CAPEX', results.map(r => _td(
-                `<strong>${_$B(r.capex.total_M)}</strong>`
-            )).join('')),
+            _row('Total CAPEX', results.map(r => {
+                if (r.capex.noNewInvestment) return _td('<strong style="color:#2e7d32;">$0 (Existing)</strong>');
+                return _td(`<strong>${_$B(r.capex.total_M)}</strong>`);
+            }).join('')),
             _row('$/kW', results.map(r => _td(
                 `<span style="${_cellBg(r.capex.per_kW, minCapexKW, maxCapexKW, true)}padding:2px 4px;border-radius:3px;">$${_num(r.capex.per_kW)}</span>`
             )).join('')),
-            _row('$/kWh stored', results.map(r => _td(
-                `<span style="${_cellBg(r.capex.per_kWh, minCapexKWh, maxCapexKWh, true)}padding:2px 4px;border-radius:3px;">$${r.capex.per_kWh.toFixed(1)}</span>`
-            )).join(''))
+            _row('$/kWh stored', results.map(r => {
+                if (r.capex.per_kWh == null) return _td('\u2014');
+                return _td(
+                    `<span style="${_cellBg(r.capex.per_kWh, minCapexKWh, maxCapexKWh, true)}padding:2px 4px;border-radius:3px;">$${r.capex.per_kWh.toFixed(1)}</span>`
+                );
+            }).join(''))
         ].join('');
 
         // ---- OPEX ----
@@ -290,14 +418,27 @@ HB.UI.scaleUp = {
         ].join('');
 
         // ---- LCOE / LCOS ----
+        const lcosLabel = hasPhases
+            ? 'LCOS / LCOE — Levelized Cost ($/MWh)'
+            : 'LCOS — Levelized Cost of Energy Storage ($/MWh)';
         const lcosRows = [
-            _section('LCOS — Levelized Cost of Energy Storage ($/MWh)'),
-            _row('Lost energy cost', results.map(r => _td(`$${r.lcos.lostEnergy.toFixed(1)}`)).join('')),
-            _row('Capital cost component', results.map(r => _td(`$${r.lcos.capital.toFixed(1)}`)).join('')),
-            _row('O&M component', results.map(r => _td(`$${r.lcos.om.toFixed(1)}`)).join('')),
-            _row('LCOS Total', results.map(r => _td(
-                `<strong style="${_cellBg(r.lcos.total, minLcos, maxLcos, true)}padding:2px 4px;border-radius:3px;">$${r.lcos.total.toFixed(1)}</strong>`
-            )).join(''))
+            _section(lcosLabel),
+            _row('Lost energy cost', results.map(r =>
+                _td(r.lcos.isLCOE ? '\u2014' : `$${r.lcos.lostEnergy.toFixed(1)}`)
+            ).join('')),
+            _row('Capital cost component', results.map(r =>
+                _td(r.lcos.isLCOE ? '\u2014' : `$${r.lcos.capital.toFixed(1)}`)
+            ).join('')),
+            _row('O&M component', results.map(r =>
+                _td(r.lcos.isLCOE ? '\u2014' : `$${r.lcos.om.toFixed(1)}`)
+            ).join('')),
+            _row('LCOS / LCOE Total', results.map(r => {
+                const lbl = r.lcos.isLCOE ? 'LCOE' : r.lcos.isBlended ? 'Blended' : 'LCOS';
+                return _td(
+                    `<strong style="${_cellBg(r.lcos.total, minLcos, maxLcos, true)}padding:2px 4px;border-radius:3px;">$${r.lcos.total.toFixed(1)}</strong>`
+                    + `<div style="font-size:9px;color:#888;">${lbl}</div>`
+                );
+            }).join(''))
         ].join('');
 
         // ---- REVENUE MODEL ----
@@ -395,6 +536,8 @@ HB.UI.scaleUp = {
                 OPEX: ${HB.Cost.scaleUp.OPEX_FRACTION * 100}% CAPEX/yr &nbsp;|&nbsp;
                 EPC contingency: ${HB.Cost.scaleUp.EPC_CONTINGENCY * 100}% &nbsp;|&nbsp;
                 Gen. efficiency: ${Math.round(fin.genEfficiency * 100)}% &nbsp;|&nbsp;
+                Phase 1 RTE: ${Math.round(HB.Cost.scaleUp.RETROFIT_RTE * 100)}% (pump ${Math.round(HB.Cost.scaleUp.PUMP_MODE_EFFICIENCY * 100)}% × gen ${Math.round(HB.Cost.scaleUp.GEN_MODE_EFFICIENCY * 100)}%) &nbsp;|&nbsp;
+                Retrofit: $${HB.Cost.scaleUp.RETROFIT_PER_KW}/kW &nbsp;|&nbsp;
                 Region factor: ${fin.regionFactors[this._currentSite?.country] || fin.regionFactors['default']}×.
                 <br>Cost colours: <span style="background:rgba(75,195,120,0.25);padding:0 4px;border-radius:2px;">green = best</span>
                 &nbsp;<span style="background:rgba(220,80,80,0.18);padding:0 4px;border-radius:2px;">red = worst</span>.
@@ -411,6 +554,7 @@ HB.UI.scaleUp = {
                         </tr>
                     </thead>
                     <tbody>
+                        ${phaseRows}
                         ${engRows}
                         ${capexRows}
                         ${opexRows}

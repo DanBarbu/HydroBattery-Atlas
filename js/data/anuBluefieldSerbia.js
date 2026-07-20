@@ -8,7 +8,8 @@
  * the lower reservoir for the Đerdap-cluster schemes, and RES_145950 anchors
  * the Golubac cluster (2/5/15 GWh).
  *
- * Cost engine region factor (costEngine.js): Serbia 0.8× (Australia baseline).
+ * Cost engine calibration (costEngine.js): Serbia tunnel region factor 0.65× +
+ * country overhead index 1.05 (Balkan / Eastern European market).
  * CapEx / LCOS figures in each description are computed by the app's own
  * cost engine (HB.Cost.engine.anuModel); ANU's published energy_cost/power_cost
  * were not visible on the panels (Show Raw Data closed), so those fields are null.
@@ -39,7 +40,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 150000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class AA 150GWh/50h on the Danube (Đerdap). Head 286m, separation 4.7km, slope 6%. Volume 253.1GL, W/R 30.6. Upper RES35569 / lower Danube RES_1723. Computed CapEx $3,802M ($25.4/kWh, $1267/kW), LCOS $18.9/MWh. Feasibility 5/5 — best $/kWh and LCOS in the Danube set.",
+    "description": "ANU Bluefield Class AA 150GWh/50h on the Danube (Đerdap). Head 286m, separation 4.7km, slope 6%. Volume 253.1GL, W/R 30.6. Upper RES35569 / lower Danube RES_1723. Computed CapEx $4,334M ($28.9/kWh, $1445/kW), LCOS $17.0/MWh. Feasibility 5/5 — best $/kWh and LCOS in the Danube set.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "150gwh_50h.35569"
@@ -66,7 +67,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 500000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class AA 500GWh/50h on the Danube (Đerdap). Head 286m, separation 3.8km, slope 8%. Volume 839.1GL, W/R 12.5. Upper RES35569 / lower Danube RES_1723. Computed CapEx $17,439M ($34.9/kWh, $1744/kW), LCOS $21.2/MWh. Feasibility 4/5 — superb economics but 10GW mega-scale.",
+    "description": "ANU Bluefield Class AA 500GWh/50h on the Danube (Đerdap). Head 286m, separation 3.8km, slope 8%. Volume 839.1GL, W/R 12.5. Upper RES35569 / lower Danube RES_1723. Computed CapEx $20,467M ($40.9/kWh, $2047/kW), LCOS $19.3/MWh. Feasibility 4/5 — superb economics but 10GW mega-scale.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "500gwh_50h.35569"
@@ -93,7 +94,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 5000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class B 5GWh/18h on the Danube (Golubac). Head 236m, separation 1.3km, slope 18%. Volume 10.3GL, W/R 42.0. Upper RES_145950 / lower RES33647. Computed CapEx $381M ($76.3/kWh, $1373/kW), LCOS $33.2/MWh. Feasibility 5/5 — compact, buildable, Class-A economics.",
+    "description": "ANU Bluefield Class B 5GWh/18h on the Danube (Golubac). Head 236m, separation 1.3km, slope 18%. Volume 10.3GL, W/R 42.0. Upper RES_145950 / lower RES33647. Computed CapEx $434M ($86.8/kWh, $1561/kW), LCOS $29.7/MWh. Feasibility 5/5 — compact, buildable, Class-A economics.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "5gwh_18h.145950"
@@ -120,7 +121,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 15000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class B 15GWh/18h on the Danube (Golubac). Head 237m, separation 1.2km, slope 20%. Volume 29.8GL, W/R 13.1. Upper RES_145950 / lower RES35560. Computed CapEx $1,143M ($76.2/kWh, $1372/kW), LCOS $33.1/MWh. Feasibility 5/5 — compact 1.2km/20% geometry, Class-A economics.",
+    "description": "ANU Bluefield Class B 15GWh/18h on the Danube (Golubac). Head 237m, separation 1.2km, slope 20%. Volume 29.8GL, W/R 13.1. Upper RES_145950 / lower RES35560. Computed CapEx $1,325M ($88.4/kWh, $1591/kW), LCOS $30.0/MWh. Feasibility 5/5 — compact 1.2km/20% geometry, Class-A economics.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "15gwh_18h.145950"
@@ -147,7 +148,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 2000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class D 2GWh/6h on the Danube (Golubac). Head 227m, separation 0.6km (shortest in set), slope 38% (steepest). Volume 4.2GL, W/R 14.1. Upper RES_145950 / lower RES36119 (dam 15m × 538m). Computed CapEx $426M ($213/kWh, $1279/kW), LCOS $72.3/MWh. Feasibility 3/5 — physically the most compact site, but small energy hurts $/kWh.",
+    "description": "ANU Bluefield Class D 2GWh/6h on the Danube (Golubac). Head 227m, separation 0.6km (shortest in set), slope 38% (steepest). Volume 4.2GL, W/R 14.1. Upper RES_145950 / lower RES36119 (dam 15m × 538m). Computed CapEx $488M ($244/kWh, $1466/kW), LCOS $65.0/MWh. Feasibility 3/5 — physically the most compact site, but small energy hurts $/kWh.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "2gwh_6h.145950"
@@ -174,7 +175,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 50000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class B 50GWh/18h on the Danube (Đerdap). Head 337m (highest in set), separation 8.0km, slope 4%. Volume 70.3GL, W/R 7.8. Upper RES41461 / lower Danube RES_1723. Computed CapEx $4,038M ($80.8/kWh, $1454/kW), LCOS $34.2/MWh. Feasibility 3/5 — high head offset by long 8km tunnel.",
+    "description": "ANU Bluefield Class B 50GWh/18h on the Danube (Đerdap). Head 337m (highest in set), separation 8.0km, slope 4%. Volume 70.3GL, W/R 7.8. Upper RES41461 / lower Danube RES_1723. Computed CapEx $4,555M ($91.1/kWh, $1640/kW), LCOS $30.6/MWh. Feasibility 3/5 — high head offset by long 8km tunnel.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "50gwh_18h.41461"
@@ -201,7 +202,7 @@ HB.Data.anuBluefieldSerbia = [
     "storage_mwh": 2000,
     "status": "anu_bluefield",
     "configuration": "lake_pair",
-    "description": "ANU Bluefield Class E 2GWh/6h on the Danube (Đerdap). Head 316m, separation 4.7km, slope 7%. Volume 3.0GL, W/R 10.0. Upper RES35381 / lower Danube RES_1723. Computed CapEx $467M ($234/kWh, $1402/kW), LCOS $77.2/MWh. Feasibility 2/5 — too little energy over a long tunnel.",
+    "description": "ANU Bluefield Class E 2GWh/6h on the Danube (Đerdap). Head 316m, separation 4.7km, slope 7%. Volume 3.0GL, W/R 10.0. Upper RES35381 / lower Danube RES_1723. Computed CapEx $519M ($260/kWh, $1559/kW), LCOS $68.0/MWh. Feasibility 2/5 — too little energy over a long tunnel.",
     "source_url": "https://re100.eng.anu.edu.au/global/",
     "isdam": false,
     "wfs_fid": "2gwh_6h.35381"

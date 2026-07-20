@@ -29,26 +29,62 @@ HB.UI.costBreakdown = {
         const fin = anuResult.financials;
         const eng = anuResult.engineering;
         const comp = anuResult.components;
+        const isExisting   = s.isExistingInfrastructure;  // fully built (operational)
+        const isExistingRes = s.isExistingReservoirs;       // ANU bluefield — lakes only
 
         const classColor = s.costClass === 'A' ? '#2e7d32' : s.costClass === 'B' ? '#1565c0' : s.costClass === 'C' ? '#ff8f00' : '#c62828';
 
+        let capexSection;
+        if (isExisting) {
+            capexSection = `
+                <div style="background:#e8f5e9;border-radius:6px;padding:8px 10px;margin-bottom:8px;">
+                    <div style="font-weight:700;color:#2e7d32;font-size:12px;">Existing Infrastructure</div>
+                    <div style="font-size:10px;color:#555;margin-top:2px;">Reservoirs, tunnels, and powerhouse already built. No new civil CAPEX required. Use Scale-Up Analysis for Phase 0/1 retrofit + FPV investment costs.</div>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">New Civil CAPEX</span>
+                    <span class="value" style="color:#2e7d32;font-weight:700;">$0</span>
+                </div>`;
+        } else if (isExistingRes) {
+            capexSection = `
+                <div style="background:#e3f2fd;border-radius:6px;padding:8px 10px;margin-bottom:8px;">
+                    <div style="font-weight:700;color:#1565c0;font-size:12px;">Lake Pair Exists — Reservoir CAPEX $0</div>
+                    <div style="font-size:10px;color:#555;margin-top:2px;">Natural lake pair identified by ANU atlas. No dam/reservoir construction required. New investment: tunnel + powerhouse only.</div>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">New CAPEX (tunnel + powerhouse)</span>
+                    <span class="value">$${s.totalCapexM.toFixed(1)}M</span>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">Cost / kW</span>
+                    <span class="value">$${HB.Utils.formatNumber(s.costPerKW)}/kW</span>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">Cost / kWh stored</span>
+                    <span class="value">$${s.costPerKWh.toFixed(1)}/kWh</span>
+                </div>`;
+        } else {
+            capexSection = `
+                <div class="cost-metric" style="border-bottom:2px solid ${classColor};padding-bottom:8px;margin-bottom:8px;">
+                    <span class="label">ANU Cost Class</span>
+                    <span class="value" style="color:${classColor};font-weight:800;font-size:18px;">${s.costClass}</span>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">Total CAPEX</span>
+                    <span class="value">$${s.totalCapexM.toFixed(1)}M</span>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">Cost / kW</span>
+                    <span class="value">$${HB.Utils.formatNumber(s.costPerKW)}/kW</span>
+                </div>
+                <div class="cost-metric">
+                    <span class="label">Cost / kWh</span>
+                    <span class="value">$${s.costPerKWh.toFixed(1)}/kWh</span>
+                </div>`;
+        }
+
         container.innerHTML = `
-            <div class="cost-metric" style="border-bottom:2px solid ${classColor};padding-bottom:8px;margin-bottom:8px;">
-                <span class="label">ANU Cost Class</span>
-                <span class="value" style="color:${classColor};font-weight:800;font-size:18px;">${s.costClass}</span>
-            </div>
-            <div class="cost-metric">
-                <span class="label">Total CAPEX</span>
-                <span class="value">$${s.totalCapexM.toFixed(1)}M</span>
-            </div>
-            <div class="cost-metric">
-                <span class="label">Cost / kW</span>
-                <span class="value">$${HB.Utils.formatNumber(s.costPerKW)}/kW</span>
-            </div>
-            <div class="cost-metric">
-                <span class="label">Cost / kWh</span>
-                <span class="value">$${s.costPerKWh.toFixed(1)}/kWh</span>
-            </div>
+            ${capexSection}
 
             <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.1);">
                 <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:#555;margin-bottom:6px;">LCOS Breakdown ($/MWh)</div>
@@ -71,18 +107,24 @@ HB.UI.costBreakdown = {
             </div>
 
             <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.1);">
-                <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:#555;margin-bottom:6px;">Component Costs ($M)</div>
+                <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:#555;margin-bottom:6px;">${isExisting ? 'Infrastructure (Sunk Cost)' : 'Component Costs ($M)'}</div>
                 <div class="cost-metric">
-                    <span class="label">Reservoirs</span>
-                    <span class="value">$${comp.reservoirs_M.toFixed(2)}M</span>
+                    <span class="label">Reservoirs / Dam</span>
+                    <span class="value" style="color:${(isExisting || isExistingRes) ? '#2e7d32' : 'inherit'}">
+                        ${(isExisting || isExistingRes) ? 'Existing lake pair' : '$' + comp.reservoirs_M.toFixed(2) + 'M'}
+                    </span>
                 </div>
                 <div class="cost-metric">
                     <span class="label">Tunnel / Penstock</span>
-                    <span class="value">$${comp.tunnel_M.toFixed(2)}M</span>
+                    <span class="value" style="color:${isExisting ? '#2e7d32' : 'inherit'}">
+                        ${isExisting ? 'Existing' : '$' + comp.tunnel_M.toFixed(2) + 'M'}
+                    </span>
                 </div>
                 <div class="cost-metric">
                     <span class="label">Powerhouse</span>
-                    <span class="value">$${comp.powerhouse_M.toFixed(2)}M</span>
+                    <span class="value" style="color:${isExisting ? '#2e7d32' : 'inherit'}">
+                        ${isExisting ? 'Existing' : '$' + comp.powerhouse_M.toFixed(2) + 'M'}
+                    </span>
                 </div>
             </div>
 
@@ -159,30 +201,59 @@ HB.UI.costBreakdown = {
             </div>
         `;
 
-        // Render pie chart
+        // Render pie chart and table
         const pieContainer = document.getElementById('cost-pie-chart');
-        if (pieContainer && HB.UI.chartRenderer) {
-            HB.UI.chartRenderer.drawPieChart(pieContainer, s.breakdown);
-        }
-
-        // Render table
         const tbody = document.querySelector('#cost-breakdown-table tbody');
-        if (tbody) {
-            tbody.innerHTML = '';
-            s.breakdown.forEach(item => {
-                const pct = ((item.value / (s.totalCapexM * 1e6)) * 100).toFixed(1);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${item.color};margin-right:6px;vertical-align:middle;"></span>${item.name}</td>
-                    <td>$${(item.value / 1e6).toFixed(2)}M</td>
-                    <td>${pct}%</td>
-                `;
-                tbody.appendChild(tr);
-            });
-            const totalRow = document.createElement('tr');
-            totalRow.className = 'cost-total';
-            totalRow.innerHTML = `<td>Total CAPEX</td><td>$${s.totalCapexM.toFixed(1)}M</td><td>100%</td>`;
-            tbody.appendChild(totalRow);
+
+        if (isExisting) {
+            // For existing sites: show "Existing Infrastructure" instead of cost breakdown
+            if (pieContainer) {
+                pieContainer.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;height:180px;color:#2e7d32;font-size:13px;font-weight:600;text-align:center;">
+                        All civil infrastructure<br>already exists<br>
+                        <span style="font-size:10px;font-weight:400;color:#666;display:block;margin-top:4px;">
+                            See Scale-Up Analysis for<br>Phase 0/1 investment costs
+                        </span>
+                    </div>`;
+            }
+            if (tbody) {
+                tbody.innerHTML = '';
+                const labels = ['Reservoirs', 'Tunnel / Penstock', 'Powerhouse'];
+                const colors = ['#4a90d9', '#e74c3c', '#2ecc71'];
+                labels.forEach((name, i) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colors[i]};margin-right:6px;vertical-align:middle;"></span>${name}</td>
+                        <td style="color:#2e7d32;">Existing</td>
+                        <td>\u2014</td>`;
+                    tbody.appendChild(tr);
+                });
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'cost-total';
+                totalRow.innerHTML = '<td>New Civil CAPEX</td><td style="color:#2e7d32;font-weight:700;">$0</td><td>\u2014</td>';
+                tbody.appendChild(totalRow);
+            }
+        } else {
+            if (pieContainer && HB.UI.chartRenderer) {
+                HB.UI.chartRenderer.drawPieChart(pieContainer, s.breakdown);
+            }
+            if (tbody) {
+                tbody.innerHTML = '';
+                s.breakdown.forEach(item => {
+                    const pct = ((item.value / (s.totalCapexM * 1e6)) * 100).toFixed(1);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${item.color};margin-right:6px;vertical-align:middle;"></span>${item.name}</td>
+                        <td>$${(item.value / 1e6).toFixed(2)}M</td>
+                        <td>${pct}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'cost-total';
+                totalRow.innerHTML = `<td>Total CAPEX</td><td>$${s.totalCapexM.toFixed(1)}M</td><td>100%</td>`;
+                tbody.appendChild(totalRow);
+            }
         }
     },
 

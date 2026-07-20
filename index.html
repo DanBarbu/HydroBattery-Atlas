@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
     <!-- App CSS -->
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/map.css" />
-    <link rel="stylesheet" href="css/panels.css" />
-    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/main.css?v=4" />
+    <link rel="stylesheet" href="css/map.css?v=2" />
+    <link rel="stylesheet" href="css/panels.css?v=8" />
+    <link rel="stylesheet" href="css/components.css?v=5" />
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
@@ -31,10 +31,11 @@
                     <rect x="2" y="14" width="16" height="2" rx="1"/>
                 </svg>
             </button>
-            <h1 class="app-title">
-                <span class="title-icon">&#9883;</span>
-                HydroBattery Atlas
-            </h1>
+            <div class="title-icon">&#128167;</div>
+            <div>
+                <h1 class="app-title">HydroBattery Atlas</h1>
+                <div class="app-subtitle">Pumped Hydro Energy Storage &bull; Site Finder &amp; Cost Analysis</div>
+            </div>
         </div>
         <div class="top-bar-center">
             <div class="search-box">
@@ -77,41 +78,12 @@
             <div id="tab-search" class="tab-content active">
                 <div class="panel-section">
                     <h3>Configuration Type</h3>
-                    <div class="config-grid">
-                        <button class="config-btn active" data-config="lake_pair" title="Two reservoirs at different elevations">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="12" rx="14" ry="6" fill="#4a90d9" opacity="0.7"/>
-                                <ellipse cx="20" cy="30" rx="14" ry="6" fill="#4a90d9"/>
-                                <line x1="14" y1="16" x2="14" y2="26" stroke="#666" stroke-width="1.5" stroke-dasharray="3,2"/>
-                            </svg>
-                            <span>Lake Pair</span>
-                        </button>
-                        <button class="config-btn" data-config="lake_ocean" title="Upper lake with ocean as lower reservoir">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
-                                <path d="M2 30 Q10 26 20 30 Q30 34 38 30" fill="none" stroke="#2196F3" stroke-width="2"/>
-                                <path d="M2 33 Q10 29 20 33 Q30 37 38 33" fill="none" stroke="#2196F3" stroke-width="1.5" opacity="0.5"/>
-                            </svg>
-                            <span>Lake-Ocean</span>
-                        </button>
-                        <button class="config-btn" data-config="lake_underground" title="Surface lake with underground reservoir">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <ellipse cx="20" cy="10" rx="12" ry="5" fill="#4a90d9" opacity="0.7"/>
-                                <rect x="8" y="28" width="24" height="8" rx="2" fill="#8B4513" opacity="0.6"/>
-                                <ellipse cx="20" cy="32" rx="8" ry="3" fill="#4a90d9" opacity="0.5"/>
-                            </svg>
-                            <span>Underground</span>
-                        </button>
-                        <button class="config-btn" data-config="mine_void" title="Repurposed mine voids (like Kidston)">
-                            <svg viewBox="0 0 40 40" width="40" height="40">
-                                <polygon points="8,14 20,6 32,14 32,24 8,24" fill="#8B4513" opacity="0.4" stroke="#666"/>
-                                <polygon points="10,26 18,20 26,26 26,36 10,36" fill="#8B4513" opacity="0.4" stroke="#666"/>
-                                <ellipse cx="20" cy="22" rx="6" ry="2" fill="#4a90d9" opacity="0.6"/>
-                                <ellipse cx="18" cy="33" rx="5" ry="2" fill="#4a90d9" opacity="0.6"/>
-                            </svg>
-                            <span>Mine Void</span>
-                        </button>
-                    </div>
+                    <select id="config-select" class="config-select">
+                        <option value="lake_pair" selected>Lake Pair &mdash; two reservoirs at different elevations</option>
+                        <option value="lake_ocean">Lake-Ocean &mdash; upper lake with ocean as lower reservoir</option>
+                        <option value="lake_underground">Underground &mdash; surface lake with underground cavern</option>
+                        <option value="mine_void">Mine Void &mdash; repurposed mine voids</option>
+                    </select>
                 </div>
 
                 <div class="panel-section">
@@ -230,35 +202,80 @@
                         <button class="region-jump-btn" data-lat="45.9" data-lng="24.9" data-zoom="6" title="Fly to Romania">
                             🇷🇴 Romania
                         </button>
-                    </div>
+                        <button class="region-jump-btn" data-lat="36.5" data-lng="127.8" data-zoom="7" title="Fly to South Korea">
+                            🇰🇷 South Korea
+                        </button>
+                        <button class="region-jump-btn" data-lat="16.5" data-lng="120.7" data-zoom="8" title="Fly to Cordillera, Philippines">
+                            🇵🇭 Philippines
+                        </button>
+                        <button class="region-jump-btn" data-lat="-1.0" data-lng="116.5" data-zoom="6" title="Fly to Kalimantan, Indonesia">
+                            🇮🇩 Indonesia
+                        </button>
+                        <button class="region-jump-btn" data-lat="9.1" data-lng="7.4" data-zoom="6" title="Fly to Nigeria">
+                            🇳🇬 Nigeria
+                        </button>
+                        <button class="region-jump-btn" data-lat="0.0" data-lng="37.9" data-zoom="6" title="Fly to Kenya">
+                            🇰🇪 Kenya
+                        </button>
+                        <button class="region-jump-btn" data-lat="23.3" data-lng="58.8" data-zoom="7" title="Fly to Oman Ocean PHES — Hajar Mountains coast">
+                            🌊 Oman Ocean
+                        </button>
+                        <button class="region-jump-btn" data-lat="23.0" data-lng="38.5" data-zoom="6" title="Fly to Saudi Arabia Red Sea Ocean PHES">
+                            🌊 Red Sea (SA)
+                        </button>
+                        <button class="region-jump-btn" data-lat="25.4" data-lng="56.3" data-zoom="8" title="Fly to UAE Fujairah — Hajar Mountains Ocean PHES">
+                            🌊 UAE Fujairah
+                        </button>
+                        <button class="region-jump-btn" data-lat="-1.0" data-lng="100.0" data-zoom="7" title="Fly to Sumatra West Coast Ocean PHES">
+                            🌊 Sumatra Ocean
+                        </button>
+                        <button class="region-jump-btn" data-lat="37.8" data-lng="128.9" data-zoom="7" title="Fly to South Korea Taebaek East Coast Ocean PHES">
+                            🌊 Korea Ocean
+                        </button>
                 </div>
                 <div class="panel-section">
                     <h3>Filter Known Sites</h3>
+                    <div class="filter-group">
+                        <label>Search by Name</label>
+                        <input type="text" id="filter-site-name" placeholder="e.g. Rosia Montana, Tarnita..." style="width:100%;box-sizing:border-box;" />
+                    </div>
                     <div class="filter-group">
                         <label>Country / Region</label>
                         <select id="filter-country">
                             <option value="all">All Countries</option>
                             <option value="Australia">Australia</option>
+                            <option value="Indonesia">Indonesia</option>
                             <option value="Malaysia">Malaysia</option>
+                            <option value="Philippines">Philippines</option>
                             <option value="Romania">Romania</option>
+                            <option value="South Korea">South Korea</option>
                             <option value="United States">United States</option>
                             <option value="Brazil">Brazil</option>
+                            <option value="Kenya">Kenya</option>
+                            <option value="Nigeria">Nigeria</option>
+                            <option value="Oman">Oman</option>
+                            <option value="Saudi Arabia">Saudi Arabia</option>
                             <option value="South Africa">South Africa</option>
+                            <option value="UAE">UAE</option>
                             <option value="United Kingdom">United Kingdom</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label>Status</label>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" id="filter-status-group">
                             <label><input type="checkbox" value="operational" checked /> Operational</label>
                             <label><input type="checkbox" value="under_construction" checked /> Under Construction</label>
                             <label><input type="checkbox" value="proposed" checked /> Proposed</label>
                             <label><input type="checkbox" value="potential" checked /> Potential</label>
+                            <label><input type="checkbox" value="anu_bluefield" checked /> ANU Bluefield</label>
+                            <label><input type="checkbox" value="anu_greenfield" checked /> ANU Greenfield</label>
+                            <label><input type="checkbox" value="anu_brownfield" checked /> ANU Brownfield</label>
+                            <label><input type="checkbox" value="anu_ocean" checked /> ANU Ocean</label>
                         </div>
                     </div>
                     <div class="filter-group">
                         <label>Configuration</label>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" id="filter-config-group">
                             <label><input type="checkbox" value="lake_pair" checked /> Lake Pair</label>
                             <label><input type="checkbox" value="lake_ocean" checked /> Lake-Ocean</label>
                             <label><input type="checkbox" value="mine_void" checked /> Mine Void</label>
@@ -325,6 +342,13 @@
             </div>
         </aside>
 
+        <!-- Panel collapse/expand toggle (positioned on panel edge) -->
+        <button id="panel-collapse-btn" class="panel-collapse-btn" title="Hide panel">
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                <path d="M8 1 L2 8 L8 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
         <!-- Map Container -->
         <div id="map-container">
             <div id="map"></div>
@@ -334,8 +358,16 @@
             </div>
         </div>
 
+        <!-- Right panel collapse/expand toggle (positioned on right panel edge) -->
+        <button id="right-panel-collapse-btn" class="right-panel-collapse-btn" style="display:none" title="Hide panel">
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                <path d="M2 1 L8 8 L2 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
         <!-- Right Panel - Site Details & Cost Breakdown -->
         <aside id="right-panel" class="panel hidden">
+            <div id="right-panel-resize-handle" class="right-panel-resize-handle"></div>
             <button id="close-right-panel" class="panel-close">&times;</button>
             <div id="site-detail">
                 <h2 id="site-name">Site Details</h2>
@@ -348,9 +380,20 @@
                     </table>
                 </div>
 
-                <div class="detail-section">
-                    <h3>Cross-Section</h3>
+                <div class="detail-section" id="site-view-section">
+                    <h3 id="site-view-title">Cross-Section</h3>
+                    <!-- Satellite mini-map (ANU / known sites with lat+lng) -->
+                    <div id="site-satellite-map" style="width:100%;height:200px;border-radius:4px;overflow:hidden;display:none;"></div>
+                    <!-- Reservoir zoom buttons (shown when embedded polygon data is available) -->
+                    <div id="site-reservoir-zoom-btns" style="display:none;gap:4px;flex-wrap:wrap;margin-top:4px;"></div>
+                    <!-- Fallback canvas diagram (sites without coordinates) -->
                     <canvas id="cross-section-canvas" width="380" height="200"></canvas>
+                    <!-- Attribution / ANU link bar -->
+                    <div id="site-view-footer" style="display:none;font-size:10px;color:#666;margin-top:4px;justify-content:space-between;align-items:center;">
+                        <span id="site-view-attribution"></span>
+                        <a id="site-anu-link" href="#" target="_blank" rel="noopener"
+                           style="color:#1565c0;text-decoration:none;font-weight:600;">Open in ANU Atlas ↗</a>
+                    </div>
                 </div>
 
                 <div class="detail-section">
@@ -382,6 +425,128 @@
                     <div id="scale-up-body"></div>
                 </div>
 
+                <!-- Sensitivity Analysis Panel -->
+                <div class="detail-section" id="sensitivity-panel" style="display:none;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <h3 style="margin-bottom:0;">Sensitivity Analysis</h3>
+                        <button id="toggle-sens-body" style="background:none;border:1px solid var(--border);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;color:var(--text-secondary);">&#8722;</button>
+                    </div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;margin-bottom:10px;">
+                        Tune location variables &plusmn;50% &mdash; see impact on investment cost &amp; LCOE
+                    </div>
+                    <div id="sens-body">
+                        <!-- Live metrics (updated on slider drag) -->
+                        <div id="sens-metrics"
+                             style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:12px;"></div>
+
+                        <!-- Parameter sliders -->
+                        <div id="sens-sliders" style="margin-bottom:12px;"></div>
+
+                        <!-- Tornado chart: parameter impact on LCOS at ±50% -->
+                        <div style="margin-bottom:8px;">
+                            <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">
+                                Parameter Impact on LCOS (each swept &plusmn;50%, others fixed)
+                            </div>
+                            <canvas id="sens-tornado" width="380" height="175"
+                                    style="border-radius:4px;"></canvas>
+                        </div>
+
+                        <button id="sens-reset"
+                                style="width:100%;height:30px;background:none;border:1px solid var(--border);border-radius:4px;font-size:12px;cursor:pointer;color:var(--text-secondary);margin-top:2px;">
+                            Reset to Base Values
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── Revenue Model Panel ─────────────────────────────── -->
+                <div class="detail-section" id="rev-model-panel">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <h3 style="margin-bottom:0;">Revenue Model</h3>
+                        <button id="toggle-rev-model" style="background:none;border:1px solid var(--border);border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;color:var(--text-secondary);">&#8722;</button>
+                    </div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;margin-bottom:8px;">
+                        Arbitrage &middot; Ancillary Services &middot; Capacity Payments
+                    </div>
+
+                    <div id="rev-model-body">
+                        <!-- Market profile preset selector -->
+                        <div style="margin-bottom:8px;">
+                            <label style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;display:block;margin-bottom:4px;">Market Profile</label>
+                            <select id="rev-preset"
+                                    style="width:100%;height:30px;padding:0 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text-primary);cursor:pointer;">
+                            </select>
+                            <div id="rev-preset-desc"
+                                 style="font-size:10px;color:var(--text-muted);margin-top:3px;line-height:1.4;min-height:28px;"></div>
+                        </div>
+
+                        <!-- Revenue composition bar -->
+                        <div style="margin-bottom:10px;">
+                            <div style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;margin-bottom:4px;">Revenue Composition</div>
+                            <div style="height:18px;border-radius:3px;overflow:hidden;display:flex;background:#e8e8e8;">
+                                <div id="rev-bar-energy"
+                                     style="height:100%;background:#2196f3;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                                <div id="rev-bar-ancillary"
+                                     style="height:100%;background:#ff9800;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                                <div id="rev-bar-capacity"
+                                     style="height:100%;background:#4caf50;transition:width .3s;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;"></div>
+                            </div>
+                            <!-- Legend -->
+                            <div style="display:flex;gap:10px;margin-top:5px;flex-wrap:wrap;">
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#2196f3;flex-shrink:0;"></div>
+                                    Energy <span id="rev-pct-energy" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#ff9800;flex-shrink:0;"></div>
+                                    Ancillary <span id="rev-pct-ancillary" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);">
+                                    <div style="width:9px;height:9px;border-radius:2px;background:#4caf50;flex-shrink:0;"></div>
+                                    Capacity <span id="rev-pct-capacity" style="font-weight:600;color:var(--text-primary);"></span>
+                                </div>
+                            </div>
+                            <div id="rev-spread-info" style="font-size:10px;color:var(--text-muted);margin-top:4px;"></div>
+                        </div>
+
+                        <!-- Parameter inputs (2-column grid) -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                            <div class="fp-field">
+                                <label>Sell $/MWh</label>
+                                <input id="rev-sell-price" type="number" step="5" min="0" value="90"
+                                       title="Peak dispatch price — revenue per MWh sold to the grid" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Buy $/MWh</label>
+                                <input id="rev-buy-price" type="number" step="5" min="0" value="42"
+                                       title="Off-peak pumping cost — energy cost per MWh pumped uphill" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Cycles / yr</label>
+                                <input id="rev-cycles" type="number" step="10" min="1" value="300"
+                                       title="Full pump+generate cycles per year (IRENA central: 300)" />
+                            </div>
+                            <div class="fp-field">
+                                <label>Cap. $/kW/yr</label>
+                                <input id="rev-cap-payment" type="number" step="5" min="0" value="50"
+                                       title="Capacity payment for being available (set 0 for arbitrage-only)" />
+                            </div>
+                            <div class="fp-field" style="grid-column:span 2;">
+                                <label>Ancillary services premium %</label>
+                                <input id="rev-ancillary" type="number" step="5" min="0" max="100" value="40"
+                                       title="FCR/aFRR/FCAS premium as % of gross energy revenue (IRENA: 30–60%)" />
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div style="display:flex;gap:8px;">
+                            <button id="btn-rev-apply" class="btn-primary" style="flex:1;">Apply &amp; Recalculate</button>
+                            <button id="btn-rev-reset" class="btn-secondary" style="flex:0 0 auto;"
+                                    title="Reset to EU Grid Services (balanced) preset">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Cost / Engineering Parameters ──────────────────── -->
                 <div class="detail-section">
                     <div style="display:flex;align-items:center;justify-content:space-between;">
                         <h3 style="margin-bottom:0;">Adjust Parameters</h3>
@@ -401,8 +566,9 @@
                                 <input id="fp-cycles" type="number" step="10" min="1" />
                             </div>
                             <div class="fp-field">
-                                <label>Energy $/MWh</label>
-                                <input id="fp-energy-price" type="number" step="1" min="0" />
+                                <label>Sell $/MWh</label>
+                                <input id="fp-energy-price" type="number" step="1" min="0"
+                                       title="Peak dispatch sell price (mirrors Revenue Model panel)" />
                             </div>
                             <div class="fp-field">
                                 <label>Equity return %</label>
@@ -539,6 +705,12 @@
         </div>
     </div>
 
+    <!-- Footer Bar -->
+    <div id="footer-bar">
+        <div>&copy; OpenStreetMap contributors &bull; Open-Meteo Elevation API &bull; ANU RE100 PHES methodology</div>
+        <div><span id="site-count">0</span> PHES sites &bull; HydroBattery Atlas v2.0</div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="hidden">
         <div class="loading-spinner"></div>
@@ -559,26 +731,67 @@
     <script src="js/cost/electricalCost.js?v=3"></script>
     <script src="js/cost/civilCost.js?v=3"></script>
     <script src="js/cost/environmentalCost.js?v=3"></script>
-    <script src="js/cost/costEngine.js?v=5"></script>
-    <script src="js/cost/scaleUpEngine.js?v=1"></script>
+    <script src="js/cost/costEngine.js?v=8"></script>
+    <script src="js/cost/scaleUpEngine.js?v=6"></script>
+    <script src="js/cost/fpvEngine.js?v=1"></script>
     <script src="js/search/searchFilters.js?v=3"></script>
     <script src="js/search/siteSearchEngine.js?v=3"></script>
-    <script src="js/data/knownSites.js?v=4"></script>
-    <script src="js/data/anuBluefieldMalaysia.js?v=1"></script>
-    <script src="js/data/anuBluefieldRomania.js?v=3"></script>
+    <script src="js/data/knownSites.js?v=6"></script>
+    <script src="js/data/anuGreenfieldMalaysia.js?v=1"></script>
+    <script src="js/data/anuBluefieldMalaysia.js?v=2"></script>
+    <script src="js/data/anuBrownfieldMalaysia.js?v=1"></script>
+    <script src="js/data/anuOceanMalaysia.js?v=1"></script>
+    <script src="js/data/anuGreenfieldRomania.js?v=1"></script>
+    <script src="js/data/anuBluefieldRomania.js?v=4"></script>
+    <script src="js/data/anuBrownfieldRomania.js?v=1"></script>
     <script src="js/data/anuBluefieldSerbia.js?v=1"></script>
-    <script src="js/data/mineVoids.js?v=4"></script>
+    <script src="js/data/anuGreenfieldSouthKorea.js?v=2"></script>
+    <script src="js/data/anuBluefieldSouthKorea.js?v=2"></script>
+    <script src="js/data/anuBrownfieldSouthKorea.js?v=2"></script>
+    <script src="js/data/anuOceanSouthKorea.js?v=1"></script>
+    <script src="js/data/anuGreenfieldPhilippines.js?v=2"></script>
+    <script src="js/data/anuBluefieldPhilippines.js?v=2"></script>
+    <script src="js/data/anuBrownfieldPhilippines.js?v=2"></script>
+    <script src="js/data/anuOceanPhilippines.js?v=1"></script>
+    <script src="js/data/anuGreenfieldIndonesia.js?v=2"></script>
+    <script src="js/data/anuBluefieldIndonesia.js?v=2"></script>
+    <script src="js/data/anuBrownfieldIndonesia.js?v=2"></script>
+    <script src="js/data/anuOceanIndonesia.js?v=1"></script>
+    <script src="js/data/anuGreenfieldNigeria.js?v=1"></script>
+    <script src="js/data/anuBluefieldNigeria.js?v=1"></script>
+    <script src="js/data/anuBrownfieldNigeria.js?v=1"></script>
+    <script src="js/data/anuGreenfieldKenya.js?v=1"></script>
+    <script src="js/data/anuBluefieldKenya.js?v=1"></script>
+    <script src="js/data/anuBrownfieldKenya.js?v=1"></script>
+    <script src="js/data/anuGreenfieldOman.js?v=1"></script>
+    <script src="js/data/anuBluefieldOman.js?v=1"></script>
+    <script src="js/data/anuBrownfieldOman.js?v=1"></script>
+    <script src="js/data/anuOceanOman.js?v=1"></script>
+    <script src="js/data/anuGreenfieldSaudiArabia.js?v=1"></script>
+    <script src="js/data/anuBluefieldSaudiArabia.js?v=1"></script>
+    <script src="js/data/anuBrownfieldSaudiArabia.js?v=1"></script>
+    <script src="js/data/anuOceanSaudiArabia.js?v=1"></script>
+    <script src="js/data/anuGreenfieldUAE.js?v=1"></script>
+    <script src="js/data/anuBluefieldUAE.js?v=1"></script>
+    <script src="js/data/anuBrownfieldUAE.js?v=1"></script>
+    <script src="js/data/anuOceanUAE.js?v=1"></script>
+    <script src="js/data/hydroAtlasEnrichment.js?v=1"></script>
+    <script src="js/data/mineVoids.js?v=19"></script>
+    <script src="js/data/oltCascadeRomania.js?v=1"></script>
     <script src="js/data/configurationTypes.js?v=3"></script>
     <script src="js/map/mapManager.js?v=3"></script>
-    <script src="js/map/siteMarkers.js?v=3"></script>
+    <script src="js/map/siteMarkers.js?v=4"></script>
     <script src="js/map/drawTools.js?v=3"></script>
-    <script src="js/ui/searchPanel.js?v=3"></script>
+    <script src="js/ui/searchPanel.js?v=5"></script>
     <script src="js/ui/resultsPanel.js?v=3"></script>
     <script src="js/ui/costBreakdownPanel.js?v=4"></script>
-    <script src="js/ui/siteDetailPanel.js?v=5"></script>
-    <script src="js/ui/financialParamsPanel.js?v=2"></script>
-    <script src="js/ui/scaleUpPanel.js?v=1"></script>
+    <script src="js/ui/siteDetailPanel.js?v=45"></script>
+    <script src="js/ui/financialParamsPanel.js?v=4"></script>
+    <script src="js/ui/revenueModelPanel.js?v=1"></script>
+    <script src="js/ui/scaleUpPanel.js?v=4"></script>
+    <script src="js/ui/sensitivityPanel.js?v=2"></script>
+    <script src="js/ui/fpvPanel.js?v=9"></script>
     <script src="js/ui/chartRenderer.js?v=3"></script>
-    <script src="js/app.js?v=7"></script>
+    <script src="js/app.js?v=21"></script>
 </body>
 </html>
