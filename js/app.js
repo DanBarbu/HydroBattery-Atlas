@@ -305,6 +305,42 @@
         console.log('Merged ' + bfRoCount + ' ANU Bluefield Romania sites');
     }
 
+    // Merge ANU Bluefield Serbia data into knownSites
+    if (HB.Data.anuBluefieldSerbia && HB.Data.anuBluefieldSerbia.length) {
+        var bfRsCount = 0;
+        HB.Data.anuBluefieldSerbia.forEach(function (bf) {
+            HB.Data.knownSites.push({
+                id: bf.id,
+                name: bf.name,
+                country: bf.country,
+                region: bf.region,
+                lat: bf.lat,
+                lng: bf.lng,
+                status: bf.status || 'potential',
+                configuration: bf.configuration || 'lake_pair',
+                capacity_mw: bf.capacity_mw,
+                storage_mwh: bf.storage_mwh,
+                upper_elevation_m: bf.head_m ? Math.round(bf.head_m * 0.7 + 200) : null,
+                lower_elevation_m: bf.head_m ? 200 : null,
+                head_m: bf.head_m,
+                tunnel_length_m: bf.separation_km ? Math.round(bf.separation_km * 1000) : null,
+                year_commissioned: null,
+                description: bf.description,
+                source_url: bf.source_url || 'https://re100.eng.anu.edu.au/global/',
+                anu_tier: bf.tier,
+                anu_class: bf.class,
+                anu_volume_gl: bf.volume_gl,
+                anu_water_rock_ratio: bf.water_rock_ratio,
+                anu_dam_volume_mm3: bf.dam_volume_mm3,
+                anu_reservoir_area_ha: bf.reservoir_area_ha,
+                anu_energy_cost_usd_mwh: bf.energy_cost_usd_mwh,
+                anu_power_cost_usd_kw: bf.power_cost_usd_kw
+            });
+            bfRsCount++;
+        });
+        console.log('Merged ' + bfRsCount + ' ANU Bluefield Serbia sites');
+    }
+
     // Initialize elevation cache
     await HB.Elevation.init();
 

@@ -91,6 +91,7 @@ HB.Cost.financials = {
         'South Korea':    1.20,
         'Japan':          1.35,
         'Romania':        0.65,
+        'Serbia':         0.65,   // Balkan / Eastern European market
         'Bulgaria':       0.65,
         'Czech Republic': 0.75,
         'Poland':         0.75,
@@ -147,6 +148,7 @@ HB.Cost.financials = {
         'South Korea':    1.15,
         'Japan':          1.40,   // very complex permitting, high specs
         'Romania':        1.05,
+        'Serbia':         1.05,
         'Bulgaria':       1.00,
         'Czech Republic': 1.10,
         'Poland':         1.05,
