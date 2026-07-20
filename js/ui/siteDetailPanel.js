@@ -1474,17 +1474,19 @@ HB.UI.siteDetail = {
 
         const upperCircle = L.circle([upperLat, upperLng], {
             radius: upperR,
-            fillColor: '#1565C0', fillOpacity: 0.40,
-            color: '#0D47A1', weight: 2.5, opacity: 0.95
-        }).bindTooltip('⬆ Upper reservoir — click for details', { sticky: true })
+            fillColor: '#1565C0', fillOpacity: 0.35,
+            color: '#0D47A1', weight: 2.5, opacity: 0.95,
+            dashArray: '5 5'   // dashed = estimated footprint (no digitised pit outline)
+        }).bindTooltip('⬆ Upper reservoir — estimated footprint (click for details)', { sticky: true })
           .bindPopup(resPopup(true,  uLabel, uElev, uArea, uVol, uVolA, null,  uDamH, uDepth, isEstimated), { maxWidth: 280, className: 'anu-popup' })
           .addTo(this._miniMap);
 
         const lowerCircle = L.circle([lowerLat, lowerLng], {
             radius: lowerR,
-            fillColor: '#42A5F5', fillOpacity: 0.40,
-            color: '#1976D2', weight: 2.5, opacity: 0.95
-        }).bindTooltip('⬇ Lower reservoir — click for details', { sticky: true })
+            fillColor: '#42A5F5', fillOpacity: 0.35,
+            color: '#1976D2', weight: 2.5, opacity: 0.95,
+            dashArray: '5 5'   // dashed = estimated footprint (no digitised pit outline)
+        }).bindTooltip('⬇ Lower reservoir — estimated footprint (click for details)', { sticky: true })
           .bindPopup(resPopup(false, lLabel, lElev, lArea, lVol, lVolA, lVolT, lDamH, lDepth, isEstimated), { maxWidth: 280, className: 'anu-popup' })
           .addTo(this._miniMap);
 
@@ -1503,8 +1505,8 @@ HB.UI.siteDetail = {
                 draggable: true,
                 zIndexOffset: 1000,
                 icon: L.divIcon({
-                    html: `<div title="Drag to reposition" style="width:22px;height:22px;background:${col};border-radius:50%;border:3px solid #fff;cursor:grab;box-shadow:0 2px 5px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✥</div>`,
-                    iconSize: [22, 22], iconAnchor: [11, 11], className: ''
+                    html: `<div title="Drag to reposition" style="width:12px;height:12px;background:${col};border-radius:50%;border:2px solid #fff;cursor:grab;box-shadow:0 1px 3px rgba(0,0,0,.45);opacity:.85;"></div>`,
+                    iconSize: [12, 12], iconAnchor: [6, 6], className: ''
                 })
             }).addTo(this._miniMap);
             handle.on('drag', e => {
