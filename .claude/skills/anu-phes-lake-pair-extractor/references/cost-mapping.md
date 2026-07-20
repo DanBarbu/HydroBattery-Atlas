@@ -46,6 +46,29 @@ base for each of the 2/5/10/20/50/150 GWh tiers:
 
 `tier total = Reservoirs + Tunnel + Powerhouse + Electrical + CivilEnv + EPC`.
 
+## ANU-core vs balance-of-project (what the ANU model does NOT include)
+
+This is the structural reason the six-tier scale-up adds three categories on top
+of the three ANU categories. The ANU parametric model (Blakers et al.) estimates
+only the costs of **reservoirs, powerhouse, switchyard and tunnels** — it does
+**not** include land costs, water costs, local taxes, roads, transmission, work
+camps, or contingency. So keep two layers explicit:
+
+- **ANU-core** — the three `anuModel` categories:
+  - energy-related ($/kWh) → **Reservoirs / dams** (driven by volume, dam volume, WR)
+  - power-related ($/kW) → **Powerhouse + Tunnels + switchyard** (driven by head, power, separation)
+- **Balance-of-project** — everything a real project must add, captured by the
+  scale-up's extra categories: **Electrical / grid** (transmission, switchyard
+  beyond ANU-core), **Civil + Environmental** (roads, land/water, work camps,
+  permitting) and **EPC contingency**.
+
+Report ANU-core and total-installed separately so the atlas figure stays
+comparable to ANU's published `energy_cost` / `power_cost` (which are ANU-core),
+while the six-tier total reflects a buildable project.
+
+Sources: ANU exclusions — arxiv.org/pdf/2512.20286 and
+iopscience.iop.org/article/10.1088/2516-1083/adaabd.
+
 ## Benchmarks the task asks for
 
 - **CapEx $/kWh** = `totalCapex$ / (energy_gwh × 1e6)` → `summary.costPerKWh`.
@@ -68,6 +91,14 @@ Levelised Cost Of Storage sums three components (all $/MWh sold):
 
 `LCOS = lostEnergy + capital + om` in **$/MWh**.
 The task wants **$/kWh** → divide by 1000 (`scripts` returns `lcos_usd_per_kwh`).
+
+**Report with AND without charging.** `lostEnergy` is the charging (round-trip
+loss) term; `capital + om` is the ex-charging cost of storage. The script returns
+both `total` and `total_ex_charging`. LCOS is **capital-dominated** — capital is
+~60% of LCOS for class-A sites rising to ~75% for class-E — and **rate-sensitive**:
+a 1-point rise in discount rate raises LCOS ~10–12%. So flag the discount rate
+(`realDiscount = 0.05`) whenever you quote a number.
+Source: sciencedirect.com/science/article/pii/S2542435120305596.
 
 **Cross-check:** ANU's own `energy_cost` field is its published LCOS in $/MWh.
 After computing, compare your `lcos.total` to the extracted `energy_cost_usd_mwh`.

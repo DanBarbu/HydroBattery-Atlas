@@ -5,6 +5,30 @@ layers of the same pair (upper reservoir, lower reservoir, combined PAIR); only
 the **PAIR record** becomes an atlas entry. The two reservoir layers supply the
 geometry (volume, area, dam) that feeds the cost categories.
 
+## 0. Normalized extraction JSON (intermediate, before the atlas record)
+
+Extract all three layers of a pair into ONE object keyed by `pair_id` (the ANU
+`identifier`), then map it to the atlas record in §1/§2. This keeps the "one pair,
+three layers" structure explicit and gives perimeters a home:
+
+```json
+{
+  "pair_id": "453965",
+  "class": "E", "head_m": 558, "separation_km": 4.6,
+  "energy_gwh": 2, "storage_hours": 6, "slope_pct": 12.1,
+  "anu_energy_cost_usd_mwh": 77.9, "anu_power_cost_usd_kw": 1033.0,
+  "upper":  { "elevation_m": null, "area_ha": 36.1, "volume_gl": 1.7 },
+  "lower":  { "elevation_m": null, "area_ha": null, "volume_gl": null,
+              "dam_height_m": null, "dam_length_m": null, "isdam": false },
+  "perimeters": { "upper": [[lng,lat], …], "lower": [[lng,lat], …] },
+  "wfs_fid": "2gwh_6h.453965", "country": "Romania"
+}
+```
+
+`pair_id` is canonical; `perimeters` are optional GeoJSON rings (map only, no cost
+effect). The PAIR-level fields become the atlas record; `upper`/`lower` supply the
+geometry that drives the cost categories.
+
 ## 1. Atlas lake-pair record (Bluefield)
 
 Target files: `js/data/anuBluefield<Region>.js` (e.g. `anuBluefieldRomania.js`,

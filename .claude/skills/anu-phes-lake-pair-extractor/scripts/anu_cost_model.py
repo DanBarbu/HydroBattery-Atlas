@@ -177,12 +177,15 @@ def anu_model(
             "powerhouse": round(cost_powerhouse, 3),
         },
         "lcos_usd_per_mwh": {
-            "lostEnergy": round(lcos_lost_energy, 2),
+            "lostEnergy": round(lcos_lost_energy, 2),       # charging term
             "capital": round(lcos_capital, 2),
             "om": round(lcos_om, 2),
-            "total": round(lcos_total, 2),
+            "total": round(lcos_total, 2),                  # incl. charging
+            "total_ex_charging": round(lcos_capital + lcos_om, 2),
         },
-        "lcos_usd_per_kwh": round(lcos_total / 1000, 5),  # user-facing $/kWh
+        "lcos_usd_per_kwh": round(lcos_total / 1000, 5),               # incl. charging
+        "lcos_usd_per_kwh_ex_charging": round((lcos_capital + lcos_om) / 1000, 5),
+        "discountRate": r,  # LCOS is rate-sensitive: +1pt ~ +10-12%; flag when quoting
         "engineering": {
             "powerMW": round(P, 1),
             "headM": H,
