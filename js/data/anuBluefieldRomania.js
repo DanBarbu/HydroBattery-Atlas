@@ -56,8 +56,13 @@ HB.Data.anuBluefieldRomania = [
     "annual_generation_mwh": 1649457,
     "annual_pumping_mwh": 2103328,
     "capex_eur": 1300000000,
-    "description": "Official proposed PHES on Someșul Cald River, Cluj County. 1,000 MW / 4×250 MW Francis reversible. UPPER reservoir: new Lăpuștești plateau dam (NWL 1,086 m, min 1,053.5 m, 10 GL active, ~40 ha, crest 2,715 m, bituminous concrete face earthfill). LOWER reservoir: existing Tarnița lake (NWL 521.5 m, min 514 m, 74 GL total / 15 GL active, concrete double-arch dam, commissioned 1974). Gross head 564.5 m. HP galleries: 2×1,096 m ∅4.3 m. LP galleries: 2×1,325 m ∅6.2 m. Underground powerhouse 120×23×45 m. Turbine flow 212 m³/s, pump flow 152 m³/s. Annual generation 1,649 GWh, pumping 2,103 GWh. Est. CAPEX €1.3B (~$1.4–1.5B). No population displacement — upper plateau is uninhabited; lower reservoir already exists. New inundation: ~40 ha only (Lăpuștești plateau). Stalled since 1980s; permit held by Hidro Tarnița S.A.",
-    "source_url": "https://en.wikipedia.org/wiki/Tarnita-Lapustesti_Hydroelectric_Power_Station"
+    "description": "Official proposed PHES on Someșul Cald River, Cluj County. 1,000 MW / 4×250 MW Francis reversible. UPPER reservoir: new Lăpuștești plateau dam (NWL 1,086 m, min 1,053.5 m, 10 GL active, ~40 ha, crest 2,715 m, bituminous concrete face earthfill). LOWER reservoir: existing Tarnița lake (NWL 521.5 m, min 514 m, 74 GL total / 15 GL active, concrete double-arch dam, commissioned 1974). Gross head 564.5 m. HP galleries: 2×1,096 m ∅4.3 m. LP galleries: 2×1,325 m ∅6.2 m. Underground powerhouse 120×23×45 m. Turbine flow 212 m³/s, pump flow 152 m³/s. Annual generation 1,649 GWh, pumping 2,103 GWh. Est. CAPEX €1.3B (~$1.4–1.5B). No population displacement — upper plateau is uninhabited; lower reservoir already exists. New inundation: ~40 ha only (Lăpuștești plateau). Stalled since 1980s; permit held by Hidro Tarnița S.A. Computed (existing-pit PHES model, RO): CapEx $954M ($63.6/kWh, $954/kW), LCOS $25.67/MWh, cost class A. Feasibility 5/5.",
+    "source_url": "https://en.wikipedia.org/wiki/Tarnita-Lapustesti_Hydroelectric_Power_Station",
+    "computed_capex_musd": 954,
+    "computed_capex_per_kwh": 63.6,
+    "computed_lcos_usd_mwh": 25.67,
+    "computed_cost_class": "A",
+    "feasibility_rank": 5
   },
   {
     "id": "ro-existing-irongate",
