@@ -383,6 +383,21 @@ HB.Data.mineVoids = [
         // Lower reservoir = Iazul de decantare Geamăna (user-pinned)
         lower_lat: 46.329198,
         lower_lng: 23.219319,
+        // APPROXIMATE reservoir outlines (traced from public maps around the pinned
+        // coordinates — not surveyed). Rendered dashed + labelled "approximate".
+        upper_reservoir: 'Cetate pit (approx. outline)',
+        lower_reservoir: 'Geamăna tailings pond (approx. outline)',
+        polygons_approximate: true,
+        upper_polygon: { type: 'Polygon', coordinates: [[
+            [23.1690, 46.3128], [23.1725, 46.3141], [23.1776, 46.3143], [23.1817, 46.3129],
+            [23.1824, 46.3107], [23.1789, 46.3094], [23.1734, 46.3095], [23.1694, 46.3109],
+            [23.1690, 46.3128]
+        ]] },
+        lower_polygon: { type: 'Polygon', coordinates: [[
+            [23.2113, 46.3306], [23.2159, 46.3327], [23.2226, 46.3330], [23.2277, 46.3309],
+            [23.2280, 46.3281], [23.2236, 46.3260], [23.2159, 46.3263], [23.2116, 46.3281],
+            [23.2113, 46.3306]
+        ]] },
         water_contamination: {
             risk: 'high',
             contaminants: ['cyanide_residue', 'heavy_metals', 'acid_mine_drainage'],
@@ -392,7 +407,7 @@ HB.Data.mineVoids = [
         capacity_mw: 150,
         storage_mwh: 1200,
         estimated_cost_musd: 286,
-        description: 'Historic gold and silver mining district in the Western Carpathians. Multiple open pits (Cetate, Carnic, Orlea) offer complex PHES pairing options at ~250 m head. Currently protected as UNESCO industrial heritage; any development would require strict environmental review. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $286M ($238.1/kWh, $1905/kW), LCOS $62.09/MWh, cost class E. Feasibility 1/5.',
+        description: 'Historic gold and silver mining district in the Western Carpathians. Multiple open pits (Cetate, Carnic, Orlea) offer complex PHES pairing options at ~250 m head. Currently protected as UNESCO industrial heritage; any development would require strict environmental review. Regional cost factor 0.7× Australian baseline. Computed (existing-pit PHES model, RO): CapEx $286M ($238.1/kWh, $1905/kW), LCOS $62.09/MWh, cost class E. Feasibility 1/5. Preview-map reservoir outlines are APPROXIMATE footprints (upper = Cetate-area open pit, lower = Geamăna tailings pond) traced from public maps around the pinned coordinates — not surveyed.',
         source_url: 'https://en.wikipedia.org/wiki/Ro%C8%99ia_Montan%C4%83',
         developer: '',
         computed_capex_musd: 286,

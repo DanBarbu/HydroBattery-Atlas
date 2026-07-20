@@ -210,7 +210,13 @@ HB.UI.siteDetail = {
                     lower_volume_gl: mv.lower_pit_volume_m3 ? +(mv.lower_pit_volume_m3 / 1e6).toFixed(1) : null,
                     description: mv.description, source_url: mv.source_url,
                     water_contamination: mv.water_contamination || null,
-                    concept_sheet_url: mv.concept_sheet_url || null
+                    concept_sheet_url: mv.concept_sheet_url || null,
+                    // Optional reservoir outline polygons (approximate footprints for mine voids)
+                    upper_polygon: mv.upper_polygon || null,
+                    lower_polygon: mv.lower_polygon || null,
+                    polygons_approximate: mv.polygons_approximate || false,
+                    upper_reservoir: mv.upper_reservoir || null,
+                    lower_reservoir: mv.lower_reservoir || null
                 };
             }
         }
@@ -356,6 +362,9 @@ HB.UI.siteDetail = {
             // Embedded polygon / pipeline data (required for _drawEmbeddedPolygons)
             upper_polygon: site.upper_polygon || null,
             lower_polygon: site.lower_polygon || null,
+            polygons_approximate: site.polygons_approximate || false,
+            upper_reservoir: site.upper_reservoir || null,
+            lower_reservoir: site.lower_reservoir || null,
             pipe_geometry: site.pipe_geometry || null,
             anu_id_upper: site.anu_id_upper || null,
             anu_id_lower: site.anu_id_lower || null,
@@ -830,13 +839,14 @@ HB.UI.siteDetail = {
             }
         });
 
+        const approx = !!site.polygons_approximate;
         const features = [];
         if (site.upper_polygon) {
             features.push({
                 type: 'Feature',
                 properties: {
-                    isupper: '1', isdam: false, ispipe: false,
-                    identifier: site.anu_id_upper || site.upper?.reservoir_id || site.upper?.label || 'Upper reservoir'
+                    isupper: '1', isdam: false, ispipe: false, approximate: approx,
+                    identifier: site.anu_id_upper || site.upper?.reservoir_id || site.upper?.label || site.upper_reservoir || 'Upper reservoir'
                 },
                 geometry: site.upper_polygon
             });
@@ -845,8 +855,8 @@ HB.UI.siteDetail = {
             features.push({
                 type: 'Feature',
                 properties: {
-                    isupper: '0', isdam: false, ispipe: false,
-                    identifier: site.anu_id_lower || site.lower?.reservoir_id || site.lower?.label || 'Lower reservoir'
+                    isupper: '0', isdam: false, ispipe: false, approximate: approx,
+                    identifier: site.anu_id_lower || site.lower?.reservoir_id || site.lower?.label || site.lower_reservoir || 'Lower reservoir'
                 },
                 geometry: site.lower_polygon
             });
@@ -862,9 +872,10 @@ HB.UI.siteDetail = {
                     const up = isUp(f);
                     return {
                         fillColor:   up ? '#1565C0' : '#42A5F5',
-                        fillOpacity: 0.45,
+                        fillOpacity: f.properties.approximate ? 0.35 : 0.45,
                         color:       up ? '#0D47A1' : '#1976D2',
-                        weight: 2.5, opacity: 0.95
+                        weight: 2.5, opacity: 0.95,
+                        dashArray: f.properties.approximate ? '6 5' : null
                     };
                 },
                 onEachFeature: (feature, layer) => {
@@ -888,8 +899,9 @@ HB.UI.siteDetail = {
                     const td = (label, value, shade) =>
                         `<tr${shade ? ' style="background:#EEF4FB;"' : ''}><td style="color:#555;font-weight:600;padding-right:12px;white-space:nowrap;">${label}</td><td>${value}</td></tr>`;
 
+                    const approxFeat = feature.properties.approximate;
                     layer.bindTooltip(
-                        `${up ? '⬆ Upper' : '⬇ Lower'} reservoir — click for details`,
+                        `${up ? '⬆ Upper' : '⬇ Lower'} reservoir${approxFeat ? ' — approximate outline' : ''} — click for details`,
                         { sticky: true, className: 'anu-tip' }
                     );
                     layer.bindPopup(`
@@ -907,7 +919,7 @@ HB.UI.siteDetail = {
                             ${dep    != null ? td('Max Depth',        `${dep} m`,       false) : ''}
                             ${dflc   != null ? td('Level Fluctuation',`${dflc} m`,      true)  : ''}
                             ${damH   != null ? td('Dam Height',       `${damH} m`,      false) : ''}
-                            ${td('Source', '<span style="font-size:10px;color:#666;">ANU RE100 (embedded)</span>', true)}
+                            ${td('Source', `<span style="font-size:10px;color:#666;">${approxFeat ? 'Approximate outline — traced, not surveyed' : 'ANU RE100 (embedded)'}</span>`, true)}
                           </table>
                         </div>`, { maxWidth: 300, className: 'anu-popup' }
                     );
@@ -981,10 +993,12 @@ HB.UI.siteDetail = {
 
         // Default view: lower reservoir at high zoom (larger and more visible);
         // fall back to combined bounds if only one polygon exists.
+        // For approximate mine-void outlines, show BOTH reservoirs so the pair is visible.
         setTimeout(() => {
             if (!this._miniMap) return;
             this._miniMap.invalidateSize();
-            const target = lowerBounds && lowerBounds.isValid() ? lowerBounds : bothBounds;
+            const preferBoth = site.polygons_approximate;
+            const target = (!preferBoth && lowerBounds && lowerBounds.isValid()) ? lowerBounds : bothBounds;
             const pad    = (lowerBounds && upperBounds) ? 0.35 : 0.2;
             this._miniMap.fitBounds(target.pad(pad), { maxZoom: 15 });
         }, 150);
