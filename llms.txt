@@ -1,0 +1,8 @@
+# HydroBattery Atlas
+
+> HydroBattery Atlas is an interactive pumped-hydro energy-storage (PHES) site finder, mapping candidate off-river pumped hydro sites using the ANU PHES methodology, with a focus on Malaysia.
+
+## Pages
+
+- [HydroBattery Atlas - Pumped Hydro Energy Storage Site Finder](https://danbarbu.github.io/HydroBattery-Atlas/): HydroBattery Atlas is an interactive pumped-hydro energy-storage (PHES) site finder, mapping candidate off-river pumped hydro sites using the ANU PHES methodology, with a focus on Malaysia.
+
