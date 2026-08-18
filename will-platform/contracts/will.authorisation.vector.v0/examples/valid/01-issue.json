@@ -1,0 +1,55 @@
+{
+  "schema": "will.authorisation.vector.v0",
+  "authorisation_id": "01895a50-0001-7c00-0000-000000000001",
+  "authorisation_type": "ISSUE",
+  "issued_at": "2026-07-14T13:25:00.500Z",
+  "envelope_id": "01895a2e-8d3c-7c00-8fbb-2b9f2a2b1c40",
+  "envelope_snapshot_hash": "a3f5c9b1d4e6082a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f01",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "classification": "NESECRET",
+  "swarm_id": "vector/swarm-alpha",
+  "correlation_id": "auth-01895a50-swarm-alpha-001",
+  "ack_deadline_ms": 3000,
+  "payload": {
+    "sector": {
+      "type": "Polygon",
+      "coordinates": [[
+        [28.10, 44.90],
+        [28.40, 44.90],
+        [28.40, 45.10],
+        [28.10, 45.10],
+        [28.10, 44.90]
+      ]]
+    },
+    "target_class_allowlist": [
+      "SHAPMFL*",
+      "SHAPMFQ*"
+    ],
+    "weapons_state": {
+      "kinetic": "FREE",
+      "ew": "TIGHT"
+    },
+    "magazine_cap_swarm": 60,
+    "time_window": {
+      "not_before": "2026-07-14T13:25:00Z",
+      "not_after":  "2026-07-14T13:55:00Z"
+    },
+    "grace_ms": 3000,
+    "fusion_confidence_threshold": 0.80,
+    "swarm_composition": {
+      "nodes_expected": 12,
+      "per_node_magazine_estimate": 5
+    }
+  },
+  "doctrine_service_signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://svc/will-doctrine/2026-q3",
+    "value": "ZG9jdHJpbmUtc2VydmljZS1zaWduYXR1cmUtcGxhY2Vob2xkZXI=",
+    "signed_over": [
+      "schema", "authorisation_id", "authorisation_type", "issued_at",
+      "envelope_id", "envelope_snapshot_hash", "tenant_id",
+      "classification", "swarm_id", "correlation_id",
+      "ack_deadline_ms", "payload"
+    ]
+  }
+}
