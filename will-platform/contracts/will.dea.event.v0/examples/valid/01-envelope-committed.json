@@ -1,0 +1,34 @@
+{
+  "schema": "will.dea.event.v0",
+  "event_id": "01895a40-0001-7c00-0000-000000000001",
+  "event_type": "envelope.committed",
+  "occurred_at": "2026-07-14T13:22:00.123Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "envelope_id": "01895a2e-8d3c-7c00-8fbb-2b9f2a2b1c40",
+  "envelope_snapshot_hash": "a3f5c9b1d4e6082a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f01",
+  "classification": "NESECRET",
+  "source_service": {
+    "name": "will-doctrine",
+    "version": "0.1.0",
+    "instance_id": "will-doctrine-pod-a3f9"
+  },
+  "ledger_prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "payload": {
+    "committer_ref": {
+      "npki_dn": "CN=Cpt. Ionescu, OU=Bde 15 Meca, O=MApN, C=RO",
+      "identity_hash": "9f2c1d0e5b8a4a6d2f1e0c9b8a7d6e5f4c3b2a1d0e9f8c7b6a5d4e3f2c1b0a99"
+    },
+    "envelope_signature_algorithm": "Ed25519",
+    "envelope_signature_key_ref": "vault://npki/cpt-ionescu/2026-q3"
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://svc/will-doctrine/2026-q3",
+    "value": "c2lnbmVkLWJ5LXdpbGwtZG9jdHJpbmU=",
+    "signed_over": [
+      "schema", "event_id", "event_type", "occurred_at", "tenant_id",
+      "envelope_id", "envelope_snapshot_hash", "classification",
+      "source_service", "ledger_prev_hash", "payload"
+    ]
+  }
+}
