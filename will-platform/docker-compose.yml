@@ -408,6 +408,27 @@ services:
     networks:
       - will-net
 
+  will-model-registry:
+    build:
+      context: ./services/will-model-registry
+    container_name: will-model-registry
+    environment:
+      # ADR-020 — sovereign AI model registry. Ships with an empty trust
+      # store by default; admissions fail-closed until a real trust-anchors
+      # JSON is mounted via TRUST_ANCHORS. This is the intended dev posture.
+      HTTP_ADDR: ":8093"
+      DATA_DIR: /var/lib/will/model-registry
+      TRUST_ANCHORS: /etc/will/model-registry/trust-anchors.json
+    ports:
+      - "8093:8093"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8093/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
   tak-gateway:
     build:
       context: ./services/tak-gateway
