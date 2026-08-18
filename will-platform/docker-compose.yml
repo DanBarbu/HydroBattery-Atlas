@@ -1,0 +1,841 @@
+version: "3.9"
+
+# WILL Romania Platform — Sprint 0 development environment.
+# Brings up: will-core stub, EMQX, PostgreSQL+PostGIS, Flyway migrator,
+# simulated GPS plugin, WebSocket bridge, React+CesiumJS dashboard.
+# A full Mythic-derived C2 core lands in Sprint 1+; this sprint ships a
+# protocol-compatible stub so the rest of the stack is exercised end-to-end.
+
+name: will-platform-dev
+
+services:
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: will-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-will}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-will-dev}
+      POSTGRES_DB: ${POSTGRES_DB:-will}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-will} -d ${POSTGRES_DB:-will}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  flyway:
+    image: flyway/flyway:10
+    container_name: will-flyway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-will}
+      - -user=${POSTGRES_USER:-will}
+      - -password=${POSTGRES_PASSWORD:-will-dev}
+      - -locations=filesystem:/flyway/sql
+      - -connectRetries=10
+      - migrate
+    volumes:
+      - ./db/migrations:/flyway/sql:ro
+    networks:
+      - will-net
+
+  emqx:
+    image: emqx/emqx:5.4
+    container_name: will-emqx
+    environment:
+      EMQX_NAME: will-emqx
+      EMQX_HOST: 127.0.0.1
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_ADMIN_PASSWORD:-will-dev}
+    ports:
+      - "1883:1883"
+      - "18083:18083"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - will-net
+
+  will-core-stub:
+    build:
+      context: ./docker/will-core-stub
+    container_name: will-core-stub
+    environment:
+      WILL_CORE_PORT: 7443
+    ports:
+      - "7443:7443"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7443/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  sim-gps-puck:
+    build:
+      context: ./plugins/sim-gps-puck
+    container_name: will-sim-gps-puck
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MQTT_HOST: emqx
+      MQTT_PORT: 1883
+      MQTT_TOPIC: telemetry/gps/sim01
+      PUBLISH_HZ: 1
+      CENTER_LAT: 45.8696
+      CENTER_LON: 24.7753
+      RADIUS_M: 1500
+      CLASSIFICATION: NESECRET
+    networks:
+      - will-net
+
+  websocket-bridge:
+    build:
+      context: ./services/websocket-bridge
+    container_name: will-ws-bridge
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MQTT_URL: mqtt://emqx:1883
+      MQTT_TOPIC: telemetry/gps/+
+      WS_PORT: 7000
+    ports:
+      - "7000:7000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7000/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  tenant-admin:
+    build:
+      context: ./services/tenant-admin
+    container_name: will-tenant-admin
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+    environment:
+      HTTP_ADDR: ":8081"
+      DATABASE_URL: postgres://${POSTGRES_USER:-will}:${POSTGRES_PASSWORD:-will-dev}@postgres:5432/${POSTGRES_DB:-will}?sslmode=disable
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  mavlink:
+    build:
+      context: ./plugins/mavlink
+    container_name: will-mavlink
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      MAVLINK_URL: udpin:0.0.0.0:14550
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_PREFIX: telemetry/mavlink
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      AFFILIATION: F
+    ports:
+      - "14550:14550/udp"
+    networks:
+      - will-net
+
+  mavlink-sim:
+    build:
+      context: ./plugins/mavlink-sim
+    container_name: will-mavlink-sim
+    depends_on:
+      mavlink:
+        condition: service_started
+    environment:
+      MAVLINK_TARGET: udpout:mavlink:14550
+      SYSID: "1"
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
+  gmti:
+    build:
+      context: ./plugins/gmti
+    container_name: will-gmti
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      LISTEN_ADDR: "0.0.0.0:8190"
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_PREFIX: telemetry/gmti
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    ports:
+      - "8190:8190/udp"
+    networks:
+      - will-net
+
+  gmti-replay:
+    build:
+      context: ./plugins
+      dockerfile: gmti-replay/Dockerfile
+    container_name: will-gmti-replay
+    depends_on:
+      gmti:
+        condition: service_started
+    environment:
+      GMTI_TARGET: gmti:8190
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
+  lora-bridge:
+    build:
+      context: ./plugins/lora-bridge
+    container_name: will-lora-bridge
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      UPSTREAM_MQTT_URL: tcp://emqx:1883
+      UPSTREAM_TOPIC: lorawan/+/uplink
+      DOWNSTREAM_MQTT_URL: tcp://emqx:1883
+      DOWNSTREAM_TOPIC_PREFIX: telemetry/lora
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    networks:
+      - will-net
+
+  lora-sim:
+    build:
+      context: ./plugins/lora-sim
+    container_name: will-lora-sim
+    depends_on:
+      lora-bridge:
+        condition: service_started
+    environment:
+      UPSTREAM_MQTT_URL: tcp://emqx:1883
+      TOPIC_PREFIX: lorawan
+      COUNT: "100"
+      PERIOD_S: "5"
+      SPREAD_KM: "8"
+    networks:
+      - will-net
+
+  kms-stub:
+    build:
+      context: ./services/kms-stub
+    container_name: will-kms-stub
+    environment:
+      HTTP_ADDR: ":8082"
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8082/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  bms:
+    build:
+      context: ./services/bms
+    container_name: will-bms
+    environment:
+      HTTP_ADDR: ":8084"
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8084/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  bft:
+    build:
+      context: ./services/bft
+    container_name: will-bft
+    environment:
+      HTTP_ADDR: ":8085"
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8085/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  bft-sim:
+    build:
+      context: ./plugins/bft-sim
+    container_name: will-bft-sim
+    depends_on:
+      bft:
+        condition: service_healthy
+    environment:
+      BFT_URL: http://bft:8085/v1/friendly-assets/report
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
+  ownship:
+    build:
+      context: ./services/ownship
+    container_name: will-ownship
+    environment:
+      HTTP_ADDR: ":8086"
+    ports:
+      - "8086:8086"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8086/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  ownship-sim:
+    build:
+      context: ./plugins/ownship-sim
+    container_name: will-ownship-sim
+    depends_on:
+      ownship:
+        condition: service_healthy
+    environment:
+      OWNSHIP_URL: http://ownship:8086
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
+  fires:
+    build:
+      context: ./services/fires
+    container_name: will-fires
+    environment:
+      HTTP_ADDR: ":8087"
+    ports:
+      - "8087:8087"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8087/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  fires-sim:
+    build:
+      context: ./plugins/fires-sim
+    container_name: will-fires-sim
+    depends_on:
+      fires:
+        condition: service_healthy
+    environment:
+      FIRES_URL: http://fires:8087
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
+  trainer:
+    build:
+      context: ./services/trainer
+    container_name: will-trainer
+    environment:
+      HTTP_ADDR: ":8088"
+    ports:
+      - "8088:8088"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8088/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  legacy-c2:
+    build:
+      context: ./services/legacy-c2
+    container_name: will-legacy-c2
+    environment:
+      HTTP_ADDR: ":8089"
+    ports:
+      - "8089:8089"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8089/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  bc2a-sim:
+    build:
+      context: ./plugins/bc2a-sim
+    container_name: will-bc2a-sim
+    depends_on:
+      legacy-c2:
+        condition: service_healthy
+    environment:
+      LEGACY_C2_URL: http://legacy-c2:8089
+      PERIOD_S: "5"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
+  will-model-registry:
+    build:
+      context: ./services/will-model-registry
+    container_name: will-model-registry
+    environment:
+      # ADR-020 — sovereign AI model registry. Ships with an empty trust
+      # store by default; admissions fail-closed until a real trust-anchors
+      # JSON is mounted via TRUST_ANCHORS. This is the intended dev posture.
+      HTTP_ADDR: ":8093"
+      DATA_DIR: /var/lib/will/model-registry
+      TRUST_ANCHORS: /etc/will/model-registry/trust-anchors.json
+    ports:
+      - "8093:8093"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8093/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  tak-gateway:
+    build:
+      context: ./services/tak-gateway
+    container_name: will-tak-gateway
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      HTTP_ADDR: ":8092"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      MQTT_URL: tcp://emqx:1883
+      MQTT_INGRESS_TOPIC: telemetry/tak/ingress
+      # ADR-017 — ships SAFE. No install/first-run decision is recorded, so the
+      # gateway starts "pending" and opens NO TAK socket. An operator must
+      # POST /decision {"decision":"enabled"|"opted_out",...}; production also
+      # requires TAK_COSIGN_ACK=true after Tech Lead + Compliance + Security
+      # sign off, plus TAK_SERVER_ADDR and mounted mTLS material.
+      TAK_DECISION_FILE: /var/lib/will/tak-gateway/decision.json
+      TAK_COSIGN_ACK: "false"
+      EGRESS_ENABLED: "false"
+      EGRESS_CEILING: NESECRET
+      EGRESS_ALLOW_OSINT: "false"
+    ports:
+      - "8092:8092"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8092/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  metoc:
+    build:
+      context: ./services/metoc
+    container_name: will-metoc
+    environment:
+      HTTP_ADDR: ":8090"
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  metoc-sim:
+    build:
+      context: ./plugins/metoc-sim
+    container_name: will-metoc-sim
+    depends_on:
+      metoc:
+        condition: service_healthy
+    environment:
+      METOC_URL: http://metoc:8090
+      PERIOD_S: "6"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+    networks:
+      - will-net
+
+  adsb-osint:
+    build:
+      context: ./plugins/adsb-osint
+    container_name: will-adsb-osint
+    environment:
+      MODE: "sim"
+      MQTT_HOST: emqx
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: telemetry/osint/adsb
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: "NESECRET // OSINT"
+      PUBLISH_HZ: "1"
+      SIM_AIRCRAFT: "12"
+    networks:
+      - will-net
+
+  skynex-cuas:
+    build:
+      context: ./plugins/skynex-cuas
+    container_name: will-skynex-cuas
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Skynex C-RAM/C-UAS ingest. Coordinator-only: WILL never tasks
+      # Skynex. Defaults to sim mode for dev/HIL; vendor adapter is a follow-up.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: skynex/battery-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/cuas/skynex
+      SIM_NUM_TRACKS: "2"
+      SIM_PERIOD_S: "2"
+      SIM_BATTERY_LAT: "45.872"
+      SIM_BATTERY_LON: "24.776"
+    networks:
+      - will-net
+
+  skyranger-vshorad:
+    build:
+      context: ./plugins/skyranger-vshorad
+    container_name: will-skyranger-vshorad
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Skyranger 35 mobile VSHORAD ingest. Coordinator-only:
+      # WILL never tasks the mount. Emits both detections (hostile UAS)
+      # and own-mount platform PLI. Defaults to sim; vendor adapter follow-up.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: skyranger/A1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_DETECTIONS: telemetry/cuas/skyranger
+      MQTT_TOPIC_PLATFORM: telemetry/bft/skyranger
+      SIM_UNIT_ID: skyranger-A1
+      SIM_START_LAT: "45.700"
+      SIM_START_LON: "24.500"
+      SIM_HEADING_DEG: "45"
+      SIM_PATROL_SPEED_MPS: "5"
+      SIM_NUM_TRACKS: "2"
+    networks:
+      - will-net
+
+  vector-mini-uas:
+    build:
+      context: ./plugins/vector-mini-uas
+    container_name: will-vector-mini-uas
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Quantum Systems Vector / Scorpion Class I Mini UAS ingest.
+      # Friendly ISR asset (NOT a threat). Coordinator-only: no flight tasking
+      # from WILL. Defaults to sim; mavlink + quantum vendor adapters TBD.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: vector/gcs-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/uas/vector
+      SIM_UNIT_ID: vector-01
+      SIM_VARIANT: Vector
+      SIM_ORBIT_LAT: "45.870"
+      SIM_ORBIT_LON: "24.800"
+      SIM_ORBIT_RADIUS_M: "1500"
+    networks:
+      - will-net
+
+  lynx-ifv:
+    build:
+      context: ./plugins/lynx-ifv
+    container_name: will-lynx-ifv
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Rheinmetall Lynx KF41 IFV ingest. Coordinator-only: no
+      # turret control, no FCS access, no ammunition release. Advisory ammo
+      # counts populate the operator picture only. Defaults to sim;
+      # vehicle-bus + crew-tablet CoT adapters are follow-ups.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: lynx/btn-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/bft/lynx
+      SIM_UNIT_PREFIX: lynx
+      SIM_START_LAT: "45.850"
+      SIM_START_LON: "24.780"
+      SIM_HEADING_DEG: "90"
+      SIM_MARCH_SPEED_MPS: "8"
+      SIM_VEHICLES: "4"
+    networks:
+      - will-net
+
+  mmpv90-naval:
+    build:
+      context: ./plugins/mmpv90-naval
+    container_name: will-mmpv90-naval
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — Rheinmetall MMPV-90 corvette ingest, Phase 1.
+      # Coordinator-only: no CMS replacement, no weapons direction, no sail
+      # orders. Three streams: friendly own-ship PLI, naval sensor detections,
+      # and AIS broadcasts marked OSINT (ADR-016).
+      # Phase 2 (bidirectional) is blocked on Squad Alpha's Link-22 gateway.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: mmpv90/F501
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC_OWNSHIP: telemetry/bft/mmpv90
+      MQTT_TOPIC_SENSOR: telemetry/sensor/mmpv90
+      MQTT_TOPIC_AIS_OSINT: telemetry/osint/mmpv90-ais
+      SIM_HULL_ID: F501
+      SIM_PENNANT: "501"
+      SIM_START_LAT: "44.170"
+      SIM_START_LON: "28.650"
+      SIM_HEADING_DEG: "90"
+      SIM_CRUISE_MPS: "12"
+    networks:
+      - will-net
+
+  merops-osint:
+    build:
+      context: ./plugins/merops-osint
+    container_name: will-merops-osint
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      # ADR-018 — US MEROPS counter-drone advisory feed. OSINT layer per
+      # ADR-016: classification forced to "<base> // OSINT", advisory only,
+      # never auto-fused with operational C-UAS picture. Engagement outcomes
+      # reported as metadata; WILL never actuates MEROPS.
+      MODE: "sim"
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      SOURCE_PREFIX: merops/site-1
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/osint/merops
+      SIM_SITE_LAT: "45.870"
+      SIM_SITE_LON: "28.000"
+      SIM_THREAT_BEARING_DEG: "45"
+      SIM_THREAT_RANGE_M: "12000"
+      SIM_AI_CLASSIFIER: "SHAHED"
+    networks:
+      - will-net
+
+  sam-battery-mock:
+    build:
+      context: ./plugins/sam-battery-mock
+    container_name: will-sam-battery-mock
+    environment:
+      NAME: "Patriot Bn 1 (PAC-3 MSE)"
+      LAT: "45.87"
+      LON: "24.78"
+      ROUNDS: "16"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
+  skynex-mock:
+    build:
+      context: ./plugins/skynex-mock
+    container_name: will-skynex-mock
+    environment:
+      NAME: "Skynex Bty (GDF-103)"
+      LAT: "45.872"
+      LON: "24.776"
+      ROUNDS: "1200"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
+  cap-fighter-mock:
+    build:
+      context: ./plugins/cap-fighter-mock
+    container_name: will-cap-fighter-mock
+    environment:
+      NAME: "F-16 CAP SOIM-01"
+      CAP_LAT: "45.80"
+      CAP_LON: "24.55"
+      LOADOUT: "8"
+      PERIOD_S: "5"
+    networks:
+      - will-net
+
+  core-sync:
+    build:
+      context: ./services/core-sync
+    container_name: will-core-sync
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+    environment:
+      HTTP_ADDR: ":8083"
+      DATABASE_URL: postgres://${POSTGRES_USER:-will}:${POSTGRES_PASSWORD:-will-dev}@postgres:5432/${POSTGRES_DB:-will}?sslmode=disable
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8083/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  edge-agent:
+    build:
+      context: ./edge/agent
+    container_name: will-edge-agent
+    depends_on:
+      core-sync:
+        condition: service_started
+    environment:
+      HTTP_ADDR: ":8090"
+      EDGE_ID: dev-edge-01
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CORE_SYNC_URL: http://core-sync:8083
+      CACHE_PATH: /var/lib/will-edge/cache.db
+    volumes:
+      - edgecache:/var/lib/will-edge
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  plugin-loader:
+    build:
+      context: ./services/plugin-loader
+    container_name: will-plugin-loader
+    environment:
+      HTTP_ADDR: ":8080"
+      PLUGIN_BOOTSTRAP_NAME: atak-mil
+      PLUGIN_BOOTSTRAP_VERSION: "0.1.0"
+      PLUGIN_BOOTSTRAP_VENDOR: "WILL Romania"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - will-net
+
+  atak-mil:
+    build:
+      context: ./plugins/atak-mil
+    container_name: will-atak-mil
+    depends_on:
+      emqx:
+        condition: service_healthy
+    environment:
+      LISTEN_ADDR: "0.0.0.0:8087"
+      MQTT_URL: tcp://emqx:1883
+      MQTT_TOPIC: telemetry/cot/atak-mil
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+    ports:
+      - "8087:8087/udp"
+    networks:
+      - will-net
+
+  cot-replay:
+    build:
+      context: ./plugins/cot-replay
+    container_name: will-cot-replay
+    depends_on:
+      atak-mil:
+        condition: service_started
+    environment:
+      ATAK_HOST: atak-mil
+      ATAK_PORT: "8087"
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
+  reference-echo:
+    build:
+      context: ./plugins/reference-echo
+    container_name: will-reference-echo
+    environment:
+      TENANT_ID: 00000000-0000-0000-0000-000000000001
+      CLASSIFICATION: NESECRET
+      PERIOD_S: "1"
+    networks:
+      - will-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: will-frontend
+    depends_on:
+      websocket-bridge:
+        condition: service_healthy
+      plugin-loader:
+        condition: service_healthy
+      tenant-admin:
+        condition: service_healthy
+    environment:
+      VITE_WS_URL: ws://localhost:7000/tracks
+      VITE_PLUGIN_API: http://localhost:8080/v1/plugins
+      VITE_TENANT_API: http://localhost:8081/v1/tenants
+      VITE_CESIUM_ION_TOKEN: ${VITE_CESIUM_ION_TOKEN:-}
+    ports:
+      - "3000:3000"
+    networks:
+      - will-net
+
+volumes:
+  pgdata:
+  edgecache:
+
+networks:
+  will-net:
+    driver: bridge

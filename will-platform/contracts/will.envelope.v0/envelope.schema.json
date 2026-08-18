@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://will-platform.ro/contracts/will.envelope.v0/envelope.schema.json",
+  "title": "will.envelope.v0 — Delegated Engagement Authority envelope",
+  "description": "Wire shape of a commander-committed engagement envelope. Authoritative record of the prior human commitment under which vendor fire-control systems may engage autonomously. See ADR-019 for doctrine; see README.md in this directory for a plain-language walkthrough.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "envelope_id",
+    "envelope_version",
+    "committed_at",
+    "tenant_id",
+    "commander_ref",
+    "commander_role_authority",
+    "sector",
+    "target_class_allowlist",
+    "roe_code",
+    "weapons_state",
+    "effector_allowlist",
+    "magazine_cap",
+    "time_window",
+    "abort_authority",
+    "delegation_depth_cap",
+    "fusion_confidence_threshold",
+    "classification",
+    "notes",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "const": "will.envelope.v0",
+      "description": "Contract identifier; refuse unknown values."
+    },
+    "envelope_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUIDv7 recommended (monotonic + random). Immutable once signed."
+    },
+    "envelope_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver of this envelope's revision; starts 1.0.0."
+    },
+    "committed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp of commitment (the MHC act's timestamp)."
+    },
+    "tenant_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ADR-006 tenant scope."
+    },
+    "commander_ref": {
+      "$ref": "#/$defs/IdentityRef",
+      "description": "The natural person whose Meaningful Human Control is on record."
+    },
+    "commander_role_authority": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_.-]{2,64}$",
+      "description": "Role code from the RO MoD RBAC authority catalogue."
+    },
+    "sector": {
+      "$ref": "#/$defs/GeoJSONPolygonOrMulti",
+      "description": "GeoJSON Polygon or MultiPolygon in WGS-84. Tracks outside are out-of-envelope."
+    },
+    "target_class_allowlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^S[A-Z?*][A-Z?*][A-Z?*].*$",
+        "description": "APP-6D SIDC glob. Patterns that resolve to friendly (SF*) or neutral (SN*) at admission time are rejected."
+      },
+      "description": "Non-empty array of APP-6D SIDC glob patterns authorised for engagement."
+    },
+    "roe_code": {
+      "type": "string",
+      "pattern": "^ROU-ROE-[A-Z0-9-]{3,64}$",
+      "description": "Identifier referencing an entry in the RO MoD ROE catalogue."
+    },
+    "weapons_state": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_-]{1,32}$",
+        "description": "Effector class code (kinetic, ew, dew, ...)."
+      },
+      "additionalProperties": {
+        "enum": ["HOLD", "TIGHT", "FREE"]
+      },
+      "description": "Per-effector-class weapons state. Missing entries default to HOLD."
+    },
+    "effector_allowlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._-]*(/[a-z0-9*._-]+)+$",
+        "description": "Effector-family pattern (e.g. skynex/battery-1/*, vector/swarm-alpha/*). Bare '*' and '**' are rejected by pattern shape (require at least one literal path segment before a wildcard)."
+      },
+      "description": "Non-empty array of effector-family patterns."
+    },
+    "magazine_cap": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9._/-]*$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "Effector-id or family pattern → non-negative round/munition count. Zero = observation only."
+    },
+    "time_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["not_before", "not_after"],
+      "properties": {
+        "not_before": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "not_after": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Envelope activity window. Consumer-side: not_after MUST be strictly greater than not_before."
+    },
+    "grace_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Delay before any authorisation is honoured after commitment."
+    },
+    "abort_authority": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/IdentityRef" },
+      "description": "Identities empowered to revoke this envelope. Consumer-side: MUST contain commander_ref."
+    },
+    "delegation_depth_cap": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "How many further re-delegation hops this envelope permits."
+    },
+    "parent_envelope_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Set iff this envelope is a re-delegation. Every constraint must be ≤ parent's."
+    },
+    "ai_models_in_loop": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_id", "version", "purpose"],
+        "properties": {
+          "model_id": { "type": "string", "format": "uuid" },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          },
+          "purpose": {
+            "enum": [
+              "TARGET_CLASS_MATCH",
+              "FUSION_CONFIDENCE",
+              "EFFECTOR_SELECT",
+              "TRACK_PREDICTION",
+              "OTHER"
+            ]
+          },
+          "ai_act_conformity_ref": {
+            "type": "string",
+            "description": "Required when the ADR-020 registry entry's ai_act_risk_class is HIGH_RISK."
+          }
+        }
+      },
+      "description": "Every AI whose output can affect an in-loop decision. Consumer-side: HIGH_RISK models missing ai_act_conformity_ref are rejected."
+    },
+    "fusion_confidence_threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Track-eligibility floor for fusion confidence."
+    },
+    "classification": {
+      "$ref": "#/$defs/Classification",
+      "description": "STANAG-4774 marking. Every candidate track's marking must be ≤ this ceiling; fail-closed on unrecognised."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 4096,
+      "description": "Commander's own statement of intent, audit-quality."
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "key_ref", "value", "signed_over"],
+      "properties": {
+        "algorithm": {
+          "enum": ["Ed25519", "ECDSA-P256"]
+        },
+        "key_ref": {
+          "type": "string",
+          "description": "KMS/Vault key id."
+        },
+        "value": {
+          "type": "string",
+          "contentEncoding": "base64"
+        },
+        "signed_over": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Top-level field names covered by the signature, in canonical order. Any drift from the current field set is refused."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "IdentityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["npki_dn", "identity_hash"],
+      "properties": {
+        "npki_dn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "description": "NPKI Distinguished Name."
+        },
+        "identity_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 of DN + issuer chain at reference time."
+        }
+      }
+    },
+    "Classification": {
+      "type": "string",
+      "enum": [
+        "NESECRET",
+        "SECRET_DE_SERVICIU",
+        "SECRET",
+        "STRICT_SECRET",
+        "STRICT_SECRET_DE_IMPORTANTA_DEOSEBITA",
+        "NATO_UNCLASSIFIED",
+        "NATO_RESTRICTED",
+        "NATO_CONFIDENTIAL",
+        "NATO_SECRET"
+      ],
+      "description": "STANAG-4774 base marking. Caveats (e.g. // OSINT) are out of scope for an envelope; envelopes never carry OSINT caveat."
+    },
+    "GeoJSONPolygonOrMulti": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "Polygon" },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 4,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 3,
+                  "items": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "MultiPolygon" },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 4,
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 3,
+                    "items": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

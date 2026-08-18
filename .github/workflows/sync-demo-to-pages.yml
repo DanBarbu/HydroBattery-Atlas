@@ -1,0 +1,59 @@
+name: Deploy demo to GitHub Pages
+
+# Mirrors docs/demo/ to the gh-pages branch (which Pages serves) whenever the
+# demo source changes on main, or on-demand via the Actions tab.
+#
+# The Pages source must be configured to "Deploy from a branch -> gh-pages
+# branch -> /(root)" in Settings -> Pages. That's a one-time repo setting.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/demo/**'
+      - '.github/workflows/sync-demo-to-pages.yml'
+  workflow_dispatch:
+
+# Avoid concurrent deployments racing on gh-pages.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source (main)
+        uses: actions/checkout@v4
+        with:
+          path: src
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: pages
+
+      - name: Mirror docs/demo into gh-pages
+        run: |
+          # Wipe everything except the .git dir, then mirror docs/demo/. so the
+          # gh-pages tree always matches the source of truth.
+          find pages -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -r src/docs/demo/. pages/
+          # Disable Jekyll so paths starting with _ render verbatim.
+          touch pages/.nojekyll
+
+      - name: Commit and push
+        working-directory: pages
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No demo changes — nothing to deploy."
+            exit 0
+          fi
+          git add -A
+          git commit -m "Deploy demo from ${{ github.sha }}"
+          git push origin gh-pages

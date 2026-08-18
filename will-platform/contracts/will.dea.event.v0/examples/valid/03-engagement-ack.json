@@ -1,0 +1,33 @@
+{
+  "schema": "will.dea.event.v0",
+  "event_id": "01895a40-0003-7c00-0000-000000000003",
+  "event_type": "engagement.ack",
+  "occurred_at": "2026-07-14T14:07:14.201Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "envelope_id": "01895a30-2f10-7c00-b45a-6d8e9f0a1b2c",
+  "envelope_snapshot_hash": "d2f5a1c9b3e6084a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f02",
+  "classification": "NESECRET",
+  "source_service": {
+    "name": "will-doctrine",
+    "version": "0.1.0",
+    "instance_id": "will-doctrine-pod-a3f9"
+  },
+  "ledger_prev_hash": "c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f7081920a1b2c3d4e5f60718293a4b5",
+  "payload": {
+    "correlation_id": "auth-01895a30-skynex-b1-g3-inbound-042",
+    "effector_id": "skynex/battery-1/gun-3",
+    "outcome": "TARGET_NEUTRALISED",
+    "rounds_consumed": 24,
+    "vendor_ack_at": "2026-07-14T14:07:12.410Z"
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://svc/will-doctrine/2026-q3",
+    "value": "c2lnbmVkLWJ5LXdpbGwtZG9jdHJpbmU=",
+    "signed_over": [
+      "schema", "event_id", "event_type", "occurred_at", "tenant_id",
+      "envelope_id", "envelope_snapshot_hash", "classification",
+      "source_service", "ledger_prev_hash", "payload"
+    ]
+  }
+}

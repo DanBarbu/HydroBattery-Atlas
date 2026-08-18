@@ -1,0 +1,114 @@
+// WILL Sensor Plugin SDK — v1 contract.
+// ADR-002 (gRPC as the Plugin SDK transport).
+// Backwards compatibility window: current major + previous major, ≥ 3 years.
+// Additive changes only within v1; new fields must be optional.
+
+syntax = "proto3";
+
+package will.sensor.v1;
+
+option go_package = "git.will-platform.ro/contracts/will/sensor/v1;sensorv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// SensorPlugin is implemented by every sensor plugin. The plugin loader is
+// the gRPC client; the plugin process is the server. A plugin streams
+// telemetry on Telemetry() and answers control RPCs on Describe(), Health(),
+// and Configure().
+service SensorPlugin {
+  // Describe returns the plugin's static identity. Called once at load time.
+  rpc Describe(DescribeRequest) returns (DescribeResponse);
+
+  // Health returns the plugin's current liveness and readiness state.
+  // The loader calls this on a configurable interval; the default is 5s.
+  rpc Health(HealthRequest) returns (HealthResponse);
+
+  // Configure delivers tenant- and runtime-scoped configuration. The plugin
+  // must reject unknown keys (fail closed). Configure may be called more than
+  // once over the plugin's lifetime; the plugin must apply configuration
+  // atomically.
+  rpc Configure(ConfigureRequest) returns (ConfigureResponse);
+
+  // Telemetry is a server-streaming RPC. The plugin emits Track messages as
+  // they arrive from the underlying sensor. The loader is responsible for
+  // bridging onto the EMQX bus.
+  rpc Telemetry(TelemetryRequest) returns (stream Track);
+}
+
+message DescribeRequest {}
+
+message DescribeResponse {
+  string name = 1;            // e.g. "atak-mil"
+  string version = 2;         // semver, e.g. "0.1.0"
+  string vendor = 3;
+  string contract_version = 4; // e.g. "v1.0"
+  repeated string capabilities = 5; // e.g. ["sensor.track", "sensor.fmv"]
+  string description = 6;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  enum Status {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    DEGRADED = 3;
+  }
+  Status status = 1;
+  string message = 2;
+  google.protobuf.Timestamp checked_at = 3;
+}
+
+message ConfigureRequest {
+  string tenant_id = 1; // UUID
+  google.protobuf.Struct settings = 2;
+}
+
+message ConfigureResponse {
+  bool accepted = 1;
+  repeated string rejected_keys = 2;
+  string message = 3;
+}
+
+message TelemetryRequest {
+  string tenant_id = 1;
+}
+
+// Track is the canonical observation a sensor emits. Transports are agnostic
+// (UDP, RS-232, MAVLink, MQTT, …); the plugin normalises into this shape.
+message Track {
+  string track_id = 1;        // UUID per observation
+  string source = 2;          // plugin-assigned source id, e.g. "atak-mil/tablet-7"
+  string tenant_id = 3;       // UUID
+
+  Geometry geometry = 4;
+  double altitude_m = 5;
+  double heading_deg = 6;
+  double speed_mps = 7;
+  double confidence = 8;      // 0.0-1.0; raw sensors typically emit 1.0
+
+  // STANAG 4774 confidentiality label or RO national equivalent; the loader
+  // validates this against the deployment-time accepted set (ADR-005).
+  string classification = 9;
+
+  // APP-6D symbol identification code for friendly/hostile/neutral/unknown
+  // affiliation and dimension. Leave empty if unknown; loader will mark
+  // SUGP-----------  (Pending unknown ground unit) as a default.
+  string app6d_sidc = 10;
+
+  google.protobuf.Timestamp observed_at = 11;
+  google.protobuf.Struct metadata = 12; // free-form, plugin-scoped
+}
+
+message Geometry {
+  // GeoJSON-style. For Sprint 1 we only support Point; future revisions add
+  // LineString and Polygon for area observations.
+  enum Type {
+    POINT = 0;
+  }
+  Type type = 1;
+  double longitude_deg = 2;
+  double latitude_deg = 3;
+}

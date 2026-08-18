@@ -1,0 +1,39 @@
+{
+  "tenant": {
+    "slug": "br2vm-demo",
+    "display_name": "Brigada 2 Vânători de Munte (Demo)",
+    "theme": {
+      "primaryColor": "#0b6e4f",
+      "bannerLabel": "BR2VM — INSTRUIRE",
+      "affiliationColors": {
+        "F": "#3273dc",
+        "H": "#e63946",
+        "N": "#3ddc97",
+        "U": "#f4d35e"
+      },
+      "logoUrl": ""
+    },
+    "terminology": {
+      "plugin": "modul",
+      "sensor": "activ",
+      "track": "contact"
+    },
+    "features": {
+      "ai_prediction": false,
+      "link22": false,
+      "lora": true,
+      "gmti": true
+    }
+  },
+  "sensors": [
+    {"external_id": "RAT-31DL/job7",   "family": "gmti",    "display_name": "Radar antenă lungă Cincu",   "home_lat": 45.8696, "home_lon": 24.7753, "classification": "NESECRET"},
+    {"external_id": "atak-mil/tablet-7","family": "cot",     "display_name": "ATAK ALFA-1",                "home_lat": 45.8700, "home_lon": 24.7770, "classification": "NESECRET"},
+    {"external_id": "mavlink/sys1",    "family": "mavlink", "display_name": "UAV instruire 1",            "home_lat": 45.8696, "home_lon": 24.7753, "classification": "NESECRET"},
+    {"external_id": "lora/cluster-A",  "family": "lora",    "display_name": "Cluster IoT Cincu (100 noduri)", "home_lat": 45.8696, "home_lon": 24.7753, "classification": "NESECRET"}
+  ],
+  "memberships": [
+    {"user_id": "00000000-0000-0000-0000-0000000000a1", "role": "admin"},
+    {"user_id": "00000000-0000-0000-0000-0000000000a2", "role": "operator"},
+    {"user_id": "00000000-0000-0000-0000-0000000000a3", "role": "auditor"}
+  ]
+}

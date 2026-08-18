@@ -1,0 +1,12 @@
+DROP POLICY IF EXISTS metoc_flow_service_bypass ON metoc_flowfield;
+DROP POLICY IF EXISTS metoc_flow_tenant_isolation ON metoc_flowfield;
+DROP POLICY IF EXISTS metoc_fc_service_bypass ON metoc_forecasts;
+DROP POLICY IF EXISTS metoc_fc_tenant_isolation ON metoc_forecasts;
+DROP POLICY IF EXISTS metoc_obs_service_bypass ON metoc_observations;
+DROP POLICY IF EXISTS metoc_obs_tenant_isolation ON metoc_observations;
+DROP INDEX IF EXISTS metoc_flow_tenant;
+DROP TABLE IF EXISTS metoc_flowfield;
+DROP INDEX IF EXISTS metoc_fc_tenant;
+DROP TABLE IF EXISTS metoc_forecasts;
+DROP INDEX IF EXISTS metoc_obs_tenant;
+DROP TABLE IF EXISTS metoc_observations;

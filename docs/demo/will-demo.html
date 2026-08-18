@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>WILL Romania — operator picture demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin />
+<style>
+  :root {
+    --banner: #f1c40f;
+    --bg: #0e1620;
+    --panel: #151f2c;
+    --panel-border: #233246;
+    --text: #d8e0ee;
+    --muted: #7c8aa0;
+    --friend: #2d8cf0;
+    --hostile: #e74c3c;
+    --neutral: #2ecc71;
+    --unknown: #f1c40f;
+    --osint: #b07cff;
+  }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text);
+               font: 13px/1.4 -apple-system, "Segoe UI", system-ui, sans-serif; }
+  .banner { background: var(--banner); color: #111; text-align: center; font-weight: 700;
+            padding: 4px 8px; letter-spacing: 1px; font-size: 12px; }
+  .layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 48px); }
+  aside { background: var(--panel); border-right: 1px solid var(--panel-border);
+          overflow-y: auto; padding: 12px 14px; }
+  aside h1 { font-size: 14px; margin: 0 0 4px 0; }
+  aside h1 a { color: var(--friend); text-decoration: none; }
+  aside h1 a:hover { text-decoration: underline; }
+  aside h2 { font-size: 11px; margin: 14px 0 6px 0; color: var(--muted);
+             text-transform: uppercase; letter-spacing: 1px; }
+  aside .small { color: var(--muted); font-size: 11px; }
+  aside .row { display: flex; justify-content: space-between; align-items: center;
+               padding: 3px 0; border-bottom: 1px dotted #23314a; }
+  aside .pill { display: inline-block; padding: 1px 6px; border-radius: 8px;
+                background: #1c2a3d; color: var(--text); font-size: 10px;
+                border: 1px solid #23314a; margin-left: 4px; }
+  aside ul.caps { list-style: disc; padding-left: 18px; margin: 4px 0 0;
+                  font-size: 11px; color: var(--text); }
+  aside ul.caps li { margin: 2px 0; }
+  aside .toggles label { display: flex; align-items: center; gap: 6px; padding: 4px 0; cursor: pointer; }
+  #detail { background: #0d1722; border: 1px solid #23314a; border-radius: 6px;
+            padding: 8px; margin-top: 8px; font-family: ui-monospace, monospace;
+            font-size: 11px; white-space: pre-wrap; word-break: break-all; min-height: 80px; }
+  #map { height: 100%; }
+  .leaflet-container { background: #0a1018; }
+  /* Track marker styling — APP-6D-ish affiliation colours */
+  .tk { border-radius: 50%; border: 2px solid #fff; width: 12px; height: 12px;
+        box-sizing: border-box; }
+  .tk.f { background: var(--friend); }
+  .tk.h { background: var(--hostile); transform: rotate(45deg); border-radius: 0; }
+  .tk.n { background: var(--neutral); }
+  .tk.u { background: var(--unknown); }
+  .tk.osint { background: var(--osint); border-style: dashed; opacity: 0.65; }
+  .tk.ownship { width: 16px; height: 16px; border-width: 3px; }
+  .lbl { background: rgba(20,30,46,.85); color: var(--text); padding: 1px 5px;
+         border-radius: 3px; border: 1px solid #23314a; font-size: 10px;
+         white-space: nowrap; }
+  .lbl.osint { border-style: dashed; color: var(--osint); }
+  .badge-osint { background: var(--osint); color: #111; font-weight: 700;
+                 padding: 0 4px; border-radius: 2px; font-size: 9px; margin-left: 4px; }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 11px; }
+  .legend .sw { display: inline-block; width: 10px; height: 10px; margin-right: 5px;
+                vertical-align: middle; border: 1px solid #fff; }
+</style>
+</head>
+<body>
+<div class="banner">NESECRET — DEMO ONLY — NOT FOR OPERATIONAL USE</div>
+<div class="layout">
+  <aside>
+    <h1><a href="https://github.com/DanBarbu/HydroBattery-Atlas" target="_blank" rel="noopener">WILL Romania</a> — operator picture demo</h1>
+    <div class="small">Multi-tenant, white-label C2 / common-operating-picture platform
+      for the Romanian MoD and NATO interop. Self-contained demo of
+      <code>will.track.v0</code> on the bus — six SAFE 2026 plugins (ADR-018)
+      plus TAK-gateway ingest (ADR-017).</div>
+
+    <h2>Capabilities</h2>
+    <ul class="caps">
+      <li>Real-time multi-domain COP — land, air, sea, sub-surface, C-UAS</li>
+      <li>STANAG-4774 / 4778 classification; fail-closed egress gate</li>
+      <li>APP-6D / MIL-STD-2525D symbology</li>
+      <li><code>will.track.v0</code> bus over MQTT; plugin sensor architecture</li>
+      <li>SAFE 2026: Skynex · Skyranger 35 · Vector / Scorpion · Lynx KF41 · MMPV-90 · MEROPS</li>
+      <li>TAK Server bridge — bidirectional, classification-gated mTLS</li>
+      <li>OSINT advisory layer (ADS-B, AIS, MEROPS) — never auto-fused</li>
+      <li>Coordinator-only — no kinetic tasking through WILL</li>
+      <li>Edge-capable, air-gappable, multi-tenant white-label</li>
+      <li>Romanian MoD + NATO interop — Law 58/2023, AC/35, AQAP 2110, ORNISS</li>
+    </ul>
+
+    <h2>Layers</h2>
+    <div class="toggles">
+      <label><input type="checkbox" id="L_ops" checked /> operational picture</label>
+      <label><input type="checkbox" id="L_osint" checked /> OSINT advisory layer</label>
+      <label><input type="checkbox" id="L_lbl" checked /> labels</label>
+    </div>
+
+    <h2>Affiliation</h2>
+    <div class="legend">
+      <div><span class="sw" style="background: var(--friend)"></span>Friend</div>
+      <div><span class="sw" style="background: var(--hostile); transform: rotate(45deg)"></span>Hostile</div>
+      <div><span class="sw" style="background: var(--neutral)"></span>Neutral</div>
+      <div><span class="sw" style="background: var(--unknown)"></span>Unknown</div>
+      <div style="grid-column: span 2;"><span class="sw" style="background: var(--osint); border-style: dashed"></span>OSINT (advisory, low confidence)</div>
+    </div>
+
+    <h2>Plugins on the bus</h2>
+    <div id="plugins"></div>
+
+    <h2>Selected track</h2>
+    <div class="small">Click any marker to inspect its <code>will.track.v0</code> payload.</div>
+    <pre id="detail">— no track selected —</pre>
+  </aside>
+  <div id="map"></div>
+</div>
+<div class="banner">NESECRET — DEMO ONLY — NOT FOR OPERATIONAL USE</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+<script>
+// ============================================================================
+// WILL Romania demo
+//
+// This file fakes the bus and the six SAFE-wave plugins client-side so you
+// can see the operator picture without standing up the docker-compose stack.
+// Every track here matches the SHAPE of what the real plugins publish:
+//   { schema: "will.track.v0", track_id, tenant_id, source, geometry,
+//     classification, app6d_sidc, observed_at, metadata }
+// Compare with plugins/*/internal/track/track.go in the repo.
+// ============================================================================
+
+const TENANT = "00000000-0000-0000-0000-000000000001";
+
+// Approx points of interest in eastern Romania.
+const POI = {
+  carpathiansBattery: { lat: 45.872, lon: 24.776 }, // Skynex
+  skyrangerStart:      { lat: 45.700, lon: 24.500 }, // Skyranger 35
+  vectorOrbit:         { lat: 45.870, lon: 24.800 }, // Vector ISR
+  lynxStart:           { lat: 45.850, lon: 24.780 }, // Lynx column
+  corvetteStart:       { lat: 44.170, lon: 28.650 }, // MMPV-90 (Constanta)
+  meropsSite:          { lat: 45.870, lon: 28.000 }, // MEROPS site
+  takClient:           { lat: 45.600, lon: 26.000 }, // a CoT client via TAK gateway
+};
+
+// --- map ---
+const map = L.map("map", { worldCopyJump: false, zoomControl: true })
+  .setView([45.5, 26.5], 7);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  attribution: "© OpenStreetMap, © CARTO",
+  maxZoom: 18,
+}).addTo(map);
+
+// --- state ---
+const tracks = new Map();       // trackId -> latest payload
+const layerByTrack = new Map(); // trackId -> Leaflet marker
+let selected = null;
+
+function affChar(sidc) { return (sidc && sidc.length > 1) ? sidc[1] : "U"; }
+
+function isOSINT(t) {
+  return (t.classification || "").toUpperCase().includes("OSINT")
+      || t.metadata?.osint === true;
+}
+
+function classify(t) {
+  const ops = !isOSINT(t);
+  if (!document.getElementById("L_ops").checked && ops) return false;
+  if (!document.getElementById("L_osint").checked && !ops) return false;
+  return true;
+}
+
+function markerHtml(t) {
+  const cls = ["tk"];
+  if (isOSINT(t)) cls.push("osint");
+  else {
+    const a = affChar(t.app6d_sidc).toLowerCase();
+    cls.push("fhnu".includes(a) ? a : "u");
+  }
+  if (t.metadata?.ownship || t.metadata?.platform) cls.push("ownship");
+  return `<div class="${cls.join(" ")}"></div>`;
+}
+
+function labelHtml(t) {
+  const m = t.metadata || {};
+  let txt = m.callsign || m.pennant || m.mmsi || m.variant || m.class
+         || m.ai_classifier || (m.domain ? m.domain.toLowerCase() : "")
+         || t.track_id;
+  let extra = isOSINT(t) ? `<span class="badge-osint">OSINT</span>` : "";
+  return `<div class="lbl ${isOSINT(t) ? "osint" : ""}">${txt}${extra}</div>`;
+}
+
+function rerenderTrack(t) {
+  const old = layerByTrack.get(t.track_id);
+  if (old) map.removeLayer(old);
+  if (!classify(t)) { layerByTrack.delete(t.track_id); return; }
+
+  const [lon, lat] = t.geometry.coordinates;
+  const icon = L.divIcon({ html: markerHtml(t), className: "", iconSize: [14, 14] });
+  const marker = L.marker([lat, lon], { icon, zIndexOffset: isOSINT(t) ? 0 : 100 });
+  if (document.getElementById("L_lbl").checked) {
+    marker.bindTooltip(labelHtml(t), {
+      permanent: true, direction: "right", offset: [10, 0], className: "",
+    });
+  }
+  marker.on("click", () => selectTrack(t.track_id));
+  marker.addTo(map);
+  layerByTrack.set(t.track_id, marker);
+}
+
+function selectTrack(id) {
+  selected = id;
+  const t = tracks.get(id);
+  document.getElementById("detail").textContent = JSON.stringify(t, null, 2);
+}
+
+function publish(t) {
+  t.observed_at = new Date().toISOString();
+  tracks.set(t.track_id, t);
+  rerenderTrack(t);
+  if (selected === t.track_id) selectTrack(t.track_id);
+  bumpPluginCount(t.metadata.plugin);
+}
+
+// --- track factory: mirror plugins/*/internal/track/track.go ---
+function track({ id, plugin, source, geometry, classification, sidc, metadata }) {
+  return {
+    schema: "will.track.v0",
+    track_id: id,
+    tenant_id: TENANT,
+    source,
+    geometry: { type: "Point", coordinates: geometry },
+    classification,
+    app6d_sidc: sidc,
+    observed_at: new Date().toISOString(),
+    metadata: { plugin, version: "0.1.0", direction: "ingress", ...metadata },
+  };
+}
+
+// --- geodesy helpers (flat-earth, same as plugins) ---
+function offset(lat, lon, bearingDeg, distM) {
+  const R = 6_371_000, br = bearingDeg * Math.PI / 180;
+  const dLat = (distM * Math.cos(br)) / R * 180 / Math.PI;
+  const dLon = (distM * Math.sin(br)) / (R * Math.cos(lat * Math.PI / 180)) * 180 / Math.PI;
+  return [lat + dLat, lon + dLon];
+}
+
+// ============================================================================
+// Plugin simulators (client-side)
+// ============================================================================
+
+let t0 = Date.now();
+const elapsedSec = () => (Date.now() - t0) / 1000;
+
+// 1) skynex-cuas: fixed battery + 2 UAS converging
+function tickSkynex() {
+  // 2 inbound UAS from bearings 0° and 180°, starting at 5km, 45 m/s
+  const speed = 45, start = 5000, t = elapsedSec();
+  [0, 180].forEach((bearing, i) => {
+    const [sLat, sLon] = offset(POI.carpathiansBattery.lat, POI.carpathiansBattery.lon, bearing, start);
+    const travelled = Math.min(speed * t, start);
+    const [lat, lon] = offset(sLat, sLon, (bearing + 180) % 360, travelled);
+    publish(track({
+      id: `skynex-sim-0${i + 1}`, plugin: "skynex-cuas",
+      source: `skynex/battery-1/skynex-sim-0${i + 1}`,
+      geometry: [lon, lat],
+      classification: "NESECRET",
+      sidc: "SHAPMFQ----------",
+      metadata: { threat: true, cuas: true, class: "UAS", confidence: 0.85 },
+    }));
+  });
+}
+
+// 2) skyranger-vshorad: mobile mount on patrol + 2 inbound UAS
+function tickSkyranger() {
+  const t = elapsedSec();
+  const [pLat, pLon] = offset(POI.skyrangerStart.lat, POI.skyrangerStart.lon, 45, 5 * t);
+  publish(track({
+    id: "skyranger-A1", plugin: "skyranger-vshorad",
+    source: "skyranger/A1/pli/skyranger-A1",
+    geometry: [pLon, pLat],
+    classification: "NESECRET",
+    sidc: "SFGPEWA----------",
+    metadata: { platform: true, vshorad: true, mode: "READY", rounds: 252, missiles: 4, callsign: "SKR-A1" },
+  }));
+  // 2 inbound UAS at 4.5 km, converging
+  [60, 300].forEach((bearing, i) => {
+    const [sLat, sLon] = offset(pLat, pLon, bearing, 4500);
+    const travelled = Math.min(55 * t, 4500);
+    const [lat, lon] = offset(sLat, sLon, (bearing + 180) % 360, travelled);
+    publish(track({
+      id: `skr-sim-0${i + 1}`, plugin: "skyranger-vshorad",
+      source: `skyranger/A1/det/skr-sim-0${i + 1}`,
+      geometry: [lon, lat],
+      classification: "NESECRET",
+      sidc: "SHAPMFQ----------",
+      metadata: { threat: true, cuas: true, vshorad: true, class: "UAS", confidence: 0.85 },
+    }));
+  });
+}
+
+// 3) vector-mini-uas: a friendly Vector orbiting a centre point
+function tickVector() {
+  const t = elapsedSec(), radius = 1500, speed = 18;
+  const circ = 2 * Math.PI * radius;
+  const frac = (speed * t % circ) / circ;
+  const angle = frac * 360;
+  const [lat, lon] = offset(POI.vectorOrbit.lat, POI.vectorOrbit.lon, angle, radius);
+  const battery = Math.max(0, 95 - 1.5 * (t / 60));
+  publish(track({
+    id: "vector-01", plugin: "vector-mini-uas",
+    source: "vector/gcs-1/vector-01",
+    geometry: [lon, lat],
+    classification: "NESECRET",
+    sidc: "SFAPMFQ----------",
+    metadata: { platform: true, unmanned: true, isr: true,
+                variant: "Vector", mission_mode: battery < 25 ? "RTL" : "AUTO",
+                battery_pct: +battery.toFixed(1), callsign: "VECTOR-01" },
+  }));
+}
+
+// 4) lynx-ifv: 4 vehicles in column on a road march
+function tickLynx() {
+  const t = elapsedSec(), speed = 8, spacing = 75;
+  for (let i = 0; i < 4; i++) {
+    const dist = Math.max(0, speed * t - i * spacing);
+    const [lat, lon] = offset(POI.lynxStart.lat, POI.lynxStart.lon, 90, dist);
+    publish(track({
+      id: `lynx-0${i + 1}`, plugin: "lynx-ifv",
+      source: `lynx/btn-1/lynx-0${i + 1}`,
+      geometry: [lon, lat],
+      classification: "NESECRET",
+      sidc: "SFGPEVAT---------",
+      metadata: { platform: true, ifv: true,
+                  callsign: `ALFA-${i + 1}`,
+                  fuel_pct: +(92 - 0.4 * (t / 60)).toFixed(1),
+                  movement: "ROUTE",
+                  ammo: { main: 200, coax: 800, spike: 4 } },
+    }));
+  }
+}
+
+// 5) mmpv90-naval: ownship + naval surface/air detection + AIS (OSINT)
+function tickMMPV() {
+  const t = elapsedSec();
+  // own ship steaming east from Constanta at 12 m/s
+  const [oLat, oLon] = offset(POI.corvetteStart.lat, POI.corvetteStart.lon, 90, 12 * t);
+  publish(track({
+    id: "F501", plugin: "mmpv90-naval",
+    source: "mmpv90/F501/ownship/F501",
+    geometry: [oLon, oLat],
+    classification: "NESECRET",
+    sidc: "SFSPCL-----------",
+    metadata: { platform: true, ownship: true, hull_class: "MMPV-90",
+                pennant: "501", sea_state: 3, fuel_pct: 88 },
+  }));
+  // surface contact 7.5 km NE
+  const [sLat, sLon] = offset(oLat, oLon, (45 + t * 0.1) % 360, 7500);
+  publish(track({
+    id: "mmpv90-surf-01", plugin: "mmpv90-naval",
+    source: "mmpv90/F501/sensor/mmpv90-surf-01",
+    geometry: [sLon, sLat],
+    classification: "NESECRET",
+    sidc: "SUSP-------------",
+    metadata: { naval: true, domain: "SURFACE", sensor: "SURFACE_RADAR",
+                aff: "U", threat: false, confidence: 0.7 },
+  }));
+  // air contact 30 km south, transiting west
+  const [aSLat, aSLon] = offset(oLat, oLon, 180, 30000);
+  const [aLat, aLon] = offset(aSLat, aSLon, 270, 220 * t);
+  publish(track({
+    id: "mmpv90-air-01", plugin: "mmpv90-naval",
+    source: "mmpv90/F501/sensor/mmpv90-air-01",
+    geometry: [aLon, aLat],
+    classification: "NESECRET",
+    sidc: "SUAP-------------",
+    metadata: { naval: true, domain: "AIR", sensor: "AIR_RADAR",
+                aff: "U", threat: false, confidence: 0.6 },
+  }));
+  // AIS merchant 12 km north, westbound — OSINT layer (forced caveat)
+  const [mSLat, mSLon] = offset(oLat, oLon, 0, 12000);
+  const [mLat, mLon] = offset(mSLat, mSLon, 270, 7 * t);
+  publish(track({
+    id: "AIS-271012345", plugin: "mmpv90-naval",
+    source: "mmpv90/F501/ais/271012345",
+    geometry: [mLon, mLat],
+    classification: "NESECRET // OSINT",
+    sidc: "SUSPC------------",
+    metadata: { osint: true, confidence: "low", layer: "ais",
+                mmsi: "271012345", name: "MV STAR PILOT", ship_type: "CARGO" },
+  }));
+}
+
+// 6) merops-osint: inbound Shahed with engagement-outcome progression
+function tickMerops() {
+  const t = elapsedSec();
+  const startRange = 12000, speed = 50, bearing = 45;
+  const [sLat, sLon] = offset(POI.meropsSite.lat, POI.meropsSite.lon, bearing, startRange);
+  const travelled = Math.min(speed * t, startRange);
+  const [lat, lon] = offset(sLat, sLon, (bearing + 180) % 360, travelled);
+  let outcome = "NONE", sensor = "";
+  if (t >= 40) { outcome = "TARGET_NEUTRALISED"; sensor = "MEROPS-KINETIC"; }
+  else if (t >= 20) { outcome = "JAMMING_APPLIED"; sensor = "MEROPS-EW"; }
+  publish(track({
+    id: "merops-sim-01", plugin: "merops-osint",
+    source: "merops/site-1/merops-sim-01",
+    geometry: [lon, lat],
+    classification: "NESECRET // OSINT",
+    sidc: "SHAPMFL----------",
+    metadata: { osint: true, confidence: "low", layer: "merops",
+                threat: true, cuas: true,
+                ai_classifier: "SHAHED", ai_confidence: 0.93,
+                engagement_outcome: outcome, engagement_sensor: sensor,
+                engagement_actuable_by_will: false },
+  }));
+}
+
+// 7) tak-gateway ingest: a friendly CoT track from a TAK client (treated as a
+//    sensor source; ADR-017). Defaults to disabled on the real platform until
+//    the operator records an enable decision; here we just simulate one
+//    friendly tablet PLI to show the layer exists.
+function tickTAK() {
+  const t = elapsedSec();
+  const [lat, lon] = offset(POI.takClient.lat, POI.takClient.lon, 30, 4 * t);
+  publish(track({
+    id: "ALFA-1", plugin: "tak-gateway",
+    source: "tak/ALFA-1",
+    geometry: [lon, lat],
+    classification: "NESECRET",
+    sidc: "SFGPUL-----------",
+    metadata: { cot_type: "a-f-G-E-S", callsign: "ALFA-1", group: "Friendly Units" },
+  }));
+}
+
+// ============================================================================
+// Plugin registry + tick loop
+// ============================================================================
+const plugins = [
+  { name: "skynex-cuas",        layer: "CUAS",  tick: tickSkynex,    color: "#e74c3c" },
+  { name: "skyranger-vshorad",  layer: "CUAS",  tick: tickSkyranger, color: "#e74c3c" },
+  { name: "vector-mini-uas",    layer: "ISR",   tick: tickVector,    color: "#2d8cf0" },
+  { name: "lynx-ifv",           layer: "BFT",   tick: tickLynx,      color: "#2d8cf0" },
+  { name: "mmpv90-naval",       layer: "Naval", tick: tickMMPV,      color: "#2d8cf0" },
+  { name: "merops-osint",       layer: "OSINT", tick: tickMerops,    color: "#b07cff" },
+  { name: "tak-gateway",        layer: "TAK",   tick: tickTAK,       color: "#2d8cf0" },
+];
+
+const pluginCounts = Object.fromEntries(plugins.map(p => [p.name, 0]));
+function bumpPluginCount(name) { pluginCounts[name] = (pluginCounts[name] || 0) + 1; }
+
+function renderPluginList() {
+  const el = document.getElementById("plugins");
+  el.innerHTML = plugins.map(p => `
+    <div class="row">
+      <span><span class="sw" style="display:inline-block;width:8px;height:8px;background:${p.color};border-radius:50%;margin-right:6px"></span>${p.name}</span>
+      <span><span class="pill">${p.layer}</span><span class="pill" id="cnt-${p.name}">0</span></span>
+    </div>`).join("");
+}
+function refreshCounts() {
+  for (const p of plugins) {
+    const el = document.getElementById("cnt-" + p.name);
+    if (el) el.textContent = pluginCounts[p.name];
+  }
+}
+
+renderPluginList();
+plugins.forEach(p => p.tick());
+setInterval(() => { plugins.forEach(p => p.tick()); refreshCounts(); }, 1500);
+
+// re-render markers when layer toggles flip
+["L_ops", "L_osint", "L_lbl"].forEach(id => {
+  document.getElementById(id).addEventListener("change", () => {
+    tracks.forEach(t => rerenderTrack(t));
+  });
+});
+</script>
+</body>
+</html>

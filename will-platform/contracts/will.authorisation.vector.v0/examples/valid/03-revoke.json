@@ -1,0 +1,27 @@
+{
+  "schema": "will.authorisation.vector.v0",
+  "authorisation_id": "01895a50-0003-7c00-0000-000000000003",
+  "authorisation_type": "REVOKE",
+  "issued_at": "2026-07-14T14:33:00.200Z",
+  "envelope_id": "01895a2e-8d3c-7c00-8fbb-2b9f2a2b1c40",
+  "envelope_snapshot_hash": "a3f5c9b1d4e6082a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f01",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "classification": "NESECRET",
+  "swarm_id": "vector/swarm-alpha",
+  "ack_deadline_ms": 1000,
+  "payload": {
+    "abort_ack_deadline_ms": 1500,
+    "reason_code": "TENANT_ABORT",
+    "reason_note": "Duty officer directive at 14:32Z — cease all delegated engagement pending briefing at 14:45Z."
+  },
+  "doctrine_service_signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://svc/will-doctrine/2026-q3",
+    "value": "ZG9jdHJpbmUtc2VydmljZS1zaWduYXR1cmUtcGxhY2Vob2xkZXI=",
+    "signed_over": [
+      "schema", "authorisation_id", "authorisation_type", "issued_at",
+      "envelope_id", "envelope_snapshot_hash", "tenant_id",
+      "classification", "swarm_id", "ack_deadline_ms", "payload"
+    ]
+  }
+}

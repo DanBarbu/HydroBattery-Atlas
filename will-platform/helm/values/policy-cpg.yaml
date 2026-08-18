@@ -1,0 +1,10 @@
+# Sprint 5 — OPA Gatekeeper exempt list for the Government Private Cloud
+# (CPG / STS) profile. Stricter than cloud: enforce mode flipped after the
+# next quarterly drill (Sprint 6 deliverable).
+
+policy:
+  enforceMode: enforce
+  exemptImages:
+    # Only the trusted internal registry plus the cluster control plane.
+    - "registry.classified.local/*"
+    - "registry.k8s.io/*"

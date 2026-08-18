@@ -1,0 +1,32 @@
+{
+  "schema": "will.dea.event.v0",
+  "event_id": "01895a40-0002-7c00-0000-000000000002",
+  "event_type": "candidate.dropped",
+  "occurred_at": "2026-07-14T13:31:45.812Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "envelope_id": "01895a2e-8d3c-7c00-8fbb-2b9f2a2b1c40",
+  "envelope_snapshot_hash": "a3f5c9b1d4e6082a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f01",
+  "classification": "NESECRET",
+  "source_service": {
+    "name": "will-doctrine",
+    "version": "0.1.0",
+    "instance_id": "will-doctrine-pod-a3f9"
+  },
+  "ledger_prev_hash": "b1e7d3a2c4f5069384a1b2c3d4e5f6070818293a4b5c6d7e8f90a1b2c3d4e5f6",
+  "payload": {
+    "track_id": "skyranger/A1/det/skr-sim-01",
+    "track_snapshot_hash": "f2e3d4c5b6a7089192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+    "drop_reason": "TARGET_CLASS_NOT_ALLOWED",
+    "drop_reason_detail": "Track APP-6D SHAPMH---------- (hostile air rotary) not in target_class_allowlist [SHAPMFL*, SHAPMFQ*]. Envelope covers loitering munitions + fixed-wing only."
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://svc/will-doctrine/2026-q3",
+    "value": "c2lnbmVkLWJ5LXdpbGwtZG9jdHJpbmU=",
+    "signed_over": [
+      "schema", "event_id", "event_type", "occurred_at", "tenant_id",
+      "envelope_id", "envelope_snapshot_hash", "classification",
+      "source_service", "ledger_prev_hash", "payload"
+    ]
+  }
+}
