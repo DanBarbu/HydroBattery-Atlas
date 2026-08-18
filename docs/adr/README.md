@@ -24,6 +24,8 @@ We use the [MADR](https://adr.github.io/madr/) format. Each ADR is one durable d
 | [ADR-016](ADR-016-osint-module.md) | OSINT module — ADS-B / AIS / TLE / hazards (advisory, low-confidence) | Accepted (co-signed: Tech Lead · Compliance · Security) |
 | [ADR-017](ADR-017-tak-server-integration.md) | TAK Server integration — bidirectional, classification-gated | Proposed (co-sign required: Tech Lead · Compliance · Security) |
 | [ADR-018](ADR-018-safe-2026-acquisitions.md) | SAFE 2026 acquisitions (Lynx / MMPV-90 / Skynex / Skyranger / Vector / MEROPS) — WILL integration strategy | Proposed (co-sign required: Tech Lead · Compliance · Security · PO · Programme Mgr) |
+| [ADR-019](ADR-019-delegated-engagement-authority.md) | Delegated Engagement Authority — commander-committed envelopes, human-on-the-loop, coordinator boundary preserved | Proposed (co-sign required: Tech Lead · Compliance · Security · PO · Programme Mgr · Legal) |
+| [ADR-020](ADR-020-sovereign-ai-model-registry.md) | Sovereign AI model registry — signed, versioned, classification-labelled models; foreign-model OSINT-only | Proposed (co-sign required: Tech Lead · Compliance · Security · PO) |
 
 ## Authoring
 
