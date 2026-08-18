@@ -1,0 +1,64 @@
+{
+  "schema": "will.envelope.v0",
+  "envelope_id": "01895a30-2f10-7c00-b45a-6d8e9f0a1b2c",
+  "envelope_version": "1.0.0",
+  "committed_at": "2026-07-14T14:00:00Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "commander_ref": {
+    "npki_dn": "CN=Mr. Georgescu, OU=Bg Aparare Antiaeriana, O=Ministerul Apararii Nationale, C=RO",
+    "identity_hash": "1a2b3c4d5e6f7089a0b1c2d3e4f5061728394a5b6c7d8e9f0a1b2c3d4e5f6070"
+  },
+  "commander_role_authority": "RO_MOD.AD.MAJ.CUAS_DEFENSIVE",
+  "sector": {
+    "type": "Polygon",
+    "coordinates": [[
+      [24.70, 45.83],
+      [24.85, 45.83],
+      [24.85, 45.92],
+      [24.70, 45.92],
+      [24.70, 45.83]
+    ]]
+  },
+  "target_class_allowlist": [
+    "SHAPMFL*",
+    "SHAPMFQ*",
+    "SHAPWMR*"
+  ],
+  "roe_code": "ROU-ROE-C-RAM-2026-B1",
+  "weapons_state": {
+    "kinetic": "FREE"
+  },
+  "effector_allowlist": [
+    "skynex/battery-1/*"
+  ],
+  "magazine_cap": {
+    "skynex/battery-1/*": 480
+  },
+  "time_window": {
+    "not_before": "2026-07-14T14:00:00Z",
+    "not_after":  "2026-07-14T14:15:00Z"
+  },
+  "abort_authority": [
+    {
+      "npki_dn": "CN=Mr. Georgescu, OU=Bg Aparare Antiaeriana, O=Ministerul Apararii Nationale, C=RO",
+      "identity_hash": "1a2b3c4d5e6f7089a0b1c2d3e4f5061728394a5b6c7d8e9f0a1b2c3d4e5f6070"
+    }
+  ],
+  "delegation_depth_cap": 0,
+  "fusion_confidence_threshold": 0.75,
+  "classification": "NESECRET",
+  "notes": "Skynex Bty-1 authorised WEAPONS FREE against hostile UAS and RAM within 4 km protected zone for 15 min. Magazine cap 480 rounds (40% of holdings). Reactive envelope opened after saturation-attack early warning at 13:57. Sector coincides with battery no-go for friendly ISR (Vector-01 held clear).",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://npki/mr-georgescu/2026-q3",
+    "value": "MDlUeUhaVGN6cUE0N2EzajBiajBmbmFXbFdlR1JqTVRZeE1EQXhOemRQNU5vST0=",
+    "signed_over": [
+      "schema", "envelope_id", "envelope_version", "committed_at",
+      "tenant_id", "commander_ref", "commander_role_authority",
+      "sector", "target_class_allowlist", "roe_code", "weapons_state",
+      "effector_allowlist", "magazine_cap", "time_window",
+      "abort_authority", "delegation_depth_cap",
+      "fusion_confidence_threshold", "classification", "notes"
+    ]
+  }
+}

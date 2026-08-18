@@ -1,0 +1,77 @@
+{
+  "schema": "will.envelope.v0",
+  "envelope_id": "01895a2e-8d3c-7c00-8fbb-2b9f2a2b1c40",
+  "envelope_version": "1.0.0",
+  "committed_at": "2026-07-14T13:22:00Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "commander_ref": {
+    "npki_dn": "CN=Cpt. Ionescu, OU=Bde 15 Meca, O=Ministerul Apararii Nationale, C=RO",
+    "identity_hash": "9f2c1d0e5b8a4a6d2f1e0c9b8a7d6e5f4c3b2a1d0e9f8c7b6a5d4e3f2c1b0a99"
+  },
+  "commander_role_authority": "RO_MOD.LAND.CPT.SAFE_ATTRITABLE",
+  "sector": {
+    "type": "Polygon",
+    "coordinates": [[
+      [28.10, 44.90],
+      [28.40, 44.90],
+      [28.40, 45.10],
+      [28.10, 45.10],
+      [28.10, 44.90]
+    ]]
+  },
+  "target_class_allowlist": [
+    "SHAPMFL*",
+    "SHAPMFQ*"
+  ],
+  "roe_code": "ROU-ROE-C-UAS-DEFENSIVE-2026-A3",
+  "weapons_state": {
+    "kinetic": "FREE",
+    "ew": "TIGHT"
+  },
+  "effector_allowlist": [
+    "vector/swarm-alpha/*"
+  ],
+  "magazine_cap": {
+    "vector/swarm-alpha/*": 60
+  },
+  "time_window": {
+    "not_before": "2026-07-14T13:25:00Z",
+    "not_after":  "2026-07-14T13:55:00Z"
+  },
+  "grace_ms": 3000,
+  "abort_authority": [
+    {
+      "npki_dn": "CN=Cpt. Ionescu, OU=Bde 15 Meca, O=Ministerul Apararii Nationale, C=RO",
+      "identity_hash": "9f2c1d0e5b8a4a6d2f1e0c9b8a7d6e5f4c3b2a1d0e9f8c7b6a5d4e3f2c1b0a99"
+    },
+    {
+      "npki_dn": "CN=Col. Popescu, OU=Bde 15 Meca CO, O=Ministerul Apararii Nationale, C=RO",
+      "identity_hash": "3a4b5c6d7e8f90a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5"
+    }
+  ],
+  "delegation_depth_cap": 0,
+  "ai_models_in_loop": [
+    {
+      "model_id": "8f3c2b1d-4e5a-6b7c-8d9e-0a1b2c3d4e5f",
+      "version": "2.1.0",
+      "purpose": "TARGET_CLASS_MATCH",
+      "ai_act_conformity_ref": "ROU-AIACT-2026-M014"
+    }
+  ],
+  "fusion_confidence_threshold": 0.80,
+  "classification": "NESECRET",
+  "notes": "Attritable Vector swarm authorised to counter Shahed-class inbound within sector for 30 min. WEAPONS FREE against hostile air loitering munitions and hostile air fixed-wing only. EW held tight — reserved for kinetic use only. Magazine cap 60 munitions swarm-wide (approx 50% of holdings). Sector clear of civilian air and friendly ISR (Vector-01 orbit is 12 km NW of this box).",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://npki/cpt-ionescu/2026-q3",
+    "value": "d3RpU0RGVXhZRUp5TFRJd01qWXRVMTlEVUZRdFZHVnpkR2xXTUMwcQ==",
+    "signed_over": [
+      "schema", "envelope_id", "envelope_version", "committed_at",
+      "tenant_id", "commander_ref", "commander_role_authority",
+      "sector", "target_class_allowlist", "roe_code", "weapons_state",
+      "effector_allowlist", "magazine_cap", "time_window", "grace_ms",
+      "abort_authority", "delegation_depth_cap", "ai_models_in_loop",
+      "fusion_confidence_threshold", "classification", "notes"
+    ]
+  }
+}

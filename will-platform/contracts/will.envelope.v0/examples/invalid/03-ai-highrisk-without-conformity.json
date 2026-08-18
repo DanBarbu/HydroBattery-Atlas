@@ -1,0 +1,55 @@
+{
+  "schema": "will.envelope.v0",
+  "envelope_id": "01895a33-0003-7c00-0000-000000000003",
+  "envelope_version": "1.0.0",
+  "committed_at": "2026-07-14T14:00:00Z",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "commander_ref": {
+    "npki_dn": "CN=Cpt. Ionescu, OU=Bde 15 Meca, O=MApN, C=RO",
+    "identity_hash": "9f2c1d0e5b8a4a6d2f1e0c9b8a7d6e5f4c3b2a1d0e9f8c7b6a5d4e3f2c1b0a99"
+  },
+  "commander_role_authority": "RO_MOD.LAND.CPT.SAFE_ATTRITABLE",
+  "sector": {
+    "type": "Polygon",
+    "coordinates": [[[28.1,44.9],[28.4,44.9],[28.4,45.1],[28.1,45.1],[28.1,44.9]]]
+  },
+  "target_class_allowlist": ["SHAPMFL*"],
+  "roe_code": "ROU-ROE-C-UAS-DEFENSIVE-2026-A3",
+  "weapons_state": { "kinetic": "FREE" },
+  "effector_allowlist": ["vector/swarm-alpha/*"],
+  "magazine_cap": { "vector/swarm-alpha/*": 60 },
+  "time_window": {
+    "not_before": "2026-07-14T13:25:00Z",
+    "not_after":  "2026-07-14T13:55:00Z"
+  },
+  "abort_authority": [
+    {
+      "npki_dn": "CN=Cpt. Ionescu, OU=Bde 15 Meca, O=MApN, C=RO",
+      "identity_hash": "9f2c1d0e5b8a4a6d2f1e0c9b8a7d6e5f4c3b2a1d0e9f8c7b6a5d4e3f2c1b0a99"
+    }
+  ],
+  "delegation_depth_cap": 0,
+  "ai_models_in_loop": [
+    {
+      "model_id": "8f3c2b1d-4e5a-6b7c-8d9e-0a1b2c3d4e5f",
+      "version": "2.1.0",
+      "purpose": "TARGET_CLASS_MATCH"
+    }
+  ],
+  "fusion_confidence_threshold": 0.80,
+  "classification": "NESECRET",
+  "notes": "Envelope declares an in-loop TARGET_CLASS_MATCH model but omits ai_act_conformity_ref. If the ADR-020 registry entry for this model is classified HIGH_RISK, the envelope MUST cite a conformity file.",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_ref": "vault://npki/cpt-ionescu/2026-q3",
+    "value": "ZmFrZS1zaWduYXR1cmU=",
+    "signed_over": [
+      "schema", "envelope_id", "envelope_version", "committed_at",
+      "tenant_id", "commander_ref", "commander_role_authority",
+      "sector", "target_class_allowlist", "roe_code", "weapons_state",
+      "effector_allowlist", "magazine_cap", "time_window",
+      "abort_authority", "delegation_depth_cap", "ai_models_in_loop",
+      "fusion_confidence_threshold", "classification", "notes"
+    ]
+  }
+}
