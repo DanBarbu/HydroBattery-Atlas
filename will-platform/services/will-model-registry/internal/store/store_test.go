@@ -73,7 +73,7 @@ func sign(t *testing.T, card model.Card, artifact []byte, priv ed25519.PrivateKe
 	if err != nil {
 		t.Fatal(err)
 	}
-	return ed25519.Sign(priv, append(cb, artifact...))
+	return ed25519.Sign(priv, SigPayload(cb, artifact))
 }
 
 func TestAdmitAndGetHappyPath(t *testing.T) {
@@ -182,6 +182,24 @@ func TestPathTraversalGuarded(t *testing.T) {
 	// Admission fails at card validation (model_id is not a valid UUID).
 	if err := s.Admit("tenant-1", c, art, sig); err == nil {
 		t.Fatal("path-traversal model_id must be rejected by card validation")
+	}
+}
+
+// TestStoreAssertCleanPanicsOnBadTenant proves the defence-in-depth guard
+// panics rather than silently mutating a path component. The API layer's
+// validators are the primary defence; this is belt-and-braces.
+func TestStoreAssertCleanPanicsOnBadTenant(t *testing.T) {
+	s, _, _ := newStoreWithKey(t)
+	cases := []string{"..", "....", "", ".", "a/b", "a\x00b"}
+	for _, tenant := range cases {
+		func(tenant string) {
+			defer func() {
+				if r := recover(); r == nil {
+					t.Fatalf("tenant=%q did not panic — traversal guard bypassed", tenant)
+				}
+			}()
+			_, _ = s.ListModels(tenant)
+		}(tenant)
 	}
 }
 

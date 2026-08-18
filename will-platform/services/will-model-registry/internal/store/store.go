@@ -7,6 +7,7 @@ package store
 import (
 	"crypto/ed25519"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,10 +15,32 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/will-platform/will-model-registry/internal/model"
 )
+
+// SigPayloadDomain is the domain separator prepended to every signed
+// payload so a signature over (card, artifact) cannot be confused with a
+// signature over any other structured input. Length-prefixed framing of
+// the components follows (u64 big-endian card length, card bytes, u64
+// big-endian artifact length, artifact bytes).
+const SigPayloadDomain = "will.model.v0.sig:1\x00"
+
+// SigPayload returns the exact byte sequence that MUST be signed. Every
+// caller (admission, verification, external signers) MUST use this
+// function — never handroll the concatenation.
+func SigPayload(cardBytes, artifact []byte) []byte {
+	buf := make([]byte, 0, len(SigPayloadDomain)+16+len(cardBytes)+len(artifact))
+	buf = append(buf, SigPayloadDomain...)
+	var lenBuf [8]byte
+	binary.BigEndian.PutUint64(lenBuf[:], uint64(len(cardBytes)))
+	buf = append(buf, lenBuf[:]...)
+	buf = append(buf, cardBytes...)
+	binary.BigEndian.PutUint64(lenBuf[:], uint64(len(artifact)))
+	buf = append(buf, lenBuf[:]...)
+	buf = append(buf, artifact...)
+	return buf
+}
 
 // TrustAnchors maps signing_key_ref → ed25519 public key. Loaded from
 // disk at startup. Fail-closed: a key_ref not in the trust store cannot
@@ -109,8 +132,7 @@ func (s *Store) verify(card model.Card, artifact []byte, signature []byte) error
 	if err != nil {
 		return err
 	}
-	signedOver := append(cardBytes, artifact...)
-	if !ed25519.Verify(pub, signedOver, signature) {
+	if !ed25519.Verify(pub, SigPayload(cardBytes, artifact), signature) {
 		return errors.New("signature verification failed")
 	}
 	return nil
@@ -192,19 +214,41 @@ func (s *Store) ListVersions(tenantID, modelID string) ([]string, error) {
 }
 
 func (s *Store) tenantDir(tenantID string) string {
-	return filepath.Join(s.root, safe(tenantID))
+	// Callers are responsible for validating tenantID via api.ValidateTenant
+	// BEFORE reaching the store. The store double-checks with assertClean
+	// as a defence-in-depth guard against a caller that forgot.
+	assertClean(tenantID)
+	return filepath.Join(s.root, tenantID)
 }
 
 func (s *Store) versionDir(tenantID, modelID, version string) string {
-	return filepath.Join(s.tenantDir(tenantID), safe(modelID), safe(version))
+	assertClean(tenantID)
+	assertClean(modelID)
+	assertClean(version)
+	return filepath.Join(s.tenantDir(tenantID), modelID, version)
 }
 
-// safe guards against path traversal in path components.
-func safe(s string) string {
-	s = strings.ReplaceAll(s, "..", "")
-	s = strings.ReplaceAll(s, "/", "")
-	s = strings.ReplaceAll(s, "\\", "")
-	return s
+// assertClean panics if a path component reaches the store with any
+// separator, traversal token, or nul byte. This is intentionally
+// panic-on-violation: it is a programmer error to route unvalidated input
+// this deep, and a 500 is safer than a silent traversal.
+func assertClean(s string) {
+	if s == "" || s == "." || s == ".." {
+		panic("store: path component is empty or a traversal token: " + s)
+	}
+	for _, r := range s {
+		if r == '/' || r == '\\' || r == 0 || r == '\n' || r == '\r' {
+			panic("store: path component contains separator or control byte")
+		}
+	}
+	// Reject any run of two consecutive dots — belt-and-braces against
+	// components like "a..b" that could combine into ".." on some path
+	// APIs. Legitimate ids don't need them.
+	for i := 0; i+1 < len(s); i++ {
+		if s[i] == '.' && s[i+1] == '.' {
+			panic("store: path component contains \"..\"")
+		}
+	}
 }
 
 func writeJSON(path string, v any) error {

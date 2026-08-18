@@ -35,15 +35,23 @@ same `store.LoadTrustAnchors` seam later.
 
 ## HTTP API
 
-| Verb | Path | Purpose |
-|---|---|---|
-| `GET` | `/healthz` | health |
-| `POST` | `/v1/tenants/{tenant}/models` | admit — body: `{"card": {...}, "artifact_b64": "...", "signature_b64": "..."}` |
-| `GET` | `/v1/tenants/{tenant}/models` | list model_ids for tenant |
-| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions` | list versions |
-| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/card` | model card |
-| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/artifact` | artefact bytes; requires `?ceiling=X&layer=OPERATIONAL\|OSINT` |
-| `POST` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/revoke` | irreversible |
+| Verb | Path | Purpose | Auth |
+|---|---|---|---|
+| `GET` | `/healthz` | health | — |
+| `POST` | `/v1/tenants/{tenant}/models` | admit — body: `{"card": {...}, "artifact_b64": "...", "signature_b64": "..."}`; unknown JSON fields are refused | `X-Will-Role: admin` |
+| `GET` | `/v1/tenants/{tenant}/models` | list model_ids for tenant | — |
+| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions` | list versions | — |
+| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/card` | model card; requires `?ceiling=X` (card carries sensitive provenance) | — |
+| `GET` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/artifact` | artefact bytes; requires `?ceiling=X&layer=OPERATIONAL\|OSINT` | — |
+| `POST` | `/v1/tenants/{tenant}/models/{model_id}/versions/{version}/revoke` | irreversible | `X-Will-Role: admin` |
+
+Path components are strictly validated at the API edge (no silent
+mutation). `tenant` matches `^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$`; `model_id`
+is UUID; `version` is `X.Y.Z` digits. Any deviation returns 400.
+
+RBAC is Sprint-0 header-based (`X-Will-Role`) matching the tenant-admin
+convention. ADR-007-successor (NPKI / OIDC) replaces this later without
+changing endpoint shapes.
 
 Response headers on artefact GET:
 - `X-Will-Model-Classification` — the model's own marking
